@@ -1,4 +1,4 @@
-/*! air-cookie 10-08-2021 17:02 - Digitoimisto Dude Oy */
+/*! air-cookie 17-08-2021 10:48 - Digitoimisto Dude Oy */
 /*!
  * CookieConsent v2.4.7
  * https://www.github.com/orestbida/cookieconsent
@@ -1535,7 +1535,7 @@
 * @Author: Timi Wahalahti
 * @Date:   2021-08-10 14:12:02
 * @Last Modified by:   Timi Wahalahti
-* @Last Modified time: 2021-08-10 17:51:58
+* @Last Modified time: 2021-08-17 10:58:25
 */
 
 console.log('hello');
@@ -1543,17 +1543,5 @@ console.log('hello');
 window.addEventListener( 'load', function () {
   var cc = initCookieConsent();
 
-  cc.run({
-    theme_css: airCookie.assets.css,
-    autorun : true,
-    delay : 0,
-    current_lang : airCookie.settings.current_lang,
-    languages: airCookie.translations,
-    gui_options: {
-      consent_modal: {
-        layout: 'box',
-        position: 'bottom left',
-      }
-    }
-  });
+  cc.run( airCookieSettings );
 });
