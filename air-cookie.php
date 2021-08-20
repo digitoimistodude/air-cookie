@@ -6,7 +6,7 @@
  * @Author: Timi Wahalahti
  * @Date:   2021-08-10 10:49:07
  * @Last Modified by:   Timi Wahalahti
- * @Last Modified time: 2021-08-17 11:48:21
+ * @Last Modified time: 2021-08-20 14:05:06
  * @package air-cookie
  */
 
@@ -43,19 +43,23 @@ require 'plugin-helpers.php';
 add_action( 'wp_enqueue_scripts', __NAMESPACE__ . '\enqueue_scripts', 1 );
 function enqueue_scripts() {
   $env = 'development' === wp_get_environment_type() ? 'dev' : 'prod';
+  $settings = get_settings();
+
+  if ( ! is_array( $settings ) ) {
+    return;
+  }
 
   wp_enqueue_script( 'air-cookie', plugin_base_url() . "/assets/{$env}/js/air-cookie.js", [], get_plugin_version(), false );
-
-  $settings = get_settings();
-  $settings['languages'] = get_strings();
-
   wp_localize_script( 'air-cookie', 'airCookieSettings', apply_filters( 'air_cookie\settings', $settings ) );
 } // end enqueue_scripts
 
 function get_settings() {
+  $lang = pll_current_language();
+
   $settings = [
     'theme_css'     => plugin_base_url() . "/assets/cookieconsent.css",
-    'current_lang'  => pll_current_language(),
+    'auto_language' => false,
+    'current_lang'  => $lang,
     'autorun'       => true,
     'delay'         => '0',
     'gui_options'   => [
@@ -66,95 +70,145 @@ function get_settings() {
     ],
   ];
 
-  foreach ( $settings as $key => $value ) {
-    $settings[ $key ] = apply_filters( "air_cookie\settings\{$key}", $value );
+  $settings = apply_filters( 'air_cookie\settings', $settings );
+
+  foreach ( $settings as $key => $setting ) {
+    $settings[ $key ] = apply_filters( "air_cookie\strings\{$key}", $setting );
   }
 
-  return $settings;
+  $strings = get_strings();
+  if ( ! is_array( $strings ) ) {
+    return false;
+  }
+
+  $settings['languages'][ $lang ] = [
+    'consent_modal' => [
+      'title'         => pll_translate_string( $strings['consent_modal_title'], $lang ),
+      'description'   => pll_translate_string( $strings['consent_modal_description'], $lang ),
+      'primary_btn'   => [
+        'text'  => pll_translate_string( $strings['consent_modal_primary_btn_text'], $lang ),
+        'role'  => 'accept_all',
+      ],
+      'secondary_btn' => [
+        'text'  => pll_translate_string( $strings['consent_modal_secondary_btn_text'], $lang ),
+        'role'  => 'accept_necessary',
+      ],
+    ],
+    'settings_modal' => [
+      'title'             => pll_translate_string( $strings['settings_modal_title'], $lang ),
+      'save_settings_btn' => pll_translate_string( $strings['settings_modal_save_settings_btn'], $lang ),
+      'accept_all_btn'    => pll_translate_string( $strings['settings_modal_accept_all_btn'], $lang ),
+      'blocks'            => wp_parse_args( get_cookie_categories_for_settings( $lang ), [
+        [
+          'title'       => pll_translate_string( $strings['settings_modal_big_title'], $lang ),
+          'description' => pll_translate_string( $strings['settings_modal_description'], $lang ),
+        ]
+      ] ),
+    ]
+  ];
+
+  return apply_filters( 'air_cookie\settings_all', $settings );
 } // end get_settings
 
 function get_strings() {
-  $all_strings = [
-    'fi'  => [
-      'consent_modal' => [
-        'title'       => 'Käytämme verkkosivuillamme evästeitä',
-        'description' => 'Käytämme yhteistyökumppaneidemme kanssa evästeitä mm. sivuston toiminnallisuuteen, mainonnan ja sosiaalisen median liitännäisten toteuttamiseen sekä sivuston käytön analysointiin. Kävijätietoja voidaan jakaa sosiaalisen median palveluja, verkkomainontaa tai analytiikkapalveluja tarjoavien kumppaneiden kanssa. <button type="button" data-cc="c-settings" class="cc-link">Let me choose</button>',
-        'primary_btn' => [
-          'text'  => 'Hyväksy kaikki evästeet',
-          'role'  => 'accept_all',
-        ],
-        'secondary_btn' => [
-          'text'  => 'Hyväksy vain välttämättömät',
-          'role'  => 'accept_necessary',
-        ],
-      ],
-      'settings_modal' => [
-        'title'             => 'Evästeasetukset',
-        'save_settings_btn' => "Tallenna asetukset",
-        'accept_all_btn'    => "Hyväksy kaikki",
-        'blocks'            => array_values( get_cookie_groups( 'fi' ) ),
-      ],
-    ],
+  $strings = [
+    'consent_modal_title'                 => 'Käytämme verkkosivuillamme evästeitä',
+    'consent_modal_description'           => 'Käytämme yhteistyökumppaneidemme kanssa evästeitä mm. sivuston toiminnallisuuteen, mainonnan ja sosiaalisen median liitännäisten toteuttamiseen sekä sivuston käytön analysointiin. Kävijätietoja voidaan jakaa sosiaalisen median palveluja, verkkomainontaa tai analytiikkapalveluja tarjoavien kumppaneiden kanssa. <button type="button" data-cc="c-settings" class="cc-link">Let me choose</button>',
+    'consent_modal_primary_btn_text'      => 'Hyväksy kaikki evästeet',
+    'consent_modal_secondary_btn_text'    => 'Hyväksy vain välttämättömät',
+    'settings_modal_title'                => 'Evästeasetukset',
+    'settings_modal_big_title'            => 'Evästeiden käyttö',
+    'settings_modal_description'          => 'Hello testing testing kuuluuko?',
+    'settings_modal_save_settings_btn'    => 'Tallenna asetukset',
+    'settings_modal_accept_all_btn'       => 'Hyväksy kaikki',
   ];
 
-  foreach ( $all_strings as $lang => $strings_group ) {
-    // Allow filtering by whole language
-    $strings_group = apply_filters( "air_cookie\translations\{$lang}", $strings_group );
+  $strings = apply_filters( 'air_cookie\strings', $strings );
 
-    foreach ( $strings_group as $strings_group_key => $strings ) {
-      // Allow filtering by language specific group
-      $strings = apply_filters( "air_cookie\translations\{$lang}\{$strings_group_key}", $strings );
-
-      foreach ( $strings as $key => $value ) {
-        // Allow filtering by individual strings
-        $all_strings[ $lang ][ $strings_group_key ][ $key ] = apply_filters( "air_cookie\translations\{$lang}\{$strings_group_key}\{$key}", $value );
-      }
-    }
+  foreach ( $strings as $key => $string ) {
+    $strings[ $key ] = apply_filters( "air_cookie\strings\{$key}", $string );
   }
 
-  return $all_strings;
+  return $strings;
 } // end get_strings
 
-function get_cookie_groups( $lang ) {
-  $groups = [
-    'fi'  => [
-      'description' => [
-        'title'       => 'Evästeiden käyttö',
-        'description' => 'Käytämme yhteistyökumppaneidemme kanssa evästeitä mm. sivuston toiminnallisuuteen, mainonnan ja sosiaalisen median liitännäisten toteuttamiseen sekä sivuston käytön analysointiin. Kävijätietoja voidaan jakaa sosiaalisen median palveluja, verkkomainontaa tai analytiikkapalveluja tarjoavien kumppaneiden kanssa.'
-      ],
-      'necessary' => [
-        'title'       => 'Välttämättömät',
-        'description' => 'Käytämme yhteistyökumppaneidemme kanssa evästeitä mm. sivuston toiminnallisuuteen, mainonnan ja sosiaalisen median liitännäisten toteuttamiseen sekä sivuston käytön analysointiin. Kävijätietoja voidaan jakaa sosiaalisen median palveluja, verkkomainontaa tai analytiikkapalveluja tarjoavien kumppaneiden kanssa.',
-        'toggle'  => [
-          'value'     => 'necessary',
-          'enabled'   => true,
-          'readonly'  => true,
-        ],
-      ],
-      'analytics' => [
-        'title'       => 'Analytiikka',
-        'description' => 'Käytämme yhteistyökumppaneidemme kanssa evästeitä mm. sivuston toiminnallisuuteen, mainonnan ja sosiaalisen median liitännäisten toteuttamiseen sekä sivuston käytön analysointiin. Kävijätietoja voidaan jakaa sosiaalisen median palveluja, verkkomainontaa tai analytiikkapalveluja tarjoavien kumppaneiden kanssa.',
-        'toggle' => [
-          'value'     => 'analytics',
-          'enabled'   => false,
-          'readonly'  => false,
-        ],
-      ],
+function get_cookie_categories() {
+  $categories = [
+    [
+      'key'         => 'necessary',
+      'enabled'     => true,
+      'readonly'    => true,
+      'title'       => 'Välttämättömät',
+      'description' => 'Ryhmän kuvaus tässä.',
     ],
+    [
+      'key'         => 'analytics',
+      'enabled'     => false,
+      'readonly'    => false,
+      'title'       => 'Analytiikka',
+      'description' => 'Analytiikka ryhmän kuvaus tässä.',
+    ]
   ];
 
-  $groups = apply_filters( "air_cookie\cookie_groups", $groups );
+  $categories = apply_filters( 'air_cookie\categories', $categories );
 
-  foreach ( $groups as $group_lang => $group ) {
-    $groups[ $group_lang ] = apply_filters( "air_cookie\cookie_groups\{$group_lang}", $group );
+  foreach ( $categories as $key => $category ) {
+    $category_key = $category['key'];
+    $categories[ $key ] = apply_filters( "air_cookie\categories\{$category_key}", $category );
   }
 
-  if ( ! isset( $groups[ $lang ] ) ) {
-    return [];
+  return $categories;
+} // end get_cookie_categories
+
+function get_cookie_categories_for_settings( $lang ) {
+  $strings = get_strings();
+  if ( ! is_array( $strings ) ) {
+    return;
   }
 
-  return $groups[ $lang ];
-} // end get_cookie_groups
+  $cookie_groups = get_cookie_categories();
+  if ( ! is_array( $cookie_groups ) ) {
+    return;
+  }
+
+  foreach ( $cookie_groups as $group ) {
+    $key = $group['key'];
+
+    $return[] = [
+      'title'       => pll_translate_string( $group['title'], $lang ),
+      'description' => pll_translate_string( $group['description'], $lang ),
+      'toggle'      => [
+        'value'       => $key,
+        'enabled'     => isset( $group['enabled'] ) ? $group['enabled'] : false,
+        'readonly'    => isset( $group['readonly'] ) ? $group['readonly'] : false,
+      ],
+    ];
+  }
+
+  return $return;
+} // end get_cookie_categories_for_settings
+
+add_action( 'init', __NAMESPACE__ . '\register_strings' );
+function register_strings() {
+  $strings = get_strings();
+  if ( ! is_array( $strings ) ) {
+    return;
+  }
+
+  foreach ( $strings as $key => $string ) {
+    $multiline = false !== strpos( $key, 'description' ) ? true : false;
+    pll_register_string( $key, $string, 'Air Cookie', $multiline );
+  }
+
+  $cookie_categories = get_cookie_categories();
+  if ( is_array( $cookie_categories ) ) {
+    foreach ( $cookie_categories as $cookie_category ) {
+      $cookie_category_key = $cookie_category['key'];
+      pll_register_string( "cookie_category_{$cookie_category_key}_title", $cookie_category['title'], 'Air Cookie' );
+      pll_register_string( "cookie_category_{$cookie_category_key}_description", $cookie_category['description'], 'Air Cookie', true );
+    }
+  }
+} // end register_strings
 
 /**
 * Plugin activation hook to save current version for reference in what version activation happened.
