@@ -6,7 +6,7 @@
  * @Author: Timi Wahalahti
  * @Date:   2021-08-10 10:49:07
  * @Last Modified by:   Timi Wahalahti
- * @Last Modified time: 2021-08-20 14:30:46
+ * @Last Modified time: 2021-08-23 15:55:23
  * @package air-cookie
  */
 
@@ -43,18 +43,49 @@ require plugin_base_path(). '/strings.php';
  * @since 0.1.0
  */
 
-add_action( 'wp_enqueue_scripts', __NAMESPACE__ . '\enqueue_scripts', 1 );
-function enqueue_scripts() {
-  $env = 'development' === wp_get_environment_type() ? 'dev' : 'prod';
+add_action( 'wp_head', __NAMESPACE__ . '\inject_js' );
+
+function inject_js() {
+  wp_enqueue_script( 'cookieconsent', plugin_base_url() . "/assets/src/js/cookieconsent.js", [], '2.4.7', false );
+
   $settings = get_settings();
 
   if ( ! is_array( $settings ) ) {
     return;
   }
 
-  wp_enqueue_script( 'air-cookie', plugin_base_url() . "/assets/{$env}/js/air-cookie.js", [], get_plugin_version(), false );
-  wp_localize_script( 'air-cookie', 'airCookieSettings', apply_filters( 'air_cookie\settings', $settings ) );
-} // end enqueue_scripts
+  $cookie_categories = get_cookie_categories();
+  ?>
+
+  <script type="text/javascript">
+    window.addEventListener( 'load', function () {
+      var cc = initCookieConsent();
+
+      airCookieSettings = <?php echo json_encode( apply_filters( 'air_cookie\settings', $settings ) ); ?>
+
+      <?php if ( ! empty( $cookie_categories ) && is_array( $cookie_categories ) ) : ?>
+        airCookieSettings.onAccept = function() {
+          <?php foreach ( $cookie_categories as $cookie_category ) {
+            $category_key = $cookie_category['key']; ?>
+            if ( cc.allowedCategory( '<?php echo $category_key; ?>' ) ) {
+              const <?php echo 'air_cookie_' . $category_key ?> = new CustomEvent( '<?php echo 'air_cookie_' . $category_key ?>' );
+              const air_cookie = new CustomEvent( 'air_cookie', {
+                'category': '<?php echo $category_key; ?>'
+              } );
+
+              document.dispatchEvent( <?php echo 'air_cookie_' . $category_key ?> );
+              document.dispatchEvent( air_cookie );
+
+              <?php do_action( 'air_cookie_js_' . $category_key, $cookie_category ); ?>
+            }
+          <?php } ?>
+        }
+      <?php endif; ?>
+
+      cc.run( airCookieSettings );
+    });
+  </script>
+<?php } // end inject_js
 
 /**
 * Plugin activation hook to save current version for reference in what version activation happened.
@@ -87,3 +118,27 @@ function plugin_deactivate() {
     update_option( 'air_cookie_deactivated_without_version', 'true', false );
   }
 } // end plugin_deactivate
+
+add_action( 'air_cookie_js_necessary', function() {
+  ob_start(); ?>
+    console.log( 'necessary' );
+  <?php echo ob_get_clean();
+} );
+
+add_action( 'air_cookie_js_analytics', function() {
+  ob_start(); ?>
+    console.log( 'analytics' );
+  <?php echo ob_get_clean();
+} );
+
+add_action( 'wp_head', function() { ?>
+  <script type="text/javascript">
+    document.addEventListener( 'air_cookie', function( event ) {
+      console.log( 'global event  ' + event.category );
+    } );
+
+    document.addEventListener( 'air_cookie_necessary', function( event ) {
+      console.log( 'category event necessary' );
+    } );
+  </script>
+<?php } );
