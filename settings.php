@@ -3,7 +3,7 @@
  * @Author: Timi Wahalahti
  * @Date:   2021-08-20 14:17:57
  * @Last Modified by:   Timi Wahalahti
- * @Last Modified time: 2021-08-20 14:47:56
+ * @Last Modified time: 2021-08-23 16:14:37
  * @package air-cookie
  */
 
@@ -43,25 +43,25 @@ function get_settings() {
 
   $settings['languages'][ $lang ] = [
     'consent_modal' => [
-      'title'         => pll_translate_string( $strings['consent_modal_title'], $lang ),
-      'description'   => pll_translate_string( $strings['consent_modal_description'], $lang ),
+      'title'         => maybe_get_polylang_translation( 'consent_modal_title' ),
+      'description'   => maybe_get_polylang_translation( 'consent_modal_description' ),
       'primary_btn'   => [
-        'text'  => pll_translate_string( $strings['consent_modal_primary_btn_text'], $lang ),
+        'text'  => maybe_get_polylang_translation( 'consent_modal_primary_btn_text' ),
         'role'  => 'accept_all',
       ],
       'secondary_btn' => [
-        'text'  => pll_translate_string( $strings['consent_modal_secondary_btn_text'], $lang ),
+        'text'  => maybe_get_polylang_translation( 'consent_modal_secondary_btn_text' ),
         'role'  => 'accept_necessary',
       ],
     ],
     'settings_modal' => [
-      'title'             => pll_translate_string( $strings['settings_modal_title'], $lang ),
-      'save_settings_btn' => pll_translate_string( $strings['settings_modal_save_settings_btn'], $lang ),
-      'accept_all_btn'    => pll_translate_string( $strings['settings_modal_accept_all_btn'], $lang ),
+      'title'             => maybe_get_polylang_translation( 'settings_modal_title' ),
+      'save_settings_btn' => maybe_get_polylang_translation( 'settings_modal_save_settings_btn' ),
+      'accept_all_btn'    => maybe_get_polylang_translation( 'settings_modal_accept_all_btn' ),
       'blocks'            => wp_parse_args( get_cookie_categories_for_settings( $lang ), [
         [
-          'title'       => pll_translate_string( $strings['settings_modal_big_title'], $lang ),
-          'description' => pll_translate_string( $strings['settings_modal_description'], $lang ),
+          'title'       => maybe_get_polylang_translation( 'settings_modal_big_title' ),
+          'description' => maybe_get_polylang_translation( 'settings_modal_description' ),
         ]
       ] ),
     ]
@@ -76,15 +76,15 @@ function get_cookie_categories() {
       'key'         => 'necessary',
       'enabled'     => true,
       'readonly'    => true,
-      'title'       => 'Välttämättömät',
-      'description' => 'Ryhmän kuvaus tässä.',
+      'title'       => maybe_get_polylang_translation( 'category_necessary_title' ),
+      'description' => maybe_get_polylang_translation( 'category_necessary_description' ),
     ],
     [
       'key'         => 'analytics',
       'enabled'     => false,
       'readonly'    => false,
-      'title'       => 'Analytiikka',
-      'description' => 'Analytiikka ryhmän kuvaus tässä.',
+      'title'       => maybe_get_polylang_translation( 'category_analytics_title' ),
+      'description' => maybe_get_polylang_translation( 'category_analytics_description' ),
     ]
   ];
 

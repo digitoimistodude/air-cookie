@@ -3,7 +3,7 @@
  * @Author: Timi Wahalahti
  * @Date:   2021-08-20 14:19:21
  * @Last Modified by:   Timi Wahalahti
- * @Last Modified time: 2021-08-20 14:31:40
+ * @Last Modified time: 2021-08-23 16:14:23
  * @package air-cookie
  */
 
@@ -24,6 +24,10 @@ function get_strings() {
     'settings_modal_description'          => 'Hello testing testing kuuluuko?',
     'settings_modal_save_settings_btn'    => 'Tallenna asetukset',
     'settings_modal_accept_all_btn'       => 'Hyväksy kaikki',
+    'category_necessary_title'            => 'Välttämättömät',
+    'category_necessary_description'      => 'Ryhmän kuvaus tässä.',
+    'category_analytics_title'            => 'Analytiikka',
+    'category_analytics_description'      => 'Analytiikka ryhmän kuvaus tässä.',
   ];
 
   $strings = apply_filters( 'air_cookie\strings', $strings );
@@ -56,3 +60,18 @@ function register_strings() {
     }
   }
 } // end register_strings
+
+function maybe_get_polylang_translation( $string_key ) {
+  $lang = pll_current_language();
+  $strings = get_strings();
+
+  if ( ! array_key_exists( $string_key, $strings ) ) {
+    return false;
+  }
+
+  if ( ! function_exists( 'pll_translate_string' ) ) {
+    return $strings[ $string_key ];
+  }
+
+  return pll_translate_string( $strings[ $string_key ], $lang );
+} // end maybe_get_polylang_translation
