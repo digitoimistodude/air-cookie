@@ -3,7 +3,7 @@
  * @Author: Timi Wahalahti
  * @Date:   2021-08-20 14:19:21
  * @Last Modified by:   Timi Wahalahti
- * @Last Modified time: 2021-08-23 16:14:23
+ * @Last Modified time: 2021-08-24 09:33:56
  * @package air-cookie
  */
 
@@ -62,7 +62,6 @@ function register_strings() {
 } // end register_strings
 
 function maybe_get_polylang_translation( $string_key ) {
-  $lang = pll_current_language();
   $strings = get_strings();
 
   if ( ! array_key_exists( $string_key, $strings ) ) {
@@ -73,5 +72,5 @@ function maybe_get_polylang_translation( $string_key ) {
     return $strings[ $string_key ];
   }
 
-  return pll_translate_string( $strings[ $string_key ], $lang );
+  return pll_translate_string( $strings[ $string_key ], get_current_language() );
 } // end maybe_get_polylang_translation

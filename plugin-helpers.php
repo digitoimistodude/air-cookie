@@ -3,7 +3,7 @@
  * @Author: Timi Wahalahti
  * @Date:   2021-08-10 10:49:07
  * @Last Modified by:   Timi Wahalahti
- * @Last Modified time: 2021-08-20 14:30:57
+ * @Last Modified time: 2021-08-24 09:33:35
  * @package air-cookie
  */
 
@@ -42,3 +42,11 @@ function plugin_base_path() {
 function plugin_base_url() {
   return untrailingslashit( plugin_dir_url( __FILE__ ) );
 } // end plugin_base_url
+
+function get_current_language() {
+  if ( function_exists( 'pll_current_language' ) ) {
+    return pll_current_language();
+  }
+
+  return get_locale();
+} // end get_current_language

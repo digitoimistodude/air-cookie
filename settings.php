@@ -3,7 +3,7 @@
  * @Author: Timi Wahalahti
  * @Date:   2021-08-20 14:17:57
  * @Last Modified by:   Timi Wahalahti
- * @Last Modified time: 2021-08-23 16:14:37
+ * @Last Modified time: 2021-08-24 09:34:42
  * @package air-cookie
  */
 
@@ -14,7 +14,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 function get_settings() {
-  $lang = pll_current_language();
+  $lang = get_current_language();
 
   $settings = [
     'theme_css'     => plugin_base_url() . "/assets/cookieconsent.css",
