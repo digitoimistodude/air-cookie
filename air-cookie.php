@@ -6,7 +6,7 @@
  * @Author: Timi Wahalahti
  * @Date:   2021-08-10 10:49:07
  * @Last Modified by:   Timi Wahalahti
- * @Last Modified time: 2021-08-24 13:41:01
+ * @Last Modified time: 2021-08-24 14:02:53
  * @package air-cookie
  */
 
@@ -44,6 +44,7 @@ add_action( 'init', __NAMESPACE__ . '\register_strings' );
 
 require plugin_base_path(). '/database.php';
 add_action( 'admin_init', __NAMESPACE__ . '\maybe_init_database' );
+add_action( 'rest_api_init', __NAMESPACE__ . '\register_rest_endpoint' );
 
 /**
  * # TODO

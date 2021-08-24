@@ -3,7 +3,7 @@
  * @Author: Timi Wahalahti
  * @Date:   2021-08-24 13:26:51
  * @Last Modified by:   Timi Wahalahti
- * @Last Modified time: 2021-08-24 13:43:27
+ * @Last Modified time: 2021-08-24 14:21:59
  * @package air-cookie
  */
 
@@ -54,3 +54,76 @@ function maybe_init_database() {
 
   add_site_option( get_databse_version_key(), get_databse_version() );
 } // end maybe_init_database
+
+function save_to_databse( $user_id, $visitor_id, $cookie_version, $cookie_value ) {
+  global $wpdb;
+  $table_name = get_databse_table_name();
+
+  $inserted = $wpdb->insert(
+    $table_name,
+    [
+      'user_id'         => $user_id,
+      'visitor_id'      => $visitor_id,
+      'cookie_version'  => $cookie_version,
+      'cookie_value'    => $cookie_value,
+      'timestamp'       => wp_date( 'Y-m-d H:i:s' ),
+      'expiry'          => wp_date( 'Y-m-d H:i:s', strtotime( '+182 days' ) ),
+    ],
+    [
+      '%d',
+      '%s',
+      '%s',
+      '%s',
+      '%s',
+      '%s',
+    ]
+  );
+
+  if ( ! $inserted ) {
+    return false;
+  }
+
+  return $wpdb->insert_id; // returns new row id
+} // end save_to_databse
+
+function register_rest_endpoint() {
+  register_rest_route( 'air-cookie/v1', '/consent', [
+    'methods'             => 'post',
+    'callback'            => __NAMESPACE__ . '\register_consent',
+    'permission_callback' => __NAMESPACE__ . '\register_consent_permission_callback',
+  ] );
+} // end
+
+function register_consent( $request ) {
+  if ( empty( $request->get_param( 'cookie_version' ) ) ) {
+    return false;
+  }
+
+  if ( empty( $request->get_param( 'cookie_value' ) ) ) {
+    return false;
+  }
+
+  $user_id = is_user_logged_in() ? get_current_user_id() : 0;
+  $visitor_id = wp_generate_password();
+
+  $db_row_id = save_to_databse( $user_id, $visitor_id, $request->get_param( 'cookie_version' ), $request->get_param( 'cookie_value' )  );
+  if ( $db_row_id ) {
+    return true;
+  }
+
+  return false;
+} // end
+
+/**
+ * Check the nonce is set to prevent spamming the endpoint from elsewhere
+ *
+ * @return boolean Does the user have permission to send data to callback?
+ */
+function register_consent_permission_callback( $request ) {
+  $nonce = $request->get_header( 'x_wp_nonce' );
+  if ( $nonce && wp_verify_nonce( $nonce, 'wp_rest' ) ) {
+    return true;
+  }
+
+  return false;
+} // end
