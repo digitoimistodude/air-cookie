@@ -3,7 +3,7 @@
  * @Author: Timi Wahalahti
  * @Date:   2021-08-20 14:17:57
  * @Last Modified by:   Timi Wahalahti
- * @Last Modified time: 2021-08-24 12:52:33
+ * @Last Modified time: 2021-08-24 13:48:59
  * @package air-cookie
  */
 
@@ -25,14 +25,15 @@ function get_settings() {
 
   // Default settings.
   $settings = [
-    'cookie_name'   => "air_cookie_" . $categories_version, // use version number to invalidate if categories change
-    'theme_css'     => plugin_base_url() . '/assets/cookieconsent.css',
-    'auto_language' => false,
-    'current_lang'  => $lang,
-    'autorun'       => true,
-    'page_scripts'  => true,
-    'delay'         => '0',
-    'gui_options'   => [
+    'cookie_name'       => "air_cookie_" . $categories_version, // use version number to invalidate if categories change
+    'theme_css'         => plugin_base_url() . '/assets/cookieconsent.css',
+    'cookie_expiration' => 182, // in days, 182 days = 6 months
+    'auto_language'     => false,
+    'current_lang'      => $lang,
+    'autorun'           => true,
+    'page_scripts'      => true,
+    'delay'             => '0',
+    'gui_options'       => [
       'consent_modal' => [
         'layout'    => 'box',
         'position'  => 'bottom left',
