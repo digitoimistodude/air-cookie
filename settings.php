@@ -3,7 +3,7 @@
  * @Author: Timi Wahalahti
  * @Date:   2021-08-20 14:17:57
  * @Last Modified by:   Timi Wahalahti
- * @Last Modified time: 2021-08-24 09:34:42
+ * @Last Modified time: 2021-08-24 09:58:56
  * @package air-cookie
  */
 
@@ -21,6 +21,7 @@ function get_settings() {
     'auto_language' => false,
     'current_lang'  => $lang,
     'autorun'       => true,
+    'page_scripts'  => true,
     'delay'         => '0',
     'gui_options'   => [
       'consent_modal' => [
