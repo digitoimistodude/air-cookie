@@ -6,7 +6,7 @@
  * @Author: Timi Wahalahti
  * @Date:   2021-08-10 10:49:07
  * @Last Modified by:   Timi Wahalahti
- * @Last Modified time: 2021-08-24 11:24:56
+ * @Last Modified time: 2021-08-24 11:34:06
  * @package air-cookie
  */
 
@@ -66,19 +66,8 @@ function inject_js() {
       <?php if ( ! empty( $cookie_categories ) && is_array( $cookie_categories ) ) : ?>
         airCookieSettings.onAccept = function() {
           <?php foreach ( $cookie_categories as $cookie_category ) {
-            $category_key = $cookie_category['key']; ?>
-            if ( cc.allowedCategory( '<?php echo $category_key; ?>' ) ) {
-              const <?php echo 'air_cookie_' . $category_key ?> = new CustomEvent( '<?php echo 'air_cookie_' . $category_key ?>' );
-              const air_cookie = new CustomEvent( 'air_cookie', {
-                'category': '<?php echo $category_key; ?>'
-              } );
-
-              document.dispatchEvent( <?php echo 'air_cookie_' . $category_key ?> );
-              document.dispatchEvent( air_cookie );
-
-              <?php do_action( 'air_cookie_js_' . $category_key, $cookie_category ); ?>
-            }
-          <?php } ?>
+            echo do_category_js( $cookie_category );
+          } ?>
         }
       <?php endif; ?>
 
@@ -86,6 +75,27 @@ function inject_js() {
     });
   </script>
 <?php } // end inject_js
+
+function do_category_js( $category ) {
+  $category_key = $category['key'];
+  $event_key = "air_cookie_{$category_key}";
+
+  ob_start(); ?>
+
+  if ( cc.allowedCategory( '<?php echo $category_key; ?>' ) ) {
+    const <?php echo $event_key ?> = new CustomEvent( '<?php echo $event_key ?>' );
+    const air_cookie = new CustomEvent( 'air_cookie', {
+      'category': '<?php echo $category_key; ?>'
+    } );
+
+    document.dispatchEvent( <?php echo $event_key ?> );
+    document.dispatchEvent( air_cookie );
+
+    <?php do_action( 'air_cookie_js_' . $category_key, $category ); ?>
+  }
+
+  <?php return ob_get_clean();
+} // end do_category_js
 
 /**
 * Plugin activation hook to save current version for reference in what version activation happened.
