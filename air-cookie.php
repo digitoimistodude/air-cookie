@@ -6,7 +6,7 @@
  * @Author: Timi Wahalahti
  * @Date:   2021-08-10 10:49:07
  * @Last Modified by:   Timi Wahalahti
- * @Last Modified time: 2021-08-23 15:55:23
+ * @Last Modified time: 2021-08-24 11:24:56
  * @package air-cookie
  */
 
@@ -46,7 +46,7 @@ require plugin_base_path(). '/strings.php';
 add_action( 'wp_head', __NAMESPACE__ . '\inject_js' );
 
 function inject_js() {
-  wp_enqueue_script( 'cookieconsent', plugin_base_url() . "/assets/src/js/cookieconsent.js", [], '2.4.7', false );
+  wp_enqueue_script( 'cookieconsent', plugin_base_url() . "/assets/cookieconsent.js", [], '2.4.7', false );
 
   $settings = get_settings();
 
