@@ -6,7 +6,7 @@
  * @Author: Timi Wahalahti
  * @Date:   2021-08-10 10:49:07
  * @Last Modified by:   Timi Wahalahti
- * @Last Modified time: 2021-08-24 11:34:06
+ * @Last Modified time: 2021-08-24 13:41:01
  * @package air-cookie
  */
 
@@ -26,6 +26,10 @@ function get_plugin_version() {
   return 010;
 } // end plugin_version
 
+function get_databse_version() {
+  return 20210824;
+} // end get_databse_version
+
 /**
 * Require helpers for this plugin.
 *
@@ -34,7 +38,12 @@ function get_plugin_version() {
 require 'plugin-helpers.php';
 
 require plugin_base_path() . '/settings.php';
+
 require plugin_base_path(). '/strings.php';
+add_action( 'init', __NAMESPACE__ . '\register_strings' );
+
+require plugin_base_path(). '/database.php';
+add_action( 'admin_init', __NAMESPACE__ . '\maybe_init_database' );
 
 /**
  * # TODO
