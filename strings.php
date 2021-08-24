@@ -3,7 +3,7 @@
  * @Author: Timi Wahalahti
  * @Date:   2021-08-20 14:19:21
  * @Last Modified by:   Timi Wahalahti
- * @Last Modified time: 2021-08-24 09:33:56
+ * @Last Modified time: 2021-08-24 09:59:50
  * @package air-cookie
  */
 
@@ -41,6 +41,8 @@ function get_strings() {
 
 add_action( 'init', __NAMESPACE__ . '\register_strings' );
 function register_strings() {
+  $pll_group = get_polylang_group();
+
   $strings = get_strings();
   if ( ! is_array( $strings ) ) {
     return;
@@ -48,15 +50,15 @@ function register_strings() {
 
   foreach ( $strings as $key => $string ) {
     $multiline = false !== strpos( $key, 'description' ) ? true : false;
-    pll_register_string( $key, $string, 'Air Cookie', $multiline );
+    pll_register_string( $key, $string, $pll_group, $multiline );
   }
 
   $cookie_categories = get_cookie_categories();
   if ( is_array( $cookie_categories ) ) {
     foreach ( $cookie_categories as $cookie_category ) {
       $cookie_category_key = $cookie_category['key'];
-      pll_register_string( "cookie_category_{$cookie_category_key}_title", $cookie_category['title'], 'Air Cookie' );
-      pll_register_string( "cookie_category_{$cookie_category_key}_description", $cookie_category['description'], 'Air Cookie', true );
+      pll_register_string( "cookie_category_{$cookie_category_key}_title", $cookie_category['title'], $pll_group );
+      pll_register_string( "cookie_category_{$cookie_category_key}_description", $cookie_category['description'], $pll_group, true );
     }
   }
 } // end register_strings
@@ -74,3 +76,7 @@ function maybe_get_polylang_translation( $string_key ) {
 
   return pll_translate_string( $strings[ $string_key ], get_current_language() );
 } // end maybe_get_polylang_translation
+
+function get_polylang_group() {
+  return apply_filters( 'air_cookie\pll\group', 'Air Cookie' );
+} // end get_polylang_group
