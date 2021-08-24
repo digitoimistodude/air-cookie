@@ -3,7 +3,7 @@
  * @Author: Timi Wahalahti
  * @Date:   2021-08-10 10:49:07
  * @Last Modified by:   Timi Wahalahti
- * @Last Modified time: 2021-08-24 09:38:05
+ * @Last Modified time: 2021-08-24 11:47:21
  * @package air-cookie
  */
 
@@ -16,8 +16,8 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  *  Get the version at where plugin was activated.
  *
- *  @since  1.6.0
  *  @return integer  version where plugin was activated
+ *  @since  1.6.0
  */
 function plugin_activated_at_version() {
   return absint( apply_filters( 'air_cookie_activated_at_version', get_option( 'air_cookie_activated_at_version' ) ) );
@@ -26,8 +26,8 @@ function plugin_activated_at_version() {
 /**
  *  Wrapper function to get real base path for this plugin.
  *
- *  @since  0.1.0
  *  @return string  Path to this plugin
+ *  @since  0.1.0
  */
 function plugin_base_path() {
   return untrailingslashit( plugin_dir_path( __FILE__ ) );
@@ -36,13 +36,20 @@ function plugin_base_path() {
 /**
  *  Wrapper function to get real url path for this plugin.
  *
- *  @since  0.1.0
  *  @return string  Url to this plugin
+ *  @since  0.1.0
  */
 function plugin_base_url() {
   return untrailingslashit( plugin_dir_url( __FILE__ ) );
 } // end plugin_base_url
 
+/**
+ * Get the current language for the site. If Polylang is not active,
+ * return the locale of site.
+ *
+ * @return string Language.
+ * @since 0.1.0
+ */
 function get_current_language() {
   if ( function_exists( 'pll_current_language' ) ) {
     return pll_current_language();
