@@ -3,7 +3,7 @@
  * @Author: Timi Wahalahti
  * @Date:   2021-08-20 14:17:57
  * @Last Modified by:   Timi Wahalahti
- * @Last Modified time: 2021-08-24 12:01:10
+ * @Last Modified time: 2021-08-24 12:52:33
  * @package air-cookie
  */
 
@@ -20,10 +20,12 @@ if ( ! defined( 'ABSPATH' ) ) {
  * @since  0.1.0
  */
 function get_settings() {
+  $categories_version = get_cookie_categories_version();
   $lang = get_current_language();
 
   // Default settings.
   $settings = [
+    'cookie_name'   => "air_cookie_" . $categories_version, // use version number to invalidate if categories change
     'theme_css'     => plugin_base_url() . '/assets/cookieconsent.css',
     'auto_language' => false,
     'current_lang'  => $lang,
@@ -145,8 +147,8 @@ function get_cookie_categories_for_settings( $lang ) {
     $key = $group['key'];
 
     $return[] = [
-      'title'       => pll_translate_string( $group['title'], $lang ),
-      'description' => pll_translate_string( $group['description'], $lang ),
+      'title'       => pll_translate_string( $group['title'], $lang ), // TODO
+      'description' => pll_translate_string( $group['description'], $lang ), // TODO
       'toggle'      => [
         'value'       => $key,
         'enabled'     => isset( $group['enabled'] ) ? $group['enabled'] : false,
@@ -157,3 +159,23 @@ function get_cookie_categories_for_settings( $lang ) {
 
   return $return;
 } // end get_cookie_categories_for_settings
+
+/**
+ * Get version of the current cookie category settings in order to use it
+ * in consent cookie and records databse.
+ *
+ * @return string String hash "version" of current cookie categories.
+ * @since 0.1.0
+ */
+function get_cookie_categories_version() {
+  $categories = get_cookie_categories();
+
+  foreach ( $categories as $key => $cat ) {
+    unset( $categories[ $key ]['title'] );
+    unset( $categories[ $key ]['description'] );
+  }
+
+  $hash = crc32( maybe_serialize( $categories ) );
+
+  return apply_filters( 'air_cookie\categories\version', $hash, $categories );
+} // end get_cookie_categories_version
