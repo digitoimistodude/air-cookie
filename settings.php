@@ -3,7 +3,7 @@
  * @Author: Timi Wahalahti
  * @Date:   2021-08-20 14:17:57
  * @Last Modified by:   Timi Wahalahti
- * @Last Modified time: 2021-09-07 16:55:12
+ * @Last Modified time: 2021-09-07 17:15:09
  * @package air-cookie
  */
 
@@ -149,8 +149,8 @@ function get_cookie_categories_for_settings( $lang ) {
     $key = $group['key'];
 
     $return[] = [
-      'title'       => pll_translate_string( $group['title'], $lang ), // TODO
-      'description' => pll_translate_string( $group['description'], $lang ), // TODO
+      'title'       => $group['title'],
+      'description' => $group['description'],
       'toggle'      => [
         'value'       => $key,
         'enabled'     => isset( $group['enabled'] ) ? $group['enabled'] : false,
