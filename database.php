@@ -3,7 +3,7 @@
  * @Author: Timi Wahalahti
  * @Date:   2021-08-24 13:26:51
  * @Last Modified by:   Timi Wahalahti
- * @Last Modified time: 2021-09-07 16:22:19
+ * @Last Modified time: 2021-09-07 16:28:20
  * @package air-cookie
  */
 
@@ -42,6 +42,7 @@ function maybe_init_database() {
     id bigint(20) NOT NULL AUTO_INCREMENT,
     visitor_id varchar(255),
     user_id bigint(20) DEFAULT '0',
+    cookie_version varchar(255),
     cookie_value varchar(255),
     timestamp datetime DEFAULT '0000-00-00 00:00:00' NOT NULL,
     expiry datetime DEFAULT '0000-00-00 00:00:00' NOT NULL,
@@ -54,7 +55,7 @@ function maybe_init_database() {
   add_site_option( get_databse_version_key(), get_databse_version() );
 } // end maybe_init_database
 
-function save_to_databse( $user_id, $visitor_id, $cookie_value ) {
+function save_to_databse( $user_id, $visitor_id, $revision, $cookie_value ) {
   global $wpdb;
   $table_name = get_databse_table_name();
 
@@ -62,6 +63,7 @@ function save_to_databse( $user_id, $visitor_id, $cookie_value ) {
     $table_name,
     [
       'user_id'         => $user_id,
+      'cookie_version'  => $revision,
       'visitor_id'      => $visitor_id,
       'cookie_value'    => $cookie_value,
       'timestamp'       => wp_date( 'Y-m-d H:i:s' ),
@@ -69,6 +71,7 @@ function save_to_databse( $user_id, $visitor_id, $cookie_value ) {
     ],
     [
       '%d',
+      '%s',
       '%s',
       '%s',
       '%s',
@@ -102,7 +105,10 @@ function register_consent( $request ) {
 
   $user_id = is_user_logged_in() ? get_current_user_id() : 0;
 
-  $db_row_id = save_to_databse( $user_id, $request->get_param( 'visitor' ), $request->get_param( 'cookie' )  );
+  $cookie_value = $request->get_param( 'cookie' );
+  $cookie_revision = json_decode( $cookie_value )->revision;
+
+  $db_row_id = save_to_databse( $user_id, $request->get_param( 'visitor' ), $cookie_revision, $cookie_value );
   if ( $db_row_id ) {
     return true;
   }
