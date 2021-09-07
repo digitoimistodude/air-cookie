@@ -3,7 +3,7 @@
  * @Author: Timi Wahalahti
  * @Date:   2021-09-07 16:56:00
  * @Last Modified by:   Timi Wahalahti
- * @Last Modified time: 2021-09-07 16:57:00
+ * @Last Modified time: 2021-09-07 17:04:29
  * @package air-cookie
  */
 
@@ -23,10 +23,9 @@ function register_rest_endpoint() {
 
 function register_consent( $request ) {
   global $wpdb;
+
   $table_name = get_databse_table_name();
-
   $settings = get_settings();
-
   $cookie_value = wp_kses_stripslashes( $_COOKIE['air_cookie'] );
 
   $visitor_uuid = null;
@@ -58,7 +57,7 @@ function register_consent( $request ) {
     return false;
   }
 
-  return $wpdb->insert_id; // returns new row id
+  return true;
 } // end register_consent
 
 /**

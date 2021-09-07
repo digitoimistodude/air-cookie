@@ -6,7 +6,7 @@
  * @Author: Timi Wahalahti
  * @Date:   2021-08-10 10:49:07
  * @Last Modified by:   Timi Wahalahti
- * @Last Modified time: 2021-09-07 17:01:27
+ * @Last Modified time: 2021-09-07 17:06:34
  * @package air-cookie
  */
 
@@ -23,15 +23,15 @@ if ( ! defined( 'ABSPATH' ) ) {
  * @return integer current version of plugin
  */
 function get_plugin_version() {
-  return 010;
+  return 010; // semver without dots
 } // end plugin_version
 
 function get_databse_version() {
-  return 20210824;
+  return 20210824; // date without dashes
 } // end get_databse_version
 
 function get_script_version() {
-  return '2.5.0';
+  return '2.5.0'; // version of cookie consent
 } // end get_script_version
 
 /**
@@ -51,10 +51,8 @@ add_action( 'wp_head', __NAMESPACE__ . '\inject_js' );
 require plugin_base_path() . '/rest-api.php';
 add_action( 'rest_api_init', __NAMESPACE__ . '\register_rest_endpoint' );
 
-if ( is_admin() ) {
-  require plugin_base_path(). '/database.php';
-  add_action( 'admin_init', __NAMESPACE__ . '\maybe_init_database' );
-}
+require plugin_base_path(). '/database.php';
+add_action( 'admin_init', __NAMESPACE__ . '\maybe_init_database' );
 
 /**
  * # TODO
@@ -62,19 +60,6 @@ if ( is_admin() ) {
  *
  * @since 0.1.0
  */
-
-function maybe_set_identification_cookie() {
-  if ( isset( $_COOKIE['air_cookie_visitor'] ) ) {
-    return false;
-  }
-
-  $visitor_uuid = wp_generate_uuid4();
-  $expiration = YEAR_IN_SECONDS * 10;
-
-  setcookie( 'air_cookie_visitor', $visitor_uuid, time() + $expiration, '/' );
-
-  return $visitor_uuid;
-} // end maybe_set_identification_cookie
 
 /**
 * Plugin activation hook to save current version for reference in what version activation happened.
@@ -107,27 +92,3 @@ function plugin_deactivate() {
     update_option( 'air_cookie_deactivated_without_version', 'true', false );
   }
 } // end plugin_deactivate
-
-add_action( 'air_cookie_js_necessary', function() {
-  ob_start(); ?>
-    console.log( 'necessary' );
-  <?php echo ob_get_clean();
-} );
-
-add_action( 'air_cookie_js_analytics', function() {
-  ob_start(); ?>
-    console.log( 'analytics' );
-  <?php echo ob_get_clean();
-} );
-
-add_action( 'wp_head', function() { ?>
-  <script type="text/javascript">
-    document.addEventListener( 'air_cookie', function( event ) {
-      console.log( 'global event  ' + event.category );
-    } );
-
-    document.addEventListener( 'air_cookie_necessary', function( event ) {
-      console.log( 'category event necessary' );
-    } );
-  </script>
-<?php } );

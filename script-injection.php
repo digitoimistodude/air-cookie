@@ -3,7 +3,7 @@
  * @Author: Timi Wahalahti
  * @Date:   2021-09-07 17:00:04
  * @Last Modified by:   Timi Wahalahti
- * @Last Modified time: 2021-09-07 17:00:47
+ * @Last Modified time: 2021-09-07 17:03:52
  * @package air-cookie
  */
 
@@ -17,7 +17,6 @@ function inject_js() {
   wp_enqueue_script( 'cookieconsent', plugin_base_url() . "/assets/cookieconsent.js", [], get_script_version(), false );
 
   $settings = get_settings();
-
   if ( ! is_array( $settings ) ) {
     return;
   }
