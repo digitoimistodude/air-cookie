@@ -3,7 +3,7 @@
  * @Author: Timi Wahalahti
  * @Date:   2021-09-07 17:00:04
  * @Last Modified by:   Timi Wahalahti
- * @Last Modified time: 2021-09-07 17:03:52
+ * @Last Modified time: 2021-09-07 17:38:40
  * @package air-cookie
  */
 
@@ -13,26 +13,37 @@ if ( ! defined( 'ABSPATH' ) ) {
   exit();
 }
 
+/**
+ * Build the cookie consent javascript and add it to site header.
+ *
+ * @since 0.1.0
+ */
 function inject_js() {
-  wp_enqueue_script( 'cookieconsent', plugin_base_url() . "/assets/cookieconsent.js", [], get_script_version(), false );
-
+  // Get our settings, bail if no settings
   $settings = get_settings();
   if ( ! is_array( $settings ) ) {
     return;
   }
 
-  $categories_version = get_cookie_categories_version();
-  $cookie_categories = get_cookie_categories();
-  ?>
+  // Cookie Consent javascript base
+  wp_enqueue_script( 'cookieconsent', plugin_base_url() . "/assets/cookieconsent.js", [], get_script_version(), false );
 
+  // Get cookie categories
+  $cookie_categories = get_cookie_categories();
+
+  // Build our javascript to run the Cookie Consent
+  ?>
   <script type="text/javascript">
     window.addEventListener( 'load', function () {
       var cc = initCookieConsent();
 
+      <?php // Settings ?>
       airCookieSettings = <?php echo json_encode( apply_filters( 'air_cookie\settings', $settings ) ); ?>
 
-      <?php if ( ! empty( $cookie_categories ) && is_array( $cookie_categories ) ) : ?>
+      <?php // Allow adding categiry specific javascript to be runned when the category is accepted
+      if ( ! empty( $cookie_categories ) && is_array( $cookie_categories ) ) : ?>
         airCookieSettings.onAccept = function() {
+          <?php // REST API request to record when user accepts any cookies ?>
           var xhr = new XMLHttpRequest();
           xhr.open( 'POST', '<?php echo esc_url( rest_url( 'air-cookie/v1/consent' ) ) ?>', true );
           xhr.setRequestHeader( 'X-WP-Nonce', '<?php echo esc_attr( wp_create_nonce( 'wp_rest' ) ); ?>');
@@ -44,17 +55,18 @@ function inject_js() {
         }
       <?php endif; ?>
 
+      <?php // Run the Cookie Consent at last ?>
       cc.run( airCookieSettings );
     });
-
-    function airCookieReadCookie( name ) {
-      const value = `; ${document.cookie}`;
-      const parts = value.split(`; ${name}=`);
-      if (parts.length === 2) return parts.pop().split(';').shift();
-    }
   </script>
 <?php } // end inject_js
 
+/**
+ * Build javascript to be runned for each category when it is accepted.
+ *
+ * @param  string $category Category key.
+ * @return string           Custom javascript for the category onAccept
+ */
 function do_category_js( $category ) {
   $category_key = $category['key'];
   $event_key = "air_cookie_{$category_key}";
@@ -62,15 +74,18 @@ function do_category_js( $category ) {
   ob_start(); ?>
 
   if ( cc.allowedCategory( '<?php echo $category_key; ?>' ) ) {
+    <?php // Do category specific JS action ?>
     const <?php echo $event_key ?> = new CustomEvent( '<?php echo $event_key ?>' );
+    document.dispatchEvent( <?php echo $event_key ?> );
+
+    <?php // Do global JS action with category property ?>
     const air_cookie = new CustomEvent( 'air_cookie', {
       'category': '<?php echo $category_key; ?>'
     } );
-
-    document.dispatchEvent( <?php echo $event_key ?> );
     document.dispatchEvent( air_cookie );
 
-    <?php do_action( 'air_cookie_js_' . $category_key, $category ); ?>
+    <?php // Allow adding custom JS straight to onAccept
+    do_action( 'air_cookie_js_' . $category_key, $category ); ?>
   }
 
   <?php return ob_get_clean();

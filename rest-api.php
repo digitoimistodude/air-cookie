@@ -3,7 +3,7 @@
  * @Author: Timi Wahalahti
  * @Date:   2021-09-07 16:56:00
  * @Last Modified by:   Timi Wahalahti
- * @Last Modified time: 2021-09-07 17:04:29
+ * @Last Modified time: 2021-09-07 17:30:01
  * @package air-cookie
  */
 
@@ -16,18 +16,30 @@ if ( ! defined( 'ABSPATH' ) ) {
 function register_rest_endpoint() {
   register_rest_route( 'air-cookie/v1', '/consent', [
     'methods'             => 'post',
-    'callback'            => __NAMESPACE__ . '\register_consent',
-    'permission_callback' => __NAMESPACE__ . '\register_consent_permission_callback',
+    'callback'            => __NAMESPACE__ . '\record_consent',
+    'permission_callback' => __NAMESPACE__ . '\record_consent_permission_callback',
   ] );
 } // end register_rest_endpoint
 
-function register_consent( $request ) {
+/**
+ * Record the given consent to database. Possibility to identify when
+ * visitor has given their consent is required by Finnish law.
+ *
+ * @since 0.1.0
+ */
+function record_consent( $request ) {
   global $wpdb;
 
+  // Get database table name
   $table_name = get_databse_table_name();
+
+  // Get cookie consent settings, used for saving the expiry
   $settings = get_settings();
+
+  // Get cookie value from visitors browser
   $cookie_value = wp_kses_stripslashes( $_COOKIE['air_cookie'] );
 
+  // Try to get visitor identifier, set a one if does not exist
   $visitor_uuid = null;
   if ( isset( $_COOKIE['air_cookie_visitor'] ) ) {
     $visitor_uuid = $_COOKIE['air_cookie_visitor'];
@@ -35,11 +47,12 @@ function register_consent( $request ) {
     $visitor_uuid = maybe_set_identification_cookie();
   }
 
+  // Record the consent
   $inserted = $wpdb->insert(
     $table_name,
     [
       'visitor_id'      => $visitor_uuid,
-      'cookie_version'  => json_decode( $cookie_value )->revision,
+      'cookie_revision' => json_decode( $cookie_value )->revision,
       'cookie_value'    => $cookie_value,
       'timestamp'       => wp_date( 'Y-m-d H:i:s' ),
       'expiry'          => wp_date( 'Y-m-d H:i:s', strtotime( "+{$settings['cookie_expiration']} days" ) ),
@@ -58,18 +71,18 @@ function register_consent( $request ) {
   }
 
   return true;
-} // end register_consent
+} // end record_consent
 
 /**
  * Check the nonce is set to prevent spamming the endpoint from elsewhere
  *
- * @return boolean Does the user have permission to send data to callback?
+ * @since 0.1.0
  */
-function register_consent_permission_callback( $request ) {
+function record_consent_permission_callback( $request ) {
   $nonce = $request->get_header( 'X-WP-Nonce' );
   if ( $nonce && wp_verify_nonce( $nonce, 'wp_rest' ) ) {
     return true;
   }
 
   return false;
-} // end register_consent_permission_callback
+} // end record_consent_permission_callback

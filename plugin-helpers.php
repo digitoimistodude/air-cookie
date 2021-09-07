@@ -3,7 +3,7 @@
  * @Author: Timi Wahalahti
  * @Date:   2021-08-10 10:49:07
  * @Last Modified by:   Timi Wahalahti
- * @Last Modified time: 2021-09-07 17:03:41
+ * @Last Modified time: 2021-09-07 17:28:19
  * @package air-cookie
  */
 
@@ -17,7 +17,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  *  Get the version at where plugin was activated.
  *
  *  @return integer  version where plugin was activated
- *  @since  1.6.0
+ *  @since  0.1.0
  */
 function plugin_activated_at_version() {
   return absint( apply_filters( 'air_cookie_activated_at_version', get_option( 'air_cookie_activated_at_version' ) ) );
@@ -58,6 +58,15 @@ function get_current_language() {
   return get_locale();
 } // end get_current_language
 
+/**
+ * Set unique visitor ID if not already set. This is used to identify
+ * visitors, their cookie consent choices and timestamp of approval.
+ * Possibility to identify when visitor has given their consent is
+ * required by Finnish law.
+ *
+ * @return mixed boolean False if ID exists, string if new ID is set
+ * @since 0.1.0
+ */
 function maybe_set_identification_cookie() {
   if ( isset( $_COOKIE['air_cookie_visitor'] ) ) {
     return false;

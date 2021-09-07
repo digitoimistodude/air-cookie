@@ -6,7 +6,7 @@
  * @Author: Timi Wahalahti
  * @Date:   2021-08-10 10:49:07
  * @Last Modified by:   Timi Wahalahti
- * @Last Modified time: 2021-09-07 17:06:34
+ * @Last Modified time: 2021-09-07 17:23:02
  * @package air-cookie
  */
 
@@ -17,21 +17,32 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /**
- * Get current version of plugin. Version is semver without extra marks, so it can be used as a int.
+ * Get current version of plugin.
+ * Version is semver without extra marks, so it can be used as a int.
  *
  * @since 0.1.0
- * @return integer current version of plugin
  */
 function get_plugin_version() {
-  return 010; // semver without dots
+  return 010;
 } // end plugin_version
 
+/**
+ * Get current version of databse schema.
+ * Version is timestamp in YYYYmmdd format, so it can be used as a int.
+ *
+ * @since 0.1.0
+ */
 function get_databse_version() {
   return 20210824; // date without dashes
 } // end get_databse_version
 
+/**
+ * Get current version of included Cookie Consent script version.
+ *
+ * @since 0.1.0
+ */
 function get_script_version() {
-  return '2.5.0'; // version of cookie consent
+  return '2.5.0';
 } // end get_script_version
 
 /**
@@ -40,6 +51,7 @@ function get_script_version() {
 * @since 0.1.0
 */
 require 'plugin-helpers.php';
+
 require plugin_base_path() . '/settings.php';
 
 require plugin_base_path(). '/strings.php';
@@ -66,7 +78,7 @@ add_action( 'admin_init', __NAMESPACE__ . '\maybe_init_database' );
 * Check if deactivation without version option is apparent, then do not save current version for
 * maintaining backwards compatibility.
 *
-* @since 1.6.0
+* @since 0.1.0
 */
 register_activation_hook( __FILE__, __NAMESPACE__ . '\plugin_activate' );
 function plugin_activate() {
@@ -81,7 +93,7 @@ function plugin_activate() {
 * Maybe add option if activated version is not yet saved.
 * Helps to maintain backwards compatibility.
 *
-* @since 1.6.0
+* @since 0.1.0
 */
 register_deactivation_hook( __FILE__, __NAMESPACE__ . '\plugin_deactivate' );
 add_action( 'admin_init', __NAMESPACE__ . '\plugin_deactivate' );
