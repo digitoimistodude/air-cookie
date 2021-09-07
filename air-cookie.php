@@ -6,7 +6,7 @@
  * @Author: Timi Wahalahti
  * @Date:   2021-08-10 10:49:07
  * @Last Modified by:   Timi Wahalahti
- * @Last Modified time: 2021-09-07 16:56:43
+ * @Last Modified time: 2021-09-07 16:58:32
  * @package air-cookie
  */
 
@@ -42,14 +42,17 @@ function get_script_version() {
 require 'plugin-helpers.php';
 
 require plugin_base_path() . '/settings.php';
+
 require plugin_base_path() . '/rest-api.php';
+add_action( 'rest_api_init', __NAMESPACE__ . '\register_rest_endpoint' );
 
 require plugin_base_path(). '/strings.php';
 add_action( 'init', __NAMESPACE__ . '\register_strings' );
 
-require plugin_base_path(). '/database.php';
-add_action( 'admin_init', __NAMESPACE__ . '\maybe_init_database' );
-add_action( 'rest_api_init', __NAMESPACE__ . '\register_rest_endpoint' );
+if ( is_admin() ) {
+  require plugin_base_path(). '/database.php';
+  add_action( 'admin_init', __NAMESPACE__ . '\maybe_init_database' );
+}
 
 /**
  * # TODO
