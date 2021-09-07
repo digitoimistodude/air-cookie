@@ -3,7 +3,7 @@
  * @Author: Timi Wahalahti
  * @Date:   2021-08-24 13:26:51
  * @Last Modified by:   Timi Wahalahti
- * @Last Modified time: 2021-08-24 14:21:59
+ * @Last Modified time: 2021-09-07 16:22:19
  * @package air-cookie
  */
 
@@ -40,9 +40,8 @@ function maybe_init_database() {
 
   $sql_table = "CREATE TABLE {$table_name} (
     id bigint(20) NOT NULL AUTO_INCREMENT,
-    user_id bigint(20) DEFAULT '0',
     visitor_id varchar(255),
-    cookie_version varchar(255),
+    user_id bigint(20) DEFAULT '0',
     cookie_value varchar(255),
     timestamp datetime DEFAULT '0000-00-00 00:00:00' NOT NULL,
     expiry datetime DEFAULT '0000-00-00 00:00:00' NOT NULL,
@@ -55,7 +54,7 @@ function maybe_init_database() {
   add_site_option( get_databse_version_key(), get_databse_version() );
 } // end maybe_init_database
 
-function save_to_databse( $user_id, $visitor_id, $cookie_version, $cookie_value ) {
+function save_to_databse( $user_id, $visitor_id, $cookie_value ) {
   global $wpdb;
   $table_name = get_databse_table_name();
 
@@ -64,14 +63,12 @@ function save_to_databse( $user_id, $visitor_id, $cookie_version, $cookie_value 
     [
       'user_id'         => $user_id,
       'visitor_id'      => $visitor_id,
-      'cookie_version'  => $cookie_version,
       'cookie_value'    => $cookie_value,
       'timestamp'       => wp_date( 'Y-m-d H:i:s' ),
       'expiry'          => wp_date( 'Y-m-d H:i:s', strtotime( '+182 days' ) ),
     ],
     [
       '%d',
-      '%s',
       '%s',
       '%s',
       '%s',
@@ -95,18 +92,17 @@ function register_rest_endpoint() {
 } // end
 
 function register_consent( $request ) {
-  if ( empty( $request->get_param( 'cookie_version' ) ) ) {
+  if ( empty( $request->get_param( 'visitor' ) ) ) {
     return false;
   }
 
-  if ( empty( $request->get_param( 'cookie_value' ) ) ) {
+  if ( empty( $request->get_param( 'cookie' ) ) ) {
     return false;
   }
 
   $user_id = is_user_logged_in() ? get_current_user_id() : 0;
-  $visitor_id = wp_generate_password();
 
-  $db_row_id = save_to_databse( $user_id, $visitor_id, $request->get_param( 'cookie_version' ), $request->get_param( 'cookie_value' )  );
+  $db_row_id = save_to_databse( $user_id, $request->get_param( 'visitor' ), $request->get_param( 'cookie' )  );
   if ( $db_row_id ) {
     return true;
   }
@@ -120,7 +116,7 @@ function register_consent( $request ) {
  * @return boolean Does the user have permission to send data to callback?
  */
 function register_consent_permission_callback( $request ) {
-  $nonce = $request->get_header( 'x_wp_nonce' );
+  $nonce = $request->get_header( 'X-WP-Nonce' );
   if ( $nonce && wp_verify_nonce( $nonce, 'wp_rest' ) ) {
     return true;
   }

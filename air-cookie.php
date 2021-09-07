@@ -6,7 +6,7 @@
  * @Author: Timi Wahalahti
  * @Date:   2021-08-10 10:49:07
  * @Last Modified by:   Timi Wahalahti
- * @Last Modified time: 2021-08-24 14:02:53
+ * @Last Modified time: 2021-09-07 16:24:44
  * @package air-cookie
  */
 
@@ -29,6 +29,10 @@ function get_plugin_version() {
 function get_databse_version() {
   return 20210824;
 } // end get_databse_version
+
+function get_script_version() {
+  return '2.5.0';
+}
 
 /**
 * Require helpers for this plugin.
@@ -53,10 +57,21 @@ add_action( 'rest_api_init', __NAMESPACE__ . '\register_rest_endpoint' );
  * @since 0.1.0
  */
 
-add_action( 'wp_head', __NAMESPACE__ . '\inject_js' );
+add_action( 'init', __NAMESPACE__ . '\maybe_set_identification_cookie' );
+function maybe_set_identification_cookie() {
+  if ( isset( $_COOKIE['air_cookie_visitor'] ) ) {
+    return;
+  }
 
+  $settings = get_settings();
+  $expiration = YEAR_IN_SECONDS * 10;
+
+  setcookie( 'air_cookie_visitor', wp_generate_uuid4(), time() + $expiration, '/' );
+} // end maybe_set_identification_cookie
+
+add_action( 'wp_head', __NAMESPACE__ . '\inject_js' );
 function inject_js() {
-  wp_enqueue_script( 'cookieconsent', plugin_base_url() . "/assets/cookieconsent.js", [], '2.4.7', false );
+  wp_enqueue_script( 'cookieconsent', plugin_base_url() . "/assets/cookieconsent.js", [], get_script_version(), false );
 
   $settings = get_settings();
 
@@ -64,6 +79,7 @@ function inject_js() {
     return;
   }
 
+  $categories_version = get_cookie_categories_version();
   $cookie_categories = get_cookie_categories();
   ?>
 
@@ -75,6 +91,15 @@ function inject_js() {
 
       <?php if ( ! empty( $cookie_categories ) && is_array( $cookie_categories ) ) : ?>
         airCookieSettings.onAccept = function() {
+          var xhr = new XMLHttpRequest();
+          xhr.open( 'POST', '<?php echo esc_url( rest_url( 'air-cookie/v1/consent' ) ) ?>', true );
+          xhr.setRequestHeader( 'Content-Type', 'application/json' );
+          xhr.setRequestHeader( 'X-WP-Nonce', '<?php echo esc_attr( wp_create_nonce( 'wp_rest' ) ); ?>');
+          xhr.send( JSON.stringify( {
+            visitor: airCookieReadCookie( 'air_cookie_visitor' ),
+            cookie: airCookieReadCookie( 'air_cookie' ),
+          } ) );
+
           <?php foreach ( $cookie_categories as $cookie_category ) {
             echo do_category_js( $cookie_category );
           } ?>
@@ -83,6 +108,12 @@ function inject_js() {
 
       cc.run( airCookieSettings );
     });
+
+    function airCookieReadCookie( name ) {
+      const value = `; ${document.cookie}`;
+      const parts = value.split(`; ${name}=`);
+      if (parts.length === 2) return parts.pop().split(';').shift();
+    }
   </script>
 <?php } // end inject_js
 
