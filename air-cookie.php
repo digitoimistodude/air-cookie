@@ -6,7 +6,7 @@
  * @Author: Timi Wahalahti
  * @Date:   2021-08-10 10:49:07
  * @Last Modified by:   Timi Wahalahti
- * @Last Modified time: 2021-09-07 16:24:44
+ * @Last Modified time: 2021-09-07 16:56:43
  * @package air-cookie
  */
 
@@ -42,6 +42,7 @@ function get_script_version() {
 require 'plugin-helpers.php';
 
 require plugin_base_path() . '/settings.php';
+require plugin_base_path() . '/rest-api.php';
 
 require plugin_base_path(). '/strings.php';
 add_action( 'init', __NAMESPACE__ . '\register_strings' );
@@ -57,16 +58,17 @@ add_action( 'rest_api_init', __NAMESPACE__ . '\register_rest_endpoint' );
  * @since 0.1.0
  */
 
-add_action( 'init', __NAMESPACE__ . '\maybe_set_identification_cookie' );
 function maybe_set_identification_cookie() {
   if ( isset( $_COOKIE['air_cookie_visitor'] ) ) {
-    return;
+    return false;
   }
 
-  $settings = get_settings();
+  $visitor_uuid = wp_generate_uuid4();
   $expiration = YEAR_IN_SECONDS * 10;
 
-  setcookie( 'air_cookie_visitor', wp_generate_uuid4(), time() + $expiration, '/' );
+  setcookie( 'air_cookie_visitor', $visitor_uuid, time() + $expiration, '/' );
+
+  return $visitor_uuid;
 } // end maybe_set_identification_cookie
 
 add_action( 'wp_head', __NAMESPACE__ . '\inject_js' );
@@ -93,12 +95,8 @@ function inject_js() {
         airCookieSettings.onAccept = function() {
           var xhr = new XMLHttpRequest();
           xhr.open( 'POST', '<?php echo esc_url( rest_url( 'air-cookie/v1/consent' ) ) ?>', true );
-          xhr.setRequestHeader( 'Content-Type', 'application/json' );
           xhr.setRequestHeader( 'X-WP-Nonce', '<?php echo esc_attr( wp_create_nonce( 'wp_rest' ) ); ?>');
-          xhr.send( JSON.stringify( {
-            visitor: airCookieReadCookie( 'air_cookie_visitor' ),
-            cookie: airCookieReadCookie( 'air_cookie' ),
-          } ) );
+          xhr.send();
 
           <?php foreach ( $cookie_categories as $cookie_category ) {
             echo do_category_js( $cookie_category );
