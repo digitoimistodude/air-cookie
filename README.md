@@ -1,20 +1,14 @@
 # Air cookie
 
 [![Packagist](https://img.shields.io/packagist/v/digitoimistodude/air-cookie.svg?style=flat-square)](https://packagist.org/packages/digitoimistodude/air-cookie)
+[![CookieConsent_Version](https://img.shields.io/badge/CookieConsent%20Version-2.5.0-yellow?style=flat-square)](https://github.com/orestbida/cookieconsent)
 ![Tested_up_to WordPress_5.8](https://img.shields.io/badge/Tested_up_to-WordPress_5.8-blue.svg?style=flat-square)
 ![Compatible_with PHP_7.2](https://img.shields.io/badge/Compatible_with-PHP_7.2-green.svg?style=flat-square)
 [![Build Status](https://img.shields.io/travis/com/digitoimistodude/air-cookie.svg?style=flat-square)](https://travis-ci.com/digitoimistodude/air-cookie)
-[![CookieConsent_Version](https://img.shields.io/badge/CookieConsent%20Version-2.5.0-yellow?style=flat-square)](https://github.com/orestbida/cookieconsent)
 
 Air cookie provides simple cookie banner and management.
 
-Uses the [CookieConsent](https://orestbida.com/demo-projects/cookieconsent/) javascript plugin as a base, making usage with WordPress easier.
-
-Current implemented version of CookieConsent: 2.5.0
-
-## Please note before using
-
-Air cookie is developed by [Digitoimisto Dude](https://dude.fi) and can update based on our clients need. By using the plugin, you agree that anything can change without a prior warning.
+Uses the [CookieConsent](https://orestbida.com/demo-projects/cookieconsent/) javascript plugin as a base, making its usage with WordPress easier.
 
 ## Features
 
@@ -46,13 +40,13 @@ function my_add_cookie_category( $categories ) {
 }
 ```
 
-When adding new categories, the function itself responsile for handling the translations for title and description.
+When adding new categories, the function itself is responsile for handling the translations for title and description.
 
-There is also `air_cookie\categories\{category-key}` filter available to change the settings of indivual categories.
+There is also `air_cookie\categories\{category-key}` filter available to change the settings of indivual category.
 
 ### Loading scripts after cookies have been accepted
 
-The easiest way to load external script is by altering the `script` tag.
+The easiest way to load external script is by altering the `script` tag to be:
 
 ```html
 <script type="text/plain" data-src="<uri-to-script>" data-cookiecategory="analytics" defer>
@@ -91,9 +85,9 @@ function my_add_js_for_<category-key>() {
 
 #### In separate javascript file
 
-If you have custom javascript files, in which you need to exceute code only after certain categories are accepted, there is custom javascript events available.
+If you have custom javascript files in which you need to exceute code only after certain categories are accepted, there is custom javascript events available.
 
-Each cookie category do get its own event, to which you can add event listener into.
+Each cookie category do get its own event, to which you can bind event listener into.
 
 ```javascript
 document.addEventListener( 'air_cookie_<category-key>', (event) => {
@@ -111,16 +105,14 @@ document.addEventListener( 'air_cookie', (event) => {
 
 ### Chaning settings
 
-Setting names do follow the CookieConsents option names. Find all available options from [CookieConsents readme](https://github.com/orestbida/cookieconsent#apis--configuration-parameters).
-
-Some settings are set to be different than the CookieConsent defaults:
+Setting names do follow the [CookieConsents option](https://github.com/orestbida/cookieconsent#apis--configuration-parameters) names. Some settings defaults are set to be different than the CookieConsent defaults:
 
 Setting | Value
 --- | ---
-cookie_name | air_cookie
-current_lang | <value-from-polylang-or-locale-option>
-revision | <automatically-calculated-from-cookie-categories>
-page_scripts | true
+`cookie_name` | air_cookie
+`current_lang` | _value from polylang or locale option_
+`revision` | _automatically calculated from cookie categories_
+`page_scripts` | true
 gui_options/consent_modal/layout | box
 gui_options/consent_modal/position | bottom left
 
@@ -141,13 +133,13 @@ function my_modify_cc_setting_page_scripts( $setting ) {
 }
 ```
 
-Note that these filters *do not yet* contain the language object or cookie categories. The `air_cookie\settings_all` filter contains everyhing, but usage is highly disencouraged as everything do have their own filters.
+Note that these filters *do not** contain the strings or cookie categories. The `air_cookie\settings_all` filter contains everyhing, but usage is highly disencouraged as everything has their own specific filter.
 
 ### Modifying default strings
 
-If there is a need to modify default strings, the most preferred way to chage those is via Polylang string translations.
+If there is a need to modify default strings, the most preferred way to chage those is via Polylang string translations. To change the strings for all languages, it is not required to change the source.
 
-In cases of Polylang not being used, there is `air_cookie\strings` filter which contains all strings and `air_cookie\strings\{string-key}` filters for indivual strings.
+In case of Polylang not being used, there is `air_cookie\strings` filter which contains all strings and `air_cookie\strings\{string-key}` filters for indivual strings.
 
 ```php
 add_filter( 'air_cookie\strings', 'my_modify_cc_strings' );
@@ -166,19 +158,17 @@ function my_modify_cc_string_consent_modal_title( $string ) {
 
 ### Revision control
 
-Cookie policy revision number is automatically calculated from cookie categories `key`, `enabled` and `readonly` values. If new categories are added, some are removed or the values changed the user will be prompted with consent modal.
+Cookie policy revision number is automatically calculated from cookie categories `key`, `enabled` and `readonly` values. If new categories are added, some are removed or the values changed the consent modal will be shown again.
 
-In case you wish to have manual control over revisions, use `air_cookie\categories\version` filter. First argument is the calculated revision number and second is array containing all current cookie categories.
+In case you wish to have manual control over revision number, use `air_cookie\categories\revision` filter. First argument is the calculated revision number and second is array containing all current cookie categories.
 
 ### Visitor consent recording
 
-Finnish cookie law requires the site owners to be able to point when certain visitor has accepted the cookies. This is why the plugin has simple visitor consent recording system.
+Finnish cookie law requires the site owner to be able to point when certain visitor has accepted cookies. This is why the plugin has simple visitor consent recording system.
 
-Each visitor is given unique uuid4 ID stored in separate cookie. When visitor accepts any cookie categories, their browser will send a small request to REST API which records their ID, current revision, accepted cookie categories, timestamp of the event and timestamp when the cookie expires. Each time visitor accepts or rejects new cookie category, new consent is recorded.
+Each visitor is given unique uuid4 ID, which is stored in separate cookie. When visitor accepts any cookie categories, their browser will send a small request to REST API which records their ID, current revision, accepted cookie categories, timestamp of the event and timestamp of expiry. This data is stored in custom databse table and does not contain any extra information about the visitor.
 
-This data is stored in custom databse table and does not contain any extra information about the visitor.
-
-You may change the visitor identification cookie name with `air_cookie\identification_cookie\name` filter and the expiration with `air_cookie\identification_cookie\name` filter.
+You may change the visitor identification cookie name with `air_cookie\identification_cookie\name` filter and its expiration with `air_cookie\identification_cookie\name` filter.
 
 Currently there is no way to disable this feature.
 
@@ -198,4 +188,4 @@ Changelog can be found from [releases page](https://github.com/digitoimistodude/
 
 ## Contributing
 
-If you have ideas about the plugin or spot an issue, please let us know. Before contributing ideas or reporting an issue about "missing" features or things regarding to the nature of that matter, please read [Please note](#please-note-before-using) section. Thank you very much.
+If you have ideas about the plugin or spot an issue, please let us know. Before contributing ideas or reporting an issue about "missing" features or things regarding to the nature of that matter, please note that this plugin is drafted to fullfill our customers need and might not move into the direction you'd hope. Thank you very much.

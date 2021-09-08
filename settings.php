@@ -3,7 +3,7 @@
  * @Author: Timi Wahalahti
  * @Date:   2021-08-20 14:17:57
  * @Last Modified by:   Timi Wahalahti
- * @Last Modified time: 2021-09-08 11:02:20
+ * @Last Modified time: 2021-09-08 13:27:28
  * @package air-cookie
  */
 
@@ -20,7 +20,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  * @since  0.1.0
  */
 function get_settings() {
-  $categories_version = get_cookie_categories_version();
+  $categories_version = get_cookie_categories_revision();
   $lang = get_current_language();
 
   // Default settings.
@@ -169,7 +169,7 @@ function get_cookie_categories_for_settings( $lang ) {
  * @return string String hash "version" of current cookie categories.
  * @since 0.1.0
  */
-function get_cookie_categories_version() {
+function get_cookie_categories_revision() {
   $categories = get_cookie_categories();
 
   foreach ( $categories as $key => $cat ) {
@@ -179,5 +179,5 @@ function get_cookie_categories_version() {
 
   $hash = crc32( maybe_serialize( $categories ) );
 
-  return apply_filters( 'air_cookie\categories\version', $hash, $categories );
-} // end get_cookie_categories_version
+  return apply_filters( 'air_cookie\categories\revision', $hash, $categories );
+} // end get_cookie_categories_revision
