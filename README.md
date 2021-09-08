@@ -52,7 +52,9 @@ The easiest way to load external script is by altering the `script` tag to be:
 <script type="text/plain" data-src="<uri-to-script>" data-cookiecategory="analytics" defer>
 ```
 
-The example above works only, if the script does not require any extra javascript to be executed after the script has been loaded. If you need to execute extra javascript, use example below.
+If you need to run custom java
+
+The example above works only, if the script does not require any extra javascript to be executed after the script has been loaded. If you need to execute extra javascript, use one of the example below.
 
 ```php
 add_action( 'air_cookie_js_analytics', 'my_add_js_for_analytics' );
@@ -81,6 +83,14 @@ function my_add_js_for_<category-key>() {
     console.log( 'Hello world!' );
   <?php echo ob_get_clean();
 }
+```
+
+If you wish to use your own `script` tag, it is possible with example below
+
+```javascript
+<script type="text/plain" data-cookiecategory="<category-key>">
+  console.log( 'Hello world!' );
+</script>
 ```
 
 #### In separate javascript file
