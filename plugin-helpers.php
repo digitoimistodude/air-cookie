@@ -3,7 +3,7 @@
  * @Author: Timi Wahalahti
  * @Date:   2021-08-10 10:49:07
  * @Last Modified by:   Timi Wahalahti
- * @Last Modified time: 2021-09-07 17:28:19
+ * @Last Modified time: 2021-09-08 11:02:09
  * @package air-cookie
  */
 
@@ -44,6 +44,34 @@ function plugin_base_url() {
 } // end plugin_base_url
 
 /**
+ * Get the name of databse table used to track user consents.
+ *
+ * @param  boolean $prefix Should the table name be prefixed with $wpdb->prefix
+ * @return string          Database table name
+ * @since 0.1.0
+ */
+function get_databse_table_name( $prefix = true ) {
+  $table_name = 'air_cookie';
+
+  if ( $prefix ) {
+    global $wpdb;
+    $table_name = $wpdb->prefix . $table_name;
+  }
+
+  return $table_name;
+} // end get_databse_table_name
+
+/**
+ * Get the setting name where installed databse version is stored.
+ *
+ * @return string Option name
+ * @since 0.1.0
+ */
+function get_databse_version_key() {
+  return get_databse_table_name( false ) . '_db_version';
+} // end get_databse_version_key
+
+/**
  * Get the current language for the site. If Polylang is not active,
  * return the locale of site.
  *
@@ -58,6 +86,10 @@ function get_current_language() {
   return get_locale();
 } // end get_current_language
 
+function get_indentification_cookie_name() {
+  return apply_filters( 'air_cookie/identification_cookie_name', 'air_cookie_visitor' );
+} // end get_indentification_cookie_name
+
 /**
  * Set unique visitor ID if not already set. This is used to identify
  * visitors, their cookie consent choices and timestamp of approval.
@@ -68,14 +100,16 @@ function get_current_language() {
  * @since 0.1.0
  */
 function maybe_set_identification_cookie() {
-  if ( isset( $_COOKIE['air_cookie_visitor'] ) ) {
+  $cookie_name = get_indentification_cookie_name();
+
+  if ( isset( $_COOKIE[ $cookie_name ] ) ) {
     return false;
   }
 
   $visitor_uuid = wp_generate_uuid4();
-  $expiration = YEAR_IN_SECONDS * 10;
+  $expiration = YEAR_IN_SECONDS * 5;
 
-  setcookie( 'air_cookie_visitor', $visitor_uuid, time() + $expiration, '/' );
+  setcookie( $cookie_name, $visitor_uuid, time() + $expiration, '/' );
 
   return $visitor_uuid;
 } // end maybe_set_identification_cookie

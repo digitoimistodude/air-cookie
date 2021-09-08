@@ -3,7 +3,7 @@
  * @Author: Timi Wahalahti
  * @Date:   2021-08-24 13:26:51
  * @Last Modified by:   Timi Wahalahti
- * @Last Modified time: 2021-09-07 17:28:51
+ * @Last Modified time: 2021-09-08 11:01:54
  * @package air-cookie
  */
 
@@ -12,34 +12,6 @@ namespace Air_Cookie;
 if ( ! defined( 'ABSPATH' ) ) {
   exit();
 }
-
-/**
- * Get the name of databse table used to track user consents.
- *
- * @param  boolean $prefix Should the table name be prefixed with $wpdb->prefix
- * @return string          Database table name
- * @since 0.1.0
- */
-function get_databse_table_name( $prefix = true ) {
-  $table_name = 'air_cookie';
-
-  if ( $prefix ) {
-    global $wpdb;
-    $table_name = $wpdb->prefix . $table_name;
-  }
-
-  return $table_name;
-} // end get_databse_table_name
-
-/**
- * Get the setting name where installed databse version is stored.
- *
- * @return string Option name
- * @since 0.1.0
- */
-function get_databse_version_key() {
-  return get_databse_table_name( false ) . '_db_version';
-} // end get_databse_version_key
 
 /**
  * Create or update the database schema if database version stored and in plugin

@@ -1,0 +1,21 @@
+{
+  "name": "air-cookie",
+  "version": "0.1.0",
+  "description": "Simple cookie banner and management.",
+  "main": "air-cookie.php",
+  "dependencies": {},
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/digitoimistodude/air-cookie.git"
+  },
+  "author": "Digitoimisto Dude Oy",
+  "license": "GPL-3.0+",
+  "bugs": {
+    "url": "https://github.com/digitoimistodude/air-cookie/issues"
+  },
+  "homepage": "https://github.com/digitoimistodude/air-cookie"
+}

@@ -3,7 +3,7 @@
  * @Author: Timi Wahalahti
  * @Date:   2021-09-07 16:56:00
  * @Last Modified by:   Timi Wahalahti
- * @Last Modified time: 2021-09-07 17:30:01
+ * @Last Modified time: 2021-09-08 11:02:13
  * @package air-cookie
  */
 
@@ -30,24 +30,25 @@ function register_rest_endpoint() {
 function record_consent( $request ) {
   global $wpdb;
 
-  // Get database table name
+  // Get database table name.
   $table_name = get_databse_table_name();
 
-  // Get cookie consent settings, used for saving the expiry
+  // Get cookie consent settings.
   $settings = get_settings();
+  $visitor_cookie_name = get_indentification_cookie_name();
 
-  // Get cookie value from visitors browser
-  $cookie_value = wp_kses_stripslashes( $_COOKIE['air_cookie'] );
+  // Get cookie value from visitors browser.
+  $cookie_value = wp_kses_stripslashes( $_COOKIE[ $settings['cookie_name'] ] );
 
-  // Try to get visitor identifier, set a one if does not exist
+  // Try to get visitor identifier, set a one if does not exist.
   $visitor_uuid = null;
-  if ( isset( $_COOKIE['air_cookie_visitor'] ) ) {
-    $visitor_uuid = $_COOKIE['air_cookie_visitor'];
+  if ( isset( $_COOKIE[ $visitor_cookie_name ] ) ) {
+    $visitor_uuid = $_COOKIE[ $visitor_cookie_name ];
   } else {
     $visitor_uuid = maybe_set_identification_cookie();
   }
 
-  // Record the consent
+  // Record the consent.
   $inserted = $wpdb->insert(
     $table_name,
     [
@@ -74,7 +75,7 @@ function record_consent( $request ) {
 } // end record_consent
 
 /**
- * Check the nonce is set to prevent spamming the endpoint from elsewhere
+ * Check the nonce is set to prevent spamming the endpoint from elsewhere.
  *
  * @since 0.1.0
  */
