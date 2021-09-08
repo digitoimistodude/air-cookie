@@ -14,7 +14,7 @@
  * @Author: Timi Wahalahti
  * @Date:   2021-08-10 10:49:07
  * @Last Modified by:   Timi Wahalahti
- * @Last Modified time: 2021-09-08 10:52:42
+ * @Last Modified time: 2021-09-08 11:09:23
  * @package air-cookie
  */
 
@@ -61,6 +61,14 @@ function get_script_version() {
 require 'plugin-helpers.php';
 
 /**
+ * Github updater.
+ *
+ * @since 0.1.0
+ */
+require plugin_base_path() . '/plugin-update-checker/plugin-update-checker.php';
+$update_checker = Puc_v4_Factory::buildUpdateChecker( 'https://github.com/digitoimistodude/air-cookie', __FILE__, 'air-cookie' );
+
+/**
  * Compile settings for the script.
  *
  * @since 0.1.0
@@ -100,13 +108,6 @@ if ( is_admin() ) {
   require plugin_base_path(). '/database.php';
   add_action( 'admin_init', __NAMESPACE__ . '\maybe_init_database' );
 }
-
-/**
- * # TODO
- * Github updater
- *
- * @since 0.1.0
- */
 
 /**
 * Plugin activation hook to save current version for reference in what version activation happened.
