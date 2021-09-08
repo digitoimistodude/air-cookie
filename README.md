@@ -4,7 +4,7 @@
 ![Tested_up_to WordPress_5.8](https://img.shields.io/badge/Tested_up_to-WordPress_5.8-blue.svg?style=flat-square)
 ![Compatible_with PHP_7.2](https://img.shields.io/badge/Compatible_with-PHP_7.2-green.svg?style=flat-square)
 [![Build Status](https://img.shields.io/travis/com/digitoimistodude/air-cookie.svg?style=flat-square)](https://travis-ci.com/digitoimistodude/air-cookie)
-![CookieConsent_Version](hhttps://img.shields.io/badge/CookieConsent%20Version-2.5.0-yellow?style=flat-square)
+[![CookieConsent_Version](https://img.shields.io/badge/CookieConsent%20Version-2.5.0-yellow?style=flat-square)](https://github.com/orestbida/cookieconsent)
 
 Air cookie provides simple cookie banner and management.
 
