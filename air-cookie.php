@@ -14,7 +14,7 @@
  * @Author: Timi Wahalahti
  * @Date:   2021-08-10 10:49:07
  * @Last Modified by:   Timi Wahalahti
- * @Last Modified time: 2021-09-08 11:09:23
+ * @Last Modified time: 2021-09-08 12:56:13
  * @package air-cookie
  */
 
@@ -66,7 +66,7 @@ require 'plugin-helpers.php';
  * @since 0.1.0
  */
 require plugin_base_path() . '/plugin-update-checker/plugin-update-checker.php';
-$update_checker = Puc_v4_Factory::buildUpdateChecker( 'https://github.com/digitoimistodude/air-cookie', __FILE__, 'air-cookie' );
+$update_checker = \Puc_v4_Factory::buildUpdateChecker( 'https://github.com/digitoimistodude/air-cookie', __FILE__, 'air-cookie' );
 
 /**
  * Compile settings for the script.

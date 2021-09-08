@@ -3,7 +3,7 @@
  * @Author: Timi Wahalahti
  * @Date:   2021-09-07 17:00:04
  * @Last Modified by:   Timi Wahalahti
- * @Last Modified time: 2021-09-08 11:02:17
+ * @Last Modified time: 2021-09-08 12:20:47
  * @package air-cookie
  */
 
@@ -80,7 +80,9 @@ function do_category_js( $category ) {
 
     <?php // Do global JS action with category property. ?>
     const air_cookie = new CustomEvent( 'air_cookie', {
-      'category': '<?php echo $category_key; ?>'
+      detail: {
+        category: '<?php echo $category_key; ?>'
+      }
     } );
     document.dispatchEvent( air_cookie );
 
