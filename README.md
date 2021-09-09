@@ -10,7 +10,7 @@ Air cookie provides simple cookie banner and management.
 
 Uses the [CookieConsent](https://orestbida.com/demo-projects/cookieconsent/) javascript plugin as a base, making its usage with WordPress easier.
 
-## Features
+# Features
 
 - Simple and lightweight cookie banner
 - Third party embeds blocking until cookies accepted
@@ -20,9 +20,9 @@ Uses the [CookieConsent](https://orestbida.com/demo-projects/cookieconsent/) jav
 - Visitor consent recording
 - Cookie categories revision control
 
-## Usage
+# Usage
 
-### Cookie categories
+## Cookie categories
 
 By default, plugin has two cookie categories `necessary` and `analytics`. You may add new categories with `air_cookie\categories` filter like shown below.
 
@@ -45,7 +45,7 @@ When adding new categories, the function itself is responsile for handling the t
 
 There is also `air_cookie\categories\{category-key}` filter available to change the settings of indivual category.
 
-### Loading scripts after cookies have been accepted
+## Loading scripts after cookies have been accepted
 
 The easiest way to load external script is by altering the `script` tag to be:
 
@@ -78,11 +78,11 @@ function my_add_js_for_analytics() {
 }
 ```
 
-### Executing custom javascript after cookies have been accepted
+## Executing custom javascript after cookies have been accepted
 
 You may execute your own javascript after certain cookie categories have been accepted. There are two ways of doing that: adding the javascript inline to header or using custom javascript events.
 
-#### Adding the javascript inline
+### Adding the javascript inline
 
 Each cookie category do get its own action, from which javascript can be outputted to be added in the main header script tag.
 
@@ -103,7 +103,7 @@ If you wish to use your own `script` tag, it is possible with example below
 </script>
 ```
 
-#### In separate javascript file
+### In separate javascript file
 
 If you have custom javascript files in which you need to exceute code only after certain categories are accepted, there is custom javascript events available.
 
@@ -123,7 +123,7 @@ document.addEventListener( 'air_cookie', (event) => {
 } );
 ```
 
-### Changing settings
+## Changing settings
 
 Setting names do follow the [CookieConsents option](https://github.com/orestbida/cookieconsent#apis--configuration-parameters) names. Some settings defaults are set to be different than the CookieConsent defaults:
 
@@ -155,7 +155,7 @@ function my_modify_cc_setting_page_scripts( $setting ) {
 
 Note that these filters *do not** contain the strings or cookie categories. The `air_cookie\settings_all` filter contains everyhing, but usage is highly disencouraged as everything has their own specific filter.
 
-### Modifying default strings
+## Modifying default strings
 
 If there is a need to modify default strings, the most preferred way to chage those is via Polylang string translations. To change the strings for all languages, it is not required to change the source.
 
@@ -176,9 +176,9 @@ function my_modify_cc_string_consent_modal_title( $string ) {
 }
 ```
 
-### Third party embeds blocking
+## Third party embeds blocking
 
-By default third party embeds blocking is active and blocks all embeds for following services: Youtube, Vimeo, Instagram, Facebook, Twitter, Soundcloud, Spotify, Slideshare, WordPress.com Video, Embedly, Issuu, Imgur and TikTok.
+By default third party embeds blocking is active and all embeds for following services are blocked: Youtube, Vimeo, Instagram, Facebook, Twitter, Soundcloud, Spotify, Slideshare, WordPress.com Video, Embedly, Issuu, Imgur and TikTok.
 
 Disable this feature with `air_cookie\embeds` filter by returning false.
 
@@ -188,15 +188,17 @@ add_filter( 'air_cookie\embeds', '__return_false' );
 
 Iframe embeds are replaced with placeholder, letting visitor know that the embed might use tracking cookies. They then have opportunity to allow all cookies or enable the singular embed once.
 
-For script embeds, we just replace the `src` tag with `data-src` and add `data-cookiecategory` which makes those to work leveraning CookieConsents way of loading scripts.
+For script embeds, we just replace the `src` tag with `data-src` and add `data-cookiecategory` which makes those to work CookieConsents way of loading scripts.
 
-#### Cookie category for embeds
+### Cookie category for embeds
 
 When the feature is enabled, a new cookie category is added. When this category is accepted, all embeds are loaded and shown.
 
-#### Thumbnails for placeholders
+Use strings filter `air_cookie\strings` to modify the texts for this category.
 
-Iframe embed placeholders do support thumbnails. Without a thumbnail, the iframe is replaced with black background box. Youtube and Vimeo embeds to get automatically the placeholder, which is determined by the video embedded.
+### Thumbnails for placeholders
+
+Iframe embed placeholders do support thumbnails. Without a thumbnail, the iframe is replaced with black background box. Youtube and Vimeo embeds do get automatically the placeholder.
 
 For other services, you may use `air_cookie\embeds\thumbnail` filter like shown below.
 
@@ -214,7 +216,7 @@ function my_maybe_add_thumbnail( $thumbnail, $src ) {
 }
 ```
 
-#### Vimeo and Do Not Track
+### Vimeo and Do Not Track
 
 Vimeo embeds are treated a bit differently. For those, we don't add placeholder nor block them. Instead, we add Do Not Track parameter for the embed src which disabled all Vimeo tracking and statistics.
 
@@ -222,13 +224,13 @@ Disable this feature with `air_cookie\embeds\vimeo\add_dnt` filter, but notice t
 
 If you wish to show the placeholder even if the Vimeo embed has Do Not Track enabled, use `air_cookie\embeds\vimeo\skip_dnt` filter.
 
-### Revision control
+## Revision control
 
 Cookie policy revision number is automatically calculated from cookie categories `key`, `enabled` and `readonly` values. If new categories are added, some are removed or the values changed the consent modal will be shown again.
 
 In case you wish to have manual control over revision number, use `air_cookie\categories\revision` filter. First argument is the calculated revision number and second is array containing all current cookie categories.
 
-### Visitor consent recording
+## Visitor consent recording
 
 Finnish cookie law requires the site owner to be able to point when certain visitor has accepted cookies. This is why the plugin has simple visitor consent recording system.
 
@@ -238,20 +240,20 @@ You may change the visitor identification cookie name with `air_cookie\identific
 
 Currently there is no way to disable this feature.
 
-## Installing
+# Installing
 
 Download [latest](https://github.com/digitoimistodude/air-cookie/releases/latest) version as a zip package and unzip it to your plugins directiry.
 
 Or install with composer, running command `composer require digitoimistodude/air-cookie` in your project directory or add `"digitoimistodude/air-cookie":"dev-master"` to your composer.json require.
 
-### Updates
+## Updates
 
 Updates will be automatically distributed when new version is released.
 
-## Changelog
+# Changelog
 
 Changelog can be found from [releases page](https://github.com/digitoimistodude/air-cookie/releases).
 
-## Contributing
+# Contributing
 
 If you have ideas about the plugin or spot an issue, please let us know. Before contributing ideas or reporting an issue about "missing" features or things regarding to the nature of that matter, please note that this plugin is drafted to fullfill our customers need and might not move into the direction you'd hope. Thank you very much.
