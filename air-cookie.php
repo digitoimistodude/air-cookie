@@ -14,7 +14,7 @@
  * @Author: Timi Wahalahti
  * @Date:   2021-08-10 10:49:07
  * @Last Modified by:   Timi Wahalahti
- * @Last Modified time: 2021-09-08 12:56:13
+ * @Last Modified time: 2021-09-09 13:34:50
  * @package air-cookie
  */
 
@@ -45,7 +45,7 @@ function get_databse_version() {
 } // end get_databse_version
 
 /**
- * Get current version of included Cookie Consent script version.
+ * Get current version of included CookieConsent script version.
  *
  * @since 0.1.0
  */
@@ -89,7 +89,7 @@ add_action( 'init', __NAMESPACE__ . '\register_strings' );
  * @since 0.1.0
  */
 require plugin_base_path() . '/script-injection.php';
-add_action( 'wp_head', __NAMESPACE__ . '\inject_js' );
+add_action( 'wp_footer', __NAMESPACE__ . '\inject_js' );
 
 /**
  * Rest api for recording the visitor consents.
@@ -107,6 +107,15 @@ add_action( 'rest_api_init', __NAMESPACE__ . '\register_rest_endpoint' );
 if ( is_admin() ) {
   require plugin_base_path(). '/database.php';
   add_action( 'admin_init', __NAMESPACE__ . '\maybe_init_database' );
+}
+
+/**
+ * Embeds control if enabled.
+ *
+ * @since 0.1.0
+ */
+if ( apply_filters( 'air_cookie\embeds', true ) ) {
+  require plugin_base_path() . '/embeds/embeds.php';
 }
 
 /**

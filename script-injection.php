@@ -3,7 +3,7 @@
  * @Author: Timi Wahalahti
  * @Date:   2021-09-07 17:00:04
  * @Last Modified by:   Timi Wahalahti
- * @Last Modified time: 2021-09-09 10:06:53
+ * @Last Modified time: 2021-09-09 13:15:22
  * @package air-cookie
  */
 
@@ -58,6 +58,7 @@ function inject_js() {
     cc.run( airCookieSettings );
   <?php $script = ob_get_clean();
 
+  // Add our javascript to the site
   wp_add_inline_script( 'cookieconsent', $script, 'after' );
 } // end inject_js
 
