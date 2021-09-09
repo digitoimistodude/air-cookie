@@ -13,8 +13,9 @@ Uses the [CookieConsent](https://orestbida.com/demo-projects/cookieconsent/) jav
 ## Features
 
 - Simple and lightweight cookie banner
-- Support for multiple different cookie categories
+- Third party embeds blocking until cookies accepted
 - Easy to load scripts and execute custom javascript when cookies are accepted
+- Support for multiple different cookie categories
 - Polylang support for multilingual websites
 - Visitor consent recording
 - Cookie categories revision control
@@ -52,9 +53,18 @@ The easiest way to load external script is by altering the `script` tag to be:
 <script type="text/plain" data-src="<uri-to-script>" data-cookiecategory="analytics" defer>
 ```
 
-If you need to run custom java
-
 The example above works only, if the script does not require any extra javascript to be executed after the script has been loaded. If you need to execute extra javascript, use one of the example below.
+
+```javascript
+<script type="text/plain" data-cookiecategory="analytics" src="https://www.googletagmanager.com/gtag/js?id=GA_MEASUREMENT_ID" async></script>
+<script type="text/plain" data-cookiecategory="analytics">
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){window.dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'GA_MEASUREMENT_ID');
+</script>
+```
 
 ```php
 add_action( 'air_cookie_js_analytics', 'my_add_js_for_analytics' );
@@ -113,7 +123,7 @@ document.addEventListener( 'air_cookie', (event) => {
 } );
 ```
 
-### Chaning settings
+### Changing settings
 
 Setting names do follow the [CookieConsents option](https://github.com/orestbida/cookieconsent#apis--configuration-parameters) names. Some settings defaults are set to be different than the CookieConsent defaults:
 
@@ -165,6 +175,52 @@ function my_modify_cc_string_consent_modal_title( $string ) {
   return 'Have a cookie?';
 }
 ```
+
+### Third party embeds blocking
+
+By default third party embeds blocking is active and blocks all embeds for following services: Youtube, Vimeo, Instagram, Facebook, Twitter, Soundcloud, Spotify, Slideshare, WordPress.com Video, Embedly, Issuu, Imgur and TikTok.
+
+Disable this feature with `air_cookie\embeds` filter by returning false.
+
+```php
+add_filter( 'air_cookie\embeds', '__return_false' );
+```
+
+Iframe embeds are replaced with placeholder, letting visitor know that the embed might use tracking cookies. They then have opportunity to allow all cookies or enable the singular embed once.
+
+For script embeds, we just replace the `src` tag with `data-src` and add `data-cookiecategory` which makes those to work leveraning CookieConsents way of loading scripts.
+
+#### Cookie category for embeds
+
+When the feature is enabled, a new cookie category is added. When this category is accepted, all embeds are loaded and shown.
+
+#### Thumbnails for placeholders
+
+Iframe embed placeholders do support thumbnails. Without a thumbnail, the iframe is replaced with black background box. Youtube and Vimeo embeds to get automatically the placeholder, which is determined by the video embedded.
+
+For other services, you may use `air_cookie\embeds\thumbnail` filter like shown below.
+
+```php
+add_filter( 'air_cookie\embeds\thumbnail', 'my_maybe_add_thumbnail', 10, 2 );
+function my_maybe_add_thumbnail( $thumbnail, $src ) {
+  // If thumbnail is already set, bail.
+  if ( ! empty( $thumbnail ) ) {
+    return $thumbnail;
+  }
+
+  // Do your magic to get the thumbnail
+
+  return 'https://your.thumbna.il/location.jpg';
+}
+```
+
+#### Vimeo and Do Not Track
+
+Vimeo embeds are treated a bit differently. For those, we don't add placeholder nor block them. Instead, we add Do Not Track parameter for the embed src which disabled all Vimeo tracking and statistics.
+
+Disable this feature with `air_cookie\embeds\vimeo\add_dnt` filter, but notice that WordPress Core adds the dnt by default as well.
+
+If you wish to show the placeholder even if the Vimeo embed has Do Not Track enabled, use `air_cookie\embeds\vimeo\skip_dnt` filter.
 
 ### Revision control
 

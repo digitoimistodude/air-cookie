@@ -3,7 +3,7 @@
  * @Author: Timi Wahalahti
  * @Date:   2021-09-09 11:37:10
  * @Last Modified by:   Timi Wahalahti
- * @Last Modified time: 2021-09-09 13:46:15
+ * @Last Modified time: 2021-09-09 13:52:53
  * @package air-cookie
  */
 
@@ -21,7 +21,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  * @since  0.1.0
  */
 function iframe_embeds( $content ) {
-  $regex = '/<iframe[^>]* src=("|\').*(facebook\.com|youtu\.be|youtube\.com|youtube-nocookie\.com|player\.vimeo\.com|soundcloud\.com|spotify\.com|slideshare\.net|cloudup\.com|video\.wordpress\.com|embedly\.com).*[^>].*>.*?<\/iframe>/mi';
+  $regex = '/<iframe[^>]* src=("|\').*(facebook\.com|youtu\.be|youtube\.com|youtube-nocookie\.com|player\.vimeo\.com|soundcloud\.com|spotify\.com|slideshare\.net|video\.wordpress\.com|embedly\.com).*[^>].*>.*?<\/iframe>/mi';
 
   preg_match_all( $regex, $content, $matches );
   foreach ( $matches[0] as $x => $match ) {
@@ -80,7 +80,7 @@ function iframe_embeds( $content ) {
 function script_tag_embeds( $content ) {
   $cookie_category = get_embeds_cookie_category_key();
 
-  preg_match_all( '/<script.*(instagram|twitter|issuu|imgur|redditmedia\.com|tiktok\.com|polldaddy|tumblr)+.*<\/script>/mi',
+  preg_match_all( '/<script.*(instagram|twitter|issuu|imgur|tiktok\.com)+.*<\/script>/mi',
     $content, $matches );
 
   foreach ( $matches[0] as $x => $match ) {
