@@ -3,7 +3,7 @@
  * @Author: Timi Wahalahti
  * @Date:   2021-09-07 17:00:04
  * @Last Modified by:   Timi Wahalahti
- * @Last Modified time: 2021-09-08 12:20:47
+ * @Last Modified time: 2021-09-09 10:06:53
  * @package air-cookie
  */
 
@@ -32,34 +32,34 @@ function inject_js() {
   $cookie_categories = get_cookie_categories();
 
   // Build our javascript to run the Cookie Consent.
+  ob_start();
   ?>
-  <script type="text/javascript">
-    window.addEventListener( 'load', function () {
-      var cc = initCookieConsent();
+    var cc = initCookieConsent();
 
-      <?php // Settings ?>
-      airCookieSettings = <?php echo json_encode( apply_filters( 'air_cookie\settings', $settings ) ); ?>
+    <?php // Settings ?>
+    airCookieSettings = <?php echo json_encode( apply_filters( 'air_cookie\settings', $settings ) ); ?>
 
-      <?php // Allow adding categiry specific javascript to be runned when the category is accepted.
-      if ( ! empty( $cookie_categories ) && is_array( $cookie_categories ) ) : ?>
-        airCookieSettings.onAccept = function() {
-          <?php // REST API request to record when user accepts any cookies. ?>
-          var xhr = new XMLHttpRequest();
-          xhr.open( 'POST', '<?php echo esc_url( rest_url( 'air-cookie/v1/consent' ) ) ?>', true );
-          xhr.setRequestHeader( 'X-WP-Nonce', '<?php echo esc_attr( wp_create_nonce( 'wp_rest' ) ); ?>');
-          xhr.send();
+    <?php // Allow adding categiry specific javascript to be runned when the category is accepted.
+    if ( ! empty( $cookie_categories ) && is_array( $cookie_categories ) ) : ?>
+      airCookieSettings.onAccept = function() {
+        <?php // REST API request to record when user accepts any cookies. ?>
+        var xhr = new XMLHttpRequest();
+        xhr.open( 'POST', '<?php echo esc_url( rest_url( 'air-cookie/v1/consent' ) ) ?>', true );
+        xhr.setRequestHeader( 'X-WP-Nonce', '<?php echo esc_attr( wp_create_nonce( 'wp_rest' ) ); ?>');
+        xhr.send();
 
-          <?php foreach ( $cookie_categories as $cookie_category ) {
-            echo do_category_js( $cookie_category );
-          } ?>
-        }
-      <?php endif; ?>
+        <?php foreach ( $cookie_categories as $cookie_category ) {
+          echo do_category_js( $cookie_category );
+        } ?>
+      }
+    <?php endif; ?>
 
-      <?php // Run the Cookie Consent at last. ?>
-      cc.run( airCookieSettings );
-    });
-  </script>
-<?php } // end inject_js
+    <?php // Run the Cookie Consent at last. ?>
+    cc.run( airCookieSettings );
+  <?php $script = ob_get_clean();
+
+  wp_add_inline_script( 'cookieconsent', $script, 'after' );
+} // end inject_js
 
 /**
  * Build javascript to be runned for each category when it is accepted.
