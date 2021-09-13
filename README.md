@@ -22,6 +22,14 @@ Uses the [CookieConsent](https://orestbida.com/demo-projects/cookieconsent/) jav
 
 # Usage
 
+## Link to cookie settings
+
+Remember to add a link into the footer, which allows opening the cookie settings anytime!
+
+```html
+<a href="#" data-cc="c-settings" class="cc-link">Cookie settings</a>
+```
+
 ## Cookie categories
 
 By default, plugin has two cookie categories `necessary`, `functional` and `analytics`. You may add new categories with `air_cookie\categories` filter like shown below.
