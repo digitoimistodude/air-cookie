@@ -3,7 +3,7 @@
  * @Author: Timi Wahalahti
  * @Date:   2021-08-20 14:19:21
  * @Last Modified by:   Timi Wahalahti
- * @Last Modified time: 2021-09-13 14:55:47
+ * @Last Modified time: 2021-09-13 14:59:57
  * @package air-cookie
  */
 
@@ -27,8 +27,8 @@ function get_strings() {
   $strings = [
     'consent_modal_title'                 => 'Käytämme verkkosivuillamme evästeitä',
     'consent_modal_description'           => 'Käytämme evästeitä käyttökokemuksesi parantamiseksi ja sivuston kehittämiseksi. Osaa evästeistä käytetään analytiikkaan, markkinointiin ja sen kohdentamiseen. <button type="button" data-cc="c-settings" class="cc-link">Lisätietoa ja asetukset</button>.',
-    'consent_modal_primary_btn_text'      => 'Hyväksy kaikki evästeet',
-    'consent_modal_secondary_btn_text'    => 'Hyväksy vain välttämättömät',
+    'consent_modal_primary_btn_text'      => 'Hyväksy kaikki',
+    'consent_modal_secondary_btn_text'    => 'Hyväksy välttämättömät',
     'settings_modal_title'                => 'Evästeasetukset',
     'settings_modal_big_title'            => 'Evästeiden käyttö',
     'settings_modal_description'          => 'Käytämme sivustolla yhteistyökumppaneidemme kanssa evästeitä mm. toiminnallisuuteen, mainonnan ja sosiaalisen median liitännäisten toteuttamiseen sekä sivuston käytön analysointiin. Kävijätietoja voidaan jakaa sosiaalisen median palveluja, verkkomainontaa tai analytiikkapalveluja tarjoavien kumppaneiden kanssa.',
