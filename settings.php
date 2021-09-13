@@ -3,7 +3,7 @@
  * @Author: Timi Wahalahti
  * @Date:   2021-08-20 14:17:57
  * @Last Modified by:   Timi Wahalahti
- * @Last Modified time: 2021-09-08 13:27:28
+ * @Last Modified time: 2021-09-13 14:54:56
  * @package air-cookie
  */
 
@@ -109,6 +109,13 @@ function get_cookie_categories() {
       'readonly'    => true, // necessary should always be readonly
       'title'       => maybe_get_polylang_translation( 'category_necessary_title' ),
       'description' => maybe_get_polylang_translation( 'category_necessary_description' ),
+    ],
+    [
+      'key'         => 'functional',
+      'enabled'     => false, // it is advised to have other categories disabled by default
+      'readonly'    => false, // user should have always control over other categories
+      'title'       => maybe_get_polylang_translation( 'category_functional_title' ),
+      'description' => maybe_get_polylang_translation( 'category_functional_description' ),
     ],
     [
       'key'         => 'analytics',

@@ -3,7 +3,7 @@
  * @Author: Timi Wahalahti
  * @Date:   2021-08-20 14:19:21
  * @Last Modified by:   Timi Wahalahti
- * @Last Modified time: 2021-09-13 14:31:55
+ * @Last Modified time: 2021-09-13 14:55:47
  * @package air-cookie
  */
 
@@ -36,6 +36,8 @@ function get_strings() {
     'settings_modal_accept_all_btn'       => 'Hyväksy kaikki',
     'category_necessary_title'            => 'Välttämättömät',
     'category_necessary_description'      => 'Välttämättömät evästeet sallivat perustoimintojen käytön ja auttavat tekemään sivustosta toimivan. Verkkosivusto ei toimi kunnolla ilman näitä evästeitä ja ne ovat siksi pakolliset.',
+    'category_functional_title'            => 'Toiminnalliset',
+    'category_functional_description'      => 'Toiminnalliset evästeet mahdollistavat sivuston paremman toiminnan ja joidenkin kolmansien osapuolien palveluiden, kuten asiakaspalveluchatin lataamisen.',
     'category_analytics_title'            => 'Analytiikka',
     'category_analytics_description'      => 'Analytiikka auttaa meitä ymmärtämään, miten voisimme kehittää sivustoa paremmaksi. Yhteistyökumppanimme voivat käyttää evästeitä myös markkinoinnin kohdentamiseen.',
   ];
