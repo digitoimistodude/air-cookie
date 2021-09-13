@@ -14,7 +14,7 @@
  * @Author: Timi Wahalahti
  * @Date:   2021-08-10 10:49:07
  * @Last Modified by:   Timi Wahalahti
- * @Last Modified time: 2021-09-09 13:34:50
+ * @Last Modified time: 2021-09-13 15:13:02
  * @package air-cookie
  */
 
@@ -130,7 +130,7 @@ function plugin_activate() {
   $deactivated_without = get_option( 'air_cookie_deactivated_without_version' );
 
   if ( 'true' !== $deactivated_without ) {
-    update_option( 'air_cookie_activated_at_version', plugin_version() );
+    update_option( 'air_cookie_activated_at_version', get_plugin_version() );
   }
 } // end plugin_activate
 
