@@ -3,7 +3,7 @@
  * @Author: Timi Wahalahti
  * @Date:   2021-08-20 14:19:21
  * @Last Modified by:   Timi Wahalahti
- * @Last Modified time: 2021-08-24 13:40:43
+ * @Last Modified time: 2021-09-13 14:31:55
  * @package air-cookie
  */
 
@@ -26,18 +26,18 @@ if ( ! defined( 'ABSPATH' ) ) {
 function get_strings() {
   $strings = [
     'consent_modal_title'                 => 'Käytämme verkkosivuillamme evästeitä',
-    'consent_modal_description'           => 'Käytämme yhteistyökumppaneidemme kanssa evästeitä mm. sivuston toiminnallisuuteen, mainonnan ja sosiaalisen median liitännäisten toteuttamiseen sekä sivuston käytön analysointiin. Kävijätietoja voidaan jakaa sosiaalisen median palveluja, verkkomainontaa tai analytiikkapalveluja tarjoavien kumppaneiden kanssa. <button type="button" data-cc="c-settings" class="cc-link">Let me choose</button>',
+    'consent_modal_description'           => 'Käytämme evästeitä käyttökokemuksesi parantamiseksi ja sivuston kehittämiseksi. Osaa evästeistä käytetään analytiikkaan, markkinointiin ja sen kohdentamiseen. <button type="button" data-cc="c-settings" class="cc-link">Lisätietoa ja asetukset</button>.',
     'consent_modal_primary_btn_text'      => 'Hyväksy kaikki evästeet',
     'consent_modal_secondary_btn_text'    => 'Hyväksy vain välttämättömät',
     'settings_modal_title'                => 'Evästeasetukset',
     'settings_modal_big_title'            => 'Evästeiden käyttö',
-    'settings_modal_description'          => 'Hello testing testing kuuluuko?',
+    'settings_modal_description'          => 'Käytämme sivustolla yhteistyökumppaneidemme kanssa evästeitä mm. toiminnallisuuteen, mainonnan ja sosiaalisen median liitännäisten toteuttamiseen sekä sivuston käytön analysointiin. Kävijätietoja voidaan jakaa sosiaalisen median palveluja, verkkomainontaa tai analytiikkapalveluja tarjoavien kumppaneiden kanssa.',
     'settings_modal_save_settings_btn'    => 'Tallenna asetukset',
     'settings_modal_accept_all_btn'       => 'Hyväksy kaikki',
     'category_necessary_title'            => 'Välttämättömät',
-    'category_necessary_description'      => 'Ryhmän kuvaus tässä.',
+    'category_necessary_description'      => 'Välttämättömät evästeet sallivat perustoimintojen käytön ja auttavat tekemään sivustosta toimivan. Verkkosivusto ei toimi kunnolla ilman näitä evästeitä ja ne ovat siksi pakolliset.',
     'category_analytics_title'            => 'Analytiikka',
-    'category_analytics_description'      => 'Analytiikka ryhmän kuvaus tässä.',
+    'category_analytics_description'      => 'Analytiikka auttaa meitä ymmärtämään, miten voisimme kehittää sivustoa paremmaksi. Yhteistyökumppanimme voivat käyttää evästeitä myös markkinoinnin kohdentamiseen.',
   ];
 
   // Modify all the strings with one filter.

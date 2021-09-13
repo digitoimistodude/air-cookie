@@ -3,7 +3,7 @@
  * @Author: Timi Wahalahti
  * @Date:   2021-09-09 11:35:57
  * @Last Modified by:   Timi Wahalahti
- * @Last Modified time: 2021-09-09 13:46:18
+ * @Last Modified time: 2021-09-13 14:36:13
  * @package air-cookie
  */
 
@@ -25,7 +25,7 @@ function register_strings( $strings ) {
     'embeds_description'          => 'Salli kaikkien upotteiden näyttäminen hyväksymällä kaikki evästeet tai valitse alta näyttääksesi tämä upote kerran.',
     'embeds_load_button'          => 'Näytä vain tämä upote',
     'embeds_category_title'       => 'Upotteet',
-    'embeds_category_description' => 'Salli ja näytä upotteet kolmansien osapuolien palveluista kuten Youtube, Vimeo, Instagram, Facebook ja Twitter.',
+    'embeds_category_description' => 'Sivuston sisällöissä käytetään upotteita mm. videopalveluista ja sosiaalisen median palveluista. Sallimalla upotteiden evästeet, näet sivuston kaiken sisällön. Upotepalvelut saattavat käyttää evästeitä omaan analytiikkaansa ja markkinoinnin kohdentamiseen. ',
   ];
 
   return array_merge( $strings, $new_strings );
