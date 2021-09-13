@@ -24,7 +24,7 @@ Uses the [CookieConsent](https://orestbida.com/demo-projects/cookieconsent/) jav
 
 ## Cookie categories
 
-By default, plugin has two cookie categories `necessary` and `analytics`. You may add new categories with `air_cookie\categories` filter like shown below.
+By default, plugin has two cookie categories `necessary`, `functional` and `analytics`. You may add new categories with `air_cookie\categories` filter like shown below.
 
 ```php
 add_filter( 'air_cookie\categories', 'my_add_cookie_category' );
@@ -56,7 +56,7 @@ The easiest way to load external script is by altering the `script` tag to be:
 The example above works only, if the script does not require any extra javascript to be executed after the script has been loaded. If you need to execute extra javascript, use one of the example below.
 
 ```javascript
-<script type="text/plain" data-cookiecategory="analytics" src="https://www.googletagmanager.com/gtag/js?id=GA_MEASUREMENT_ID" async></script>
+<script type="text/plain" data-cookiecategory="analytics" data-src="https://www.googletagmanager.com/gtag/js?id=GA_MEASUREMENT_ID" async></script>
 <script type="text/plain" data-cookiecategory="analytics">
   window.dataLayer = window.dataLayer || [];
   function gtag(){window.dataLayer.push(arguments);}
