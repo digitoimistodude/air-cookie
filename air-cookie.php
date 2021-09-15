@@ -14,7 +14,7 @@
  * @Author: Timi Wahalahti
  * @Date:   2021-08-10 10:49:07
  * @Last Modified by:   Timi Wahalahti
- * @Last Modified time: 2021-09-13 15:13:02
+ * @Last Modified time: 2021-09-15 15:27:12
  * @package air-cookie
  */
 
@@ -89,6 +89,7 @@ add_action( 'init', __NAMESPACE__ . '\register_strings' );
  * @since 0.1.0
  */
 require plugin_base_path() . '/script-injection.php';
+add_action( 'wp_enqueue_scripts', __NAMESPACE__ . '\enqueue_stylesheet' );
 add_action( 'wp_footer', __NAMESPACE__ . '\inject_js' );
 
 /**

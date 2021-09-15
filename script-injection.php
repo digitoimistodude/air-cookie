@@ -3,7 +3,7 @@
  * @Author: Timi Wahalahti
  * @Date:   2021-09-07 17:00:04
  * @Last Modified by:   Timi Wahalahti
- * @Last Modified time: 2021-09-13 15:34:57
+ * @Last Modified time: 2021-09-15 15:26:51
  * @package air-cookie
  */
 
@@ -12,6 +12,16 @@ namespace Air_Cookie;
 if ( ! defined( 'ABSPATH' ) ) {
   exit();
 }
+
+/**
+ * Add our stylesheet.
+ * CSS is small, let it load every time.
+ *
+ * @since 0.1.0
+ */
+function enqueue_stylesheet() {
+  wp_enqueue_style( 'cookieconsent', plugin_base_url() . '/assets/cookieconsent.css', [], get_script_version(), 'all' );
+} // end enqueue_stylesheet
 
 /**
  * Build the cookie consent javascript and add it to site header.
