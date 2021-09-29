@@ -2,8 +2,8 @@
 /**
  * @Author: Timi Wahalahti
  * @Date:   2021-08-20 14:17:57
- * @Last Modified by:   Timi Wahalahti
- * @Last Modified time: 2021-09-15 15:27:50
+ * @Last Modified by:   Roni Laukkarinen
+ * @Last Modified time: 2021-09-15 16:15:37
  * @package air-cookie
  */
 
@@ -27,6 +27,7 @@ function get_settings() {
   $settings = [
     'cookie_name'       => 'air_cookie',
     'revision'          => $categories_version, // use version number to invalidate if categories change
+    // 'theme_css'         => plugin_base_url() . '/assets/cookieconsent.css',
     'cookie_expiration' => 182, // in days, 182 days = 6 months
     'auto_language'     => false,
     'current_lang'      => $lang,
