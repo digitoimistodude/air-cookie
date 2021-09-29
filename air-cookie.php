@@ -14,7 +14,7 @@
  * @Author: Timi Wahalahti
  * @Date:   2021-08-10 10:49:07
  * @Last Modified by:   Timi Wahalahti
- * @Last Modified time: 2021-09-29 16:18:45
+ * @Last Modified time: 2021-09-29 16:20:11
  * @package air-cookie
  */
 
@@ -31,7 +31,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  * @since 0.1.0
  */
 function get_plugin_version() {
-  return 010;
+  return 100;
 } // end plugin_version
 
 /**

@@ -1,6 +1,6 @@
 {
   "name": "air-cookie",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "description": "Simple cookie banner and management.",
   "main": "air-cookie.php",
   "dependencies": {},
