@@ -69,18 +69,7 @@ The easiest way to load external script is by altering the `script` tag to be:
 <script type="text/plain" data-src="<uri-to-script>" data-cookiecategory="analytics" defer>
 ```
 
-The example above works only, if the script does not require any extra javascript to be executed after the script has been loaded. If you need to execute extra javascript, use one of the example below.
-
-```javascript
-<script type="text/plain" data-cookiecategory="analytics" data-src="https://www.googletagmanager.com/gtag/js?id=GA_MEASUREMENT_ID" async></script>
-<script type="text/plain" data-cookiecategory="analytics">
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){window.dataLayer.push(arguments);}
-  gtag('js', new Date());
-
-  gtag('config', 'GA_MEASUREMENT_ID');
-</script>
-```
+The example above works only, if the script does not require any extra javascript to be executed after the script has been loaded. If you need to execute extra javascript, use the example below.
 
 ```php
 add_action( 'air_cookie_js_analytics', 'my_add_js_for_analytics' );
@@ -92,6 +81,23 @@ function my_add_js_for_analytics() {
     } );
   <?php echo ob_get_clean();
 }
+```
+
+### Google Tag Manager / Google Analytics
+
+Load GTM with exmaple below.
+
+```php
+add_action( 'air_cookie_js_analytics', function() {
+  ob_start(); ?>
+    cc.loadScript('https://www.googletagmanager.com/gtag/js?id=YOUR-GTM-CODE', function(){
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'YOUR-GTM-CODE');
+    });
+  <?php echo ob_get_clean();
+} );
 ```
 
 ## Executing custom javascript after cookies have been accepted
