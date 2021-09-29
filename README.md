@@ -30,6 +30,14 @@ Remember to add a link into the footer, which allows opening the cookie settings
 <a href="#" data-cc="c-settings" class="cc-link">Cookie settings</a>
 ```
 
+If you have Polylang installed and active, use
+
+```html
+<a href="#" data-cc="c-settings" class="cc-link">
+  <?php echo pll_translate_string( 'Evästeasetukset', pll_current_language() ); ?>
+</a>
+```
+
 ## Cookie categories
 
 By default, plugin has two cookie categories `necessary`, `functional` and `analytics`. You may add new categories with `air_cookie\categories` filter like shown below.
