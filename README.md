@@ -1,7 +1,7 @@
 # Air cookie
 
 [![Packagist](https://img.shields.io/packagist/v/digitoimistodude/air-cookie.svg?style=flat-square)](https://packagist.org/packages/digitoimistodude/air-cookie)
-[![CookieConsent_Version](https://img.shields.io/badge/CookieConsent%20Version-2.5.1-yellow?style=flat-square)](https://github.com/orestbida/cookieconsent)
+[![CookieConsent_Version](https://img.shields.io/badge/CookieConsent%20Version-2.6.0-yellow?style=flat-square)](https://github.com/orestbida/cookieconsent)
 ![Tested_up_to WordPress_5.8](https://img.shields.io/badge/Tested_up_to-WordPress_5.8-blue.svg?style=flat-square)
 ![Compatible_with PHP_7.2](https://img.shields.io/badge/Compatible_with-PHP_7.2-green.svg?style=flat-square)
 [![Build Status](https://img.shields.io/travis/com/digitoimistodude/air-cookie.svg?style=flat-square)](https://travis-ci.com/digitoimistodude/air-cookie)
@@ -260,9 +260,7 @@ In case you wish to have manual control over revision number, use `air_cookie\ca
 
 Finnish cookie law requires the site owner to be able to point when certain visitor has accepted cookies. This is why the plugin has simple visitor consent recording system.
 
-Each visitor is given unique uuid4 ID, which is stored in separate cookie. When visitor accepts any cookie categories, their browser will send a small request to REST API which records their ID, current revision, accepted cookie categories, timestamp of the event and timestamp of expiry. This data is stored in custom databse table and does not contain any extra information about the visitor.
-
-You may change the visitor identification cookie name with `air_cookie\identification_cookie\name` filter and its expiration with `air_cookie\identification_cookie\name` filter.
+Each visitor is given unique uuid4 ID. When visitor accepts any cookie categories, their browser will send a small request to REST API which records their ID, current revision, accepted cookie categories, timestamp of the event and timestamp of expiry. This data is stored in custom databse table and does not contain any extra information about the visitor.
 
 Currently there is no way to disable this feature.
 

@@ -5,4 +5,18 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ## [Unreleased]
 
+## [1.1.0] - 2021-10-07
+
+### Added
+- Run the cookie category JS also when user changes the cookie settings (CookieConsent onChange event)
+
+### Changed
+- Updated CookieConsent to version 2.6.0
+- Save the visitor id on main cookie
+
+### Removed
+- Functionality related to handling the visitor id in separate cookie
+
 ## [1.0.0] - 2021-09-29
+
+First release.
