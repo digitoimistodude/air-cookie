@@ -3,7 +3,7 @@
  * @Author: Timi Wahalahti
  * @Date:   2021-09-07 16:56:00
  * @Last Modified by:   Timi Wahalahti
- * @Last Modified time: 2021-10-07 12:45:47
+ * @Last Modified time: 2021-10-07 13:10:12
  * @package air-cookie
  */
 
@@ -35,6 +35,9 @@ function record_consent( $request ) {
 
   // Get database table name.
   $table_name = get_databse_table_name();
+
+  // Get cookie consent settings.
+  $settings = get_settings();
 
   // Serialize the cookie levels for storage.
   $cookie_value = maybe_serialize( $data->level );
