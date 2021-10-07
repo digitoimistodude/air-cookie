@@ -14,7 +14,7 @@
  * @Author: Timi Wahalahti
  * @Date:   2021-08-10 10:49:07
  * @Last Modified by:   Timi Wahalahti
- * @Last Modified time: 2021-09-29 16:20:11
+ * @Last Modified time: 2021-10-07 10:41:40
  * @package air-cookie
  */
 
@@ -50,7 +50,7 @@ function get_databse_version() {
  * @since 0.1.0
  */
 function get_script_version() {
-  return '2.5.1';
+  return '2.6.0';
 } // end get_script_version
 
 /**
