@@ -3,7 +3,7 @@
  * @Author: Timi Wahalahti
  * @Date:   2021-09-07 16:56:00
  * @Last Modified by:   Timi Wahalahti
- * @Last Modified time: 2021-09-08 11:02:13
+ * @Last Modified time: 2021-10-07 12:45:47
  * @package air-cookie
  */
 
@@ -15,7 +15,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 function register_rest_endpoint() {
   register_rest_route( 'air-cookie/v1', '/consent', [
-    'methods'             => 'post',
+    'methods'             => 'POST',
     'callback'            => __NAMESPACE__ . '\record_consent',
     'permission_callback' => __NAMESPACE__ . '\record_consent_permission_callback',
   ] );
@@ -30,30 +30,29 @@ function register_rest_endpoint() {
 function record_consent( $request ) {
   global $wpdb;
 
+  // Get request data.
+  $data = json_decode( $request->get_body() );
+
   // Get database table name.
   $table_name = get_databse_table_name();
 
-  // Get cookie consent settings.
-  $settings = get_settings();
-  $visitor_cookie_name = get_indentification_cookie_name();
+  // Serialize the cookie levels for storage.
+  $cookie_value = maybe_serialize( $data->level );
 
-  // Get cookie value from visitors browser.
-  $cookie_value = wp_kses_stripslashes( $_COOKIE[ $settings['cookie_name'] ] );
+  // Try if the user consent for this revision and levels has been already recorder.
+  $exists = $wpdb->get_row( "SELECT id FROM {$table_name} WHERE visitor_id = '{$data->visitorid}' AND cookie_revision = '{$data->revision}' AND cookie_value = '{$cookie_value}'" );
 
-  // Try to get visitor identifier, set a one if does not exist.
-  $visitor_uuid = null;
-  if ( isset( $_COOKIE[ $visitor_cookie_name ] ) ) {
-    $visitor_uuid = $_COOKIE[ $visitor_cookie_name ];
-  } else {
-    $visitor_uuid = maybe_set_identification_cookie();
+  // Bail if the consent has been already recorder.
+  if ( null !== $exists ) {
+    return;
   }
 
   // Record the consent.
   $inserted = $wpdb->insert(
     $table_name,
     [
-      'visitor_id'      => $visitor_uuid,
-      'cookie_revision' => json_decode( $cookie_value )->revision,
+      'visitor_id'      => $data->visitorid,
+      'cookie_revision' => $data->revision,
       'cookie_value'    => $cookie_value,
       'timestamp'       => wp_date( 'Y-m-d H:i:s' ),
       'expiry'          => wp_date( 'Y-m-d H:i:s', strtotime( "+{$settings['cookie_expiration']} days" ) ),

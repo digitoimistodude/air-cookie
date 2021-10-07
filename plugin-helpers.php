@@ -3,7 +3,7 @@
  * @Author: Timi Wahalahti
  * @Date:   2021-08-10 10:49:07
  * @Last Modified by:   Timi Wahalahti
- * @Last Modified time: 2021-09-08 19:22:41
+ * @Last Modified time: 2021-10-07 12:31:56
  * @package air-cookie
  */
 
@@ -85,31 +85,3 @@ function get_current_language() {
 
   return get_locale();
 } // end get_current_language
-
-function get_indentification_cookie_name() {
-  return apply_filters( 'air_cookie\identification_cookie\name', 'air_cookie_visitor' );
-} // end get_indentification_cookie_name
-
-/**
- * Set unique visitor ID if not already set. This is used to identify
- * visitors, their cookie consent choices and timestamp of approval.
- * Possibility to identify when visitor has given their consent is
- * required by Finnish law.
- *
- * @return mixed boolean False if ID exists, string if new ID is set
- * @since 0.1.0
- */
-function maybe_set_identification_cookie() {
-  $cookie_name = get_indentification_cookie_name();
-
-  if ( isset( $_COOKIE[ $cookie_name ] ) ) {
-    return false;
-  }
-
-  $visitor_uuid = wp_generate_uuid4();
-  $expiration = apply_filters( 'air_cookie\identification_cookie\expiration', YEAR_IN_SECONDS * 5 );
-
-  setcookie( $cookie_name, $visitor_uuid, time() + $expiration, '/' );
-
-  return $visitor_uuid;
-} // end maybe_set_identification_cookie

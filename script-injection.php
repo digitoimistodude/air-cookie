@@ -3,7 +3,7 @@
  * @Author: Timi Wahalahti
  * @Date:   2021-09-07 17:00:04
  * @Last Modified by:   Timi Wahalahti
- * @Last Modified time: 2021-09-15 15:26:51
+ * @Last Modified time: 2021-10-07 12:50:57
  * @package air-cookie
  */
 
@@ -52,11 +52,15 @@ function inject_js() {
     <?php // Allow adding categiry specific javascript to be runned when the category is accepted.
     if ( ! empty( $cookie_categories ) && is_array( $cookie_categories ) ) : ?>
       airCookieSettings.onAccept = function() {
-        <?php // REST API request to record when user accepts any cookies. ?>
-        var xhr = new XMLHttpRequest();
-        xhr.open( 'POST', '<?php echo esc_url( rest_url( 'air-cookie/v1/consent' ) ) ?>', true );
-        xhr.setRequestHeader( 'X-WP-Nonce', '<?php echo esc_attr( wp_create_nonce( 'wp_rest' ) ); ?>');
-        xhr.send();
+        airCookierecordConsent();
+
+        <?php foreach ( $cookie_categories as $cookie_category ) {
+          echo do_category_js( $cookie_category );
+        } ?>
+      }
+
+      airCookieSettings.onChange = function() {
+        airCookierecordConsent();
 
         <?php foreach ( $cookie_categories as $cookie_category ) {
           echo do_category_js( $cookie_category );
@@ -70,6 +74,24 @@ function inject_js() {
     <?php if ( apply_filters( 'air_cookie\styles\set_max_width', true ) ) : ?>
       document.querySelector('div#cc_div div#cm').style = 'max-width: 30em;';
     <?php endif; ?>
+
+    <?php // Function to set the visitor id if not already and send consent record request. ?>
+    function airCookierecordConsent() {
+      <?php // Set visitor identification if not set already. ?>
+      if ( null === cc.get( 'data' ) || ! ( "visitorid" in cc.get( 'data' ) ) ) {
+        cc.set( 'data', {value: {visitorid: '<?php echo wp_generate_uuid4(); ?>'}, mode: 'update'} );
+      }
+
+      <?php // REST API request to record user consent. ?>
+      var xhr = new XMLHttpRequest();
+      xhr.open( 'POST', '<?php echo esc_url( rest_url( 'air-cookie/v1/consent' ) ) ?>', true );
+      xhr.setRequestHeader( 'X-WP-Nonce', '<?php echo esc_attr( wp_create_nonce( 'wp_rest' ) ); ?>');
+      xhr.send( JSON.stringify( {
+        visitorid: cc.get( 'data' ).visitorid,
+        revision: cc.get( 'revision' ),
+        level: cc.get( 'level' ),
+      } ) );
+    }
   <?php $script = ob_get_clean();
 
   // Add our javascript to the site
