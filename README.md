@@ -83,12 +83,11 @@ function my_add_js_for_analytics() {
 }
 ```
 
-### Google Tag Manager / Google Analytics
-
-Load GTM with exmaple below.
+### Google Tag Manager (gtm.js)
 
 ```php
-add_action( 'air_cookie_js_analytics', function() {
+add_action( 'air_cookie_js_analytics', 'my_add_js_for_analytics' );
+function my_add_js_for_analytics() {
   ob_start(); ?>
     (function (w, d, s, l, i) {
       w[l] = w[l] || [];
@@ -101,7 +100,37 @@ add_action( 'air_cookie_js_analytics', function() {
       f.parentNode.insertBefore(j, f);
     })(window, document, "script", "dataLayer", "GTM-XXXXXX");
   <?php echo ob_get_clean();
-} );
+}
+```
+
+### Google Tag Manager (gtag.js)
+
+```php
+add_action( 'air_cookie_js_analytics', 'my_add_js_for_analytics' );
+function my_add_js_for_analytics() {
+  ob_start(); ?>
+    cc.loadScript( 'https://www.googletagmanager.com/gtag/js?id=UA-XXXXXXXXX-X', function() {
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'UA-XXXXXXXXX-X');
+    });
+  <?php echo ob_get_clean();
+}
+```
+
+### Google Analytics (analytics.js)
+
+```php
+add_action( 'air_cookie_js_analytics', 'my_add_js_for_analytics' );
+function my_add_js_for_analytics() {
+  ob_start(); ?>
+    cc.loadScript( 'https://www.google-analytics.com/analytics.js', function() {
+      ga('create', 'UA-XXXXXXXX-Y', 'auto');  //replace UA-XXXXXXXX-Y with your tracking code
+      ga('send', 'pageview');
+    } );
+  <?php echo ob_get_clean();
+}
 ```
 
 ## Executing custom javascript after cookies have been accepted
