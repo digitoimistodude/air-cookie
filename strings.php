@@ -3,7 +3,7 @@
  * @Author: Timi Wahalahti
  * @Date:   2021-08-20 14:19:21
  * @Last Modified by:   Timi Wahalahti
- * @Last Modified time: 2021-09-13 16:27:13
+ * @Last Modified time: 2021-11-01 15:55:21
  * @package air-cookie
  */
 
@@ -59,6 +59,10 @@ function get_strings() {
  * @since 0.1.0
  */
 function register_strings() {
+  if ( ! function_exists( 'pll_register_string' ) ) {
+    return;
+  }
+
   $pll_group = get_polylang_group();
 
   // Get strings, bail if none (for example failed filter).
