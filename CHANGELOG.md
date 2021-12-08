@@ -5,6 +5,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ## [Unreleased]
 
+## [1.1.3] - 2021-12-08
+
+### Fixed
+- Fix JS error, undefined manager after embed group is accepted
+- Fix JS error, undefined CC element after consent
+
 ## [1.1.2] - 2021-11-01
 
 ### Fixed
