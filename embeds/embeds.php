@@ -3,7 +3,7 @@
  * @Author: Timi Wahalahti
  * @Date:   2021-09-08 14:51:36
  * @Last Modified by:   Timi Wahalahti
- * @Last Modified time: 2021-09-09 13:47:22
+ * @Last Modified time: 2021-12-08 15:47:45
  * @package air-cookie
  */
 
@@ -44,7 +44,7 @@ require \Air_Cookie\plugin_base_path() . '/embeds/helpers.php';
 * @since 0.1.0
 */
 require \Air_Cookie\plugin_base_path() . '/embeds/script-injection.php';
-add_action( 'wp_footer', __NAMESPACE__ . '\inject_js' );
+add_action( 'wp_footer', __NAMESPACE__ . '\inject_js', 10 );
 add_action( 'air_cookie_js_' . get_embeds_cookie_category_key(), __NAMESPACE__ . '\load_embeds_on_cookie_accept' );
 add_action( 'air_cookie\embeds\register_embed', __NAMESPACE__ . '\register_embed_for_js', 10, 3 );
 

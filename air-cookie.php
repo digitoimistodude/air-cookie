@@ -14,7 +14,7 @@
  * @Author: Timi Wahalahti
  * @Date:   2021-08-10 10:49:07
  * @Last Modified by:   Timi Wahalahti
- * @Last Modified time: 2021-11-01 15:55:49
+ * @Last Modified time: 2021-12-08 15:47:53
  * @package air-cookie
  */
 
@@ -90,7 +90,7 @@ add_action( 'init', __NAMESPACE__ . '\register_strings' );
  */
 require plugin_base_path() . '/script-injection.php';
 add_action( 'wp_enqueue_scripts', __NAMESPACE__ . '\enqueue_stylesheet' );
-add_action( 'wp_footer', __NAMESPACE__ . '\inject_js' );
+add_action( 'wp_footer', __NAMESPACE__ . '\inject_js', 20 );
 
 /**
  * Rest api for recording the visitor consents.
