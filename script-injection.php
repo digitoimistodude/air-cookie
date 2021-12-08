@@ -3,7 +3,7 @@
  * @Author: Timi Wahalahti
  * @Date:   2021-09-07 17:00:04
  * @Last Modified by:   Timi Wahalahti
- * @Last Modified time: 2021-10-07 12:50:57
+ * @Last Modified time: 2021-12-08 15:30:01
  * @package air-cookie
  */
 
@@ -72,7 +72,11 @@ function inject_js() {
     cc.run( airCookieSettings );
 
     <?php if ( apply_filters( 'air_cookie\styles\set_max_width', true ) ) : ?>
-      document.querySelector('div#cc_div div#cm').style = 'max-width: 30em;';
+      var cookieconsent_element = document.querySelector('div#cc_div div#cm');
+      if( typeof( cookieconsent_element ) != 'undefined' && cookieconsent_element != null ) {
+        console.log( 'width' );
+        cookieconsent_element.style = 'max-width: 30em;';
+      }
     <?php endif; ?>
 
     <?php // Function to set the visitor id if not already and send consent record request. ?>
