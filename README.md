@@ -133,6 +133,60 @@ function my_add_js_for_analytics() {
 }
 ```
 
+## Moving plugin javascript to be loaded after cookies have been accepted
+
+```php
+// Disable script by nulling the tag on latest possible chance
+add_filter( 'script_loader_tag', function( $tag, $handle ) {
+  if ( 'our-script-handle' === $handle ) {
+    return '';
+  }
+
+  return $tag;
+}, 10, 2 );
+
+// Load stamped.io script on air cookie
+add_action( 'air_cookie_js_functional', function() {
+  $stampedio_url = get_script_src_by_handle( 'our-script-handle' );
+  if ( empty( $stampedio_url ) ) {
+    return;
+  }
+
+  ob_start(); ?>
+    cc.loadScript( '<?php echo esc_url( $stampedio_url ) ?>' );
+  <?php echo ob_get_clean(); // phpcs:ignore
+} ); // end woocommerce_ga_integration_script_for_air_cookie
+
+function get_script_src_by_handle( $handle ) {
+  global $wp_scripts;
+  if ( in_array( $handle, $wp_scripts->queue ) ) {
+    return $wp_scripts->registered[ $handle ]->src;
+  }
+} // end get_script_src_by_handle
+```
+
+// Disable stamped.io script by nulling the tag on latest possible chance
+add_filter( 'script_loader_tag', function( $tag, $handle ) {
+  if ( 'woo-stamped-io-public-custom' === $handle ) {
+    return '';
+  }
+
+  return $tag;
+}, 10, 2 );
+
+// Load stamped.io script on air cookie
+add_action( 'air_cookie_js_functional', __NAMESPACE__ . '\woocommerce_stampedio_script_for_air_cookie' );
+function woocommerce_stampedio_script_for_air_cookie() {
+  $stampedio_url = get_script_src_by_handle( 'woo-stamped-io-public-custom' );
+  if ( empty( $stampedio_url ) ) {
+    return;
+  }
+
+  ob_start(); ?>
+    cc.loadScript( '<?php echo esc_url( $stampedio_url ) ?>' );
+  <?php echo ob_get_clean(); // phpcs:ignore
+} // end woocommerce_ga_integration_script_for_air_cookie
+
 ## Executing custom javascript after cookies have been accepted
 
 You may execute your own javascript after certain cookie categories have been accepted. There are two ways of doing that: adding the javascript inline to header or using custom javascript events.
