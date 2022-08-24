@@ -4,6 +4,9 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+### Added
+* Elements with `data-aircookie-accept` attribute are listened for clicks, causing the category specified in the value to be accepted
+* Elements with `data-aircookie-remove-on` attribute are removed when the category specified is accepted
 
 ## [1.1.4] - 2021-12-14
 

@@ -3,7 +3,7 @@
  * @Author: Timi Wahalahti
  * @Date:   2021-09-07 17:00:04
  * @Last Modified by:   Timi Wahalahti
- * @Last Modified time: 2021-12-08 15:34:31
+ * @Last Modified time: 2022-08-24 10:46:37
  * @package air-cookie
  */
 
@@ -95,6 +95,31 @@ function inject_js() {
         level: cc.get( 'level' ),
       } ) );
     }
+
+    <?php // Add event listener for custom elements that can be used to accept cookie categories. ?>
+    var elements = document.querySelectorAll('[data-aircookie-accept]');
+    for (var i = 0; i < elements.length; i++) {
+      elements[i].addEventListener('click', function(e) {
+
+        var accepted = e.target.getAttribute('data-aircookie-accept');
+
+        <?php // Get previously accepted categories and fallback to necessary if not accepted previously. ?>
+        var accepted_prev = cc.get('level');
+        if ( 'undefined' === typeof accepted_prev ) {
+          accepted_prev = [ 'necessary' ];
+          cc.hide();
+        }
+
+        accepted_prev.push( accepted );
+        cc.accept( accepted_prev );
+
+        <?php // Remove all elements that have accept-category action specified. ?>
+        var elements = document.querySelectorAll('[data-aircookie-remove-on="accept-' + accepted + '"]');
+        for (var i = 0; i < elements.length; i++) {
+          elements[i].remove();
+        }
+      });
+    }
   <?php $script = ob_get_clean();
 
   // Add our javascript to the site
@@ -114,6 +139,12 @@ function do_category_js( $category ) {
   ob_start(); ?>
 
   if ( cc.allowedCategory( '<?php echo $category_key; ?>' ) ) {
+    <?php // Remove all elements that have accept-category action specified. ?>
+    var elements = document.querySelectorAll('[data-aircookie-remove-on="accept-<?php echo $category_key; ?>"]');
+    for (var i = 0; i < elements.length; i++) {
+      elements[i].remove();
+    }
+
     <?php // Do category specific JS action. ?>
     const <?php echo $event_key ?> = new CustomEvent( '<?php echo $event_key ?>' );
     document.dispatchEvent( <?php echo $event_key ?> );
