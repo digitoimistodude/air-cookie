@@ -3,7 +3,7 @@
  * Plugin Name: Air cookie
  * Plugin URI: https://github.com/digitoimistodude/air-cookie
  * Description: Simple cookie banner and management.
- * Version: 1.1.4
+ * Version: 1.2.0
  * Author: Digitoimisto Dude Oy, Timi Wahalahti
  * Author URI: https://www.dude.fi
  * Requires at least: 5.5
@@ -14,7 +14,7 @@
  * @Author: Timi Wahalahti
  * @Date:   2021-08-10 10:49:07
  * @Last Modified by:   Timi Wahalahti
- * @Last Modified time: 2021-12-14 13:37:49
+ * @Last Modified time: 2022-08-24 11:43:07
  * @package air-cookie
  */
 
@@ -31,7 +31,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  * @since 0.1.0
  */
 function get_plugin_version() {
-  return 114;
+  return 120;
 } // end plugin_version
 
 /**
@@ -50,7 +50,7 @@ function get_databse_version() {
  * @since 0.1.0
  */
 function get_script_version() {
-  return '2.6.0';
+  return '2.8.5';
 } // end get_script_version
 
 /**
