@@ -3,7 +3,7 @@
  * @Author: Timi Wahalahti
  * @Date:   2021-09-07 17:00:04
  * @Last Modified by:   Timi Wahalahti
- * @Last Modified time: 2022-08-24 10:46:37
+ * @Last Modified time: 2022-08-24 11:32:06
  * @package air-cookie
  */
 
@@ -100,6 +100,7 @@ function inject_js() {
     var elements = document.querySelectorAll('[data-aircookie-accept]');
     for (var i = 0; i < elements.length; i++) {
       elements[i].addEventListener('click', function(e) {
+        e.preventDefault();
 
         var accepted = e.target.getAttribute('data-aircookie-accept');
 
