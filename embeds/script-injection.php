@@ -3,7 +3,7 @@
  * @Author: Timi Wahalahti
  * @Date:   2021-09-09 11:34:14
  * @Last Modified by:   Timi Wahalahti
- * @Last Modified time: 2021-12-08 15:39:29
+ * @Last Modified time: 2022-10-14 10:36:34
  * @package air-cookie
  */
 
@@ -35,6 +35,8 @@ function inject_js() {
       element.remove();
     } );
   <?php $script = ob_get_clean();
+
+  $script = apply_filters( 'air_cookie_iframemanager_inline_js', $script );
 
   // Add our javascript to the site
   wp_add_inline_script( 'iframemanager', $script, 'after' );
