@@ -343,7 +343,7 @@ In case you wish to have manual control over revision number, use `air_cookie\ca
 
 Finnish cookie law requires the site owner to be able to point when certain visitor has accepted cookies. This is why the plugin has simple visitor consent recording system.
 
-Each visitor is given unique uuid4 ID. When visitor accepts any cookie categories, their browser will send a small request to REST API which records their ID, current revision, accepted cookie categories, timestamp of the event and timestamp of expiry. This data is stored in custom databse table and does not contain any extra information about the visitor.
+Each visitor is given unique uuid4 ID. When visitor accepts any cookie categories, their browser will send a small request to REST API which records their ID, current revision, accepted cookie categories, timestamp of the event and timestamp of expiry. This data is stored in custom database table and does not contain any extra information about the visitor.
 
 Currently there is no way to disable this feature.
 
