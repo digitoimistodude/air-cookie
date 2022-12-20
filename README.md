@@ -163,7 +163,6 @@ function get_script_src_by_handle( $handle ) {
     return $wp_scripts->registered[ $handle ]->src;
   }
 } // end get_script_src_by_handle
-```
 
 // Disable stamped.io script by nulling the tag on latest possible chance
 add_filter( 'script_loader_tag', function( $tag, $handle ) {
@@ -186,6 +185,7 @@ function woocommerce_stampedio_script_for_air_cookie() {
     cc.loadScript( '<?php echo esc_url( $stampedio_url ) ?>' );
   <?php echo ob_get_clean(); // phpcs:ignore
 } // end woocommerce_ga_integration_script_for_air_cookie
+```
 
 ## Executing custom javascript after cookies have been accepted
 
