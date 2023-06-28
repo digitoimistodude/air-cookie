@@ -7,6 +7,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 ### Added
 * Filters to modify inline scripts
 
+## [1.2.1] - 2023-06-28
+### Changed
+* Update CookieConsent to version 2.9.1
+
 ## [1.2.0] - 2022-08-24
 ### Changed
 * Update CookieConsent to version 2.8.5
