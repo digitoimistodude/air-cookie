@@ -104,15 +104,19 @@ function inject_js() {
 
         var accepted = e.target.getAttribute('data-aircookie-accept');
 
-        <?php // Get previously accepted categories and fallback to necessary if not accepted previously. ?>
-        var accepted_prev = cc.get('level');
-        if ( 'undefined' === typeof accepted_prev ) {
-          accepted_prev = [ 'necessary' ];
-          cc.hide();
-        }
+        if ( 'all' === accepted ) {
+          cc.accept('all');
+        } else {
+          <?php // Get previously accepted categories and fallback to necessary if not accepted previously. ?>
+          var accepted_prev = cc.get('level');
+          if ( 'undefined' === typeof accepted_prev ) {
+            accepted_prev = [ 'necessary' ];
+            cc.hide();
+          }
 
-        accepted_prev.push( accepted );
-        cc.accept( accepted_prev );
+          accepted_prev.push( accepted );
+          cc.accept( accepted_prev );
+        }
 
         <?php // Remove all elements that have accept-category action specified. ?>
         var elements = document.querySelectorAll('[data-aircookie-remove-on="accept-' + accepted + '"]');
