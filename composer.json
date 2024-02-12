@@ -8,12 +8,22 @@
     "plugin"
   ],
   "license": "GPL-3.0+",
-  "version": "1.2.3",
+  "version": "1.2.4",
   "authors": [
     {
       "name": "Timi Wahalahti",
       "email": "timi@dude.fi",
       "homepage": "https://github.com/timiwahalahti"
+    },
+    {
+      "name": "Roni Laukkarinen",
+      "email": "roni@dude.fi",
+      "homepage": "https://github.com/ronilaukkarinen"
+    },
+    {
+      "name": "Elias Kautto",
+      "email": "elias@dude.fi",
+      "homepage": "https://github.com/EliasKau"
     }
   ]
 }

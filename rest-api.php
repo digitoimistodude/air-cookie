@@ -30,28 +30,34 @@ function register_rest_endpoint() {
 function record_consent( $request ) {
   global $wpdb;
 
-  // Get request data.
+  // Get request data
   $data = json_decode( $request->get_body() );
 
-  // Get database table name.
-  $table_name = get_databse_table_name();
+  // Get database table name
+  $table_name = get_database_table_name();
 
-  // Get cookie consent settings.
-  $settings = get_settings();
+  // Get cookie consent settings
+  // This get_settings() NOT the deprecated WordPress function, but air-cookie's own function
+  $settings = get_settings(); // phpcs:ignore WordPress.WP.DeprecatedFunctions.get_settingsFound
 
-  // Serialize the cookie levels for storage.
+  // Serialize the cookie levels for storage
   $cookie_value = maybe_serialize( $data->level );
 
-  // Try if the user consent for this revision and levels has been already recorder.
-  $exists = $wpdb->get_row( "SELECT id FROM {$table_name} WHERE visitor_id = '{$data->visitorid}' AND cookie_revision = '{$data->revision}' AND cookie_value = '{$cookie_value}'" );
+  // Check if cookie_revision and cookie_value has content
+  if ( empty( $data->visitorid ) || empty( $data->revision ) ) {
+    return;
+  }
 
-  // Bail if the consent has been already recorder.
+  // Try if the user consent for this revision and levels has been already recorded
+  $exists = $wpdb->get_row( $wpdb->prepare( 'SELECT id FROM %s WHERE visitor_id = %s AND cookie_revision = %s AND cookie_value = %s', $table_name, $data->visitorid, $data->revision, $cookie_value ) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
+
+  // Bail if the consent has been already recorded
   if ( null !== $exists ) {
     return;
   }
 
   // Record the consent.
-  $inserted = $wpdb->insert(
+  $inserted = $wpdb->insert( // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
     $table_name,
     [
       'visitor_id'      => $data->visitorid,

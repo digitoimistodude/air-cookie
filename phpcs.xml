@@ -69,6 +69,11 @@
     <exclude name="WordPress.WhiteSpace.PrecisionAlignment.Found" />
     <exclude name="WordPress.Arrays.MultipleStatementAlignment.DoubleArrowNotAligned" />
     <exclude name="Generic.Formatting.MultipleStatementAlignment.NotSameWarning" />
-
+    <exclude name="WordPress.NamingConventions.ValidHookName" />
+    <exclude name="Generic.Commenting.DocComment.MissingShort" />
+    <exclude name="Squiz.Commenting.FunctionComment" />
+    <exclude name="PEAR.Functions.FunctionCallSignature.OpeningIndent" />
+    <exclude name="PEAR.Functions.FunctionCallSignature" />
+    
   </rule>
 </ruleset>

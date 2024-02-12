@@ -20,13 +20,13 @@ if ( ! defined( 'ABSPATH' ) ) {
  * @since 0.1.0
  */
 function maybe_init_database() {
-  $installed_version = get_option( get_databse_version_key() );
-  if ( absint( $installed_version ) === get_databse_version() ) {
+  $installed_version = get_option( get_database_version_key() );
+  if ( absint( $installed_version ) === get_database_version() ) {
     return;
   }
 
   global $wpdb;
-  $table_name = get_databse_table_name();
+  $table_name = get_database_table_name();
   $charset_collate = $wpdb->get_charset_collate();
 
   $sql_table = "CREATE TABLE {$table_name} (
@@ -39,8 +39,8 @@ function maybe_init_database() {
     PRIMARY KEY (id)
   ) {$charset_collate};";
 
-  require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
+  require_once ABSPATH . 'wp-admin/includes/upgrade.php';
   dbDelta( $sql_table );
 
-  add_site_option( get_databse_version_key(), get_databse_version() );
+  add_site_option( get_database_version_key(), get_database_version() );
 } // end maybe_init_database

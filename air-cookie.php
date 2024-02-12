@@ -3,18 +3,14 @@
  * Plugin Name: Air cookie
  * Plugin URI: https://github.com/digitoimistodude/air-cookie
  * Description: Simple cookie banner and management.
- * Version: 1.2.3
- * Author: Digitoimisto Dude Oy, Timi Wahalahti
+ * Version: 1.2.4
+ * Author: Digitoimisto Dude Oy
  * Author URI: https://www.dude.fi
  * Requires at least: 5.5
  * Tested up to: 5.8
  * License: GPL-3.0+
  * License URI: https://www.gnu.org/licenses/gpl-3.0.html
  *
- * @Author: Timi Wahalahti
- * @Date:   2021-08-10 10:49:07
- * @Last Modified by:   Timi Wahalahti
- * @Last Modified time: 2023-08-03 15:54:20
  * @package air-cookie
  */
 
@@ -31,18 +27,18 @@ if ( ! defined( 'ABSPATH' ) ) {
  * @since 0.1.0
  */
 function get_plugin_version() {
-  return 123;
+  return 124;
 } // end plugin_version
 
 /**
- * Get current version of databse schema.
+ * Get current version of database schema.
  * Version is timestamp in YYYYmmdd format, so it can be used as a int.
  *
  * @since 0.1.0
  */
-function get_databse_version() {
+function get_database_version() {
   return 20210907; // date without dashes
-} // end get_databse_version
+}
 
 /**
  * Get current version of included CookieConsent script version.
@@ -101,7 +97,7 @@ require plugin_base_path() . '/rest-api.php';
 add_action( 'rest_api_init', __NAMESPACE__ . '\register_rest_endpoint' );
 
 /**
- * Databse creation.
+ * Database creation.
  *
  * @since 0.1.0
  */

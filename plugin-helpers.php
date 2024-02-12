@@ -44,13 +44,13 @@ function plugin_base_url() {
 } // end plugin_base_url
 
 /**
- * Get the name of databse table used to track user consents.
+ * Get the name of database table used to track user consents.
  *
  * @param  boolean $prefix Should the table name be prefixed with $wpdb->prefix
  * @return string          Database table name
  * @since 0.1.0
  */
-function get_databse_table_name( $prefix = true ) {
+function get_database_table_name( $prefix = true ) {
   $table_name = 'air_cookie';
 
   if ( $prefix ) {
@@ -59,17 +59,17 @@ function get_databse_table_name( $prefix = true ) {
   }
 
   return $table_name;
-} // end get_databse_table_name
+} // end get_database_table_name
 
 /**
- * Get the setting name where installed databse version is stored.
+ * Get the setting name where installed database version is stored.
  *
  * @return string Option name
  * @since 0.1.0
  */
-function get_databse_version_key() {
-  return get_databse_table_name( false ) . '_db_version';
-} // end get_databse_version_key
+function get_database_version_key() {
+  return get_database_table_name( false ) . '_db_version';
+}
 
 /**
  * Get the current language for the site. If Polylang is not active,

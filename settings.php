@@ -4,6 +4,7 @@
  * @Date:   2021-08-20 14:17:57
  * @Last Modified by:   Timi Wahalahti
  * @Last Modified time: 2021-10-07 12:44:44
+ *
  * @package air-cookie
  */
 
@@ -58,28 +59,30 @@ function get_settings() {
 
   // Add text strings for the modals.
   $settings['languages'][ $lang ] = [
-    'consent_modal' => [
-      'title'         => maybe_get_polylang_translation( 'consent_modal_title' ),
-      'description'   => maybe_get_polylang_translation( 'consent_modal_description' ),
-      'primary_btn'   => [
-        'text'  => maybe_get_polylang_translation( 'consent_modal_primary_btn_text' ),
-        'role'  => 'accept_all',
+    'consent_modal'       => [
+      'title'             => maybe_get_polylang_translation( 'consent_modal_title' ),
+      'description'       => maybe_get_polylang_translation( 'consent_modal_description' ),
+      'primary_btn'       => [
+        'text'            => maybe_get_polylang_translation( 'consent_modal_primary_btn_text' ),
+        'role'            => 'accept_all',
       ],
-      'secondary_btn' => [
-        'text'  => maybe_get_polylang_translation( 'consent_modal_secondary_btn_text' ),
-        'role'  => 'accept_necessary',
+      'secondary_btn'     => [
+        'text'            => maybe_get_polylang_translation( 'consent_modal_secondary_btn_text' ),
+        'role'            => 'accept_necessary',
       ],
     ],
-    'settings_modal' => [
+    'settings_modal'      => [
       'title'             => maybe_get_polylang_translation( 'settings_modal_title' ),
       'save_settings_btn' => maybe_get_polylang_translation( 'settings_modal_save_settings_btn' ),
       'accept_all_btn'    => maybe_get_polylang_translation( 'settings_modal_accept_all_btn' ),
-      'blocks'            => wp_parse_args( get_cookie_categories_for_settings( $lang ), [
+      'blocks'            => wp_parse_args( get_cookie_categories_for_settings( $lang ),
         [
-          'title'       => maybe_get_polylang_translation( 'settings_modal_big_title' ),
-          'description' => maybe_get_polylang_translation( 'settings_modal_description' ),
+          [
+            'title'         => maybe_get_polylang_translation( 'settings_modal_big_title' ),
+            'description'   => maybe_get_polylang_translation( 'settings_modal_description' ),
+          ]
         ]
-      ] ),
+      ),
     ]
   ];
 
@@ -171,7 +174,7 @@ function get_cookie_categories_for_settings( $lang ) {
 
 /**
  * Get version of the current cookie category settings in order to use it
- * in consent cookie and records databse.
+ * in consent cookie and records database.
  *
  * @return string String hash "version" of current cookie categories.
  * @since 0.1.0
