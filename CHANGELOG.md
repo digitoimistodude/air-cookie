@@ -1,8 +1,9 @@
-### 1.2.5rc: 2023-02-20
+### 1.2.5: 2023-02-20
 
 * Add unit tests
 * Support PHP 8.3
 * Fix phpcs errors
+* Fix db query in record_consent
 
 ### 1.2.4: 2023-02-12
 

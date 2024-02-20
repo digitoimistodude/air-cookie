@@ -2,8 +2,8 @@
 /**
  * @Author: Timi Wahalahti
  * @Date:   2021-09-07 16:56:00
- * @Last Modified by:   Timi Wahalahti
- * @Last Modified time: 2021-10-07 13:10:12
+ * @Last Modified by:   Roni Laukkarinen
+ * @Last Modified time: 2024-02-20 17:17:04
  * @package air-cookie
  */
 
@@ -44,12 +44,13 @@ function record_consent( $request ) {
   $cookie_value = maybe_serialize( $data->level );
 
   // Check if cookie_revision and cookie_value has content
-  if ( empty( $data->visitorid ) || empty( $data->revision ) ) {
+  if ( empty( $table_name ) || empty( $data->visitorid ) || empty( $data->revision ) ) {
     return;
   }
 
   // Try if the user consent for this revision and levels has been already recorded
-  $exists = $wpdb->get_row( $wpdb->prepare( 'SELECT id FROM %s WHERE visitor_id = %s AND cookie_revision = %s AND cookie_value = %s', $table_name, $data->visitorid, $data->revision, $cookie_value ) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
+  // Test query: SELECT id FROM wp_air_cookie WHERE visitor_id = 'f284009a-ace9-42e7-a5ef-42b065a9184c' AND cookie_revision = '2412150750' AND cookie_value = 'a:4:{i:0;s:9:"necessary";i:1;s:10:"functional";i:2;s:9:"analytics";i:3;s:6:"embeds";}'
+  $exists = $wpdb->get_row( $wpdb->prepare( "SELECT id FROM %s WHERE visitor_id = '%s' AND cookie_revision = '%s' AND cookie_value = '%s'", $table_name, $data->visitorid, $data->revision, $cookie_value ) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQLPlaceholders.QuotedSimplePlaceholder
 
   // Bail if the consent has been already recorded
   if ( null !== $exists ) {
