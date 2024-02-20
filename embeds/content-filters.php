@@ -2,8 +2,8 @@
 /**
  * @Author: Timi Wahalahti
  * @Date:   2021-09-09 11:37:10
- * @Last Modified by:   Timi Wahalahti
- * @Last Modified time: 2021-09-09 13:52:53
+ * @Last Modified by:   Roni Laukkarinen
+ * @Last Modified time: 2024-02-20 16:29:44
  * @package air-cookie
  */
 
@@ -21,7 +21,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  * @since  0.1.0
  */
 function iframe_embeds( $content ) {
-  $regex = '/<iframe[^>]* src=("|\').*(facebook\.com|youtu\.be|youtube\.com|youtube-nocookie\.com|player\.vimeo\.com|soundcloud\.com|spotify\.com|slideshare\.net|video\.wordpress\.com|embedly\.com).*[^>].*>.*?<\/iframe>/mi';
+  $regex = '/<iframe[^>]* src=("|\').*(facebook\.com|youtu\.be|youtube\.com|youtube-nocookie\.com|player\.vimeo\.com|soundcloud\.com|spotify\.com|slideshare\.net|video\.wordpress\.com|embedly\.com).*[^>].*>.*?<\/iframe>/mi'; // phpcs:ignore WordPress.WP.CapitalPDangit.MisspelledInText
 
   preg_match_all( $regex, $content, $matches );
   foreach ( $matches[0] as $x => $match ) {

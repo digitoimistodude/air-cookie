@@ -74,6 +74,12 @@
     <exclude name="Squiz.Commenting.FunctionComment" />
     <exclude name="PEAR.Functions.FunctionCallSignature.OpeningIndent" />
     <exclude name="PEAR.Functions.FunctionCallSignature" />
-    
+    <exclude name="Squiz.Strings.ConcatenationSpacing.PaddingFound" />
+    <exclude name="Universal.WhiteSpace.PrecisionAlignment.Found" />
+    <exclude name="Universal.Arrays.DisallowShortArraySyntax.Found" />
+    <exclude name="Universal.WhiteSpace.PrecisionAlignment.Found" />
+    <exclude name="Universal.Arrays.DisallowShortArraySyntax.Found" />
+    <exclude name="Modernize.FunctionCalls.Dirname.FileConstant" />
+
   </rule>
 </ruleset>

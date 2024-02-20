@@ -102,7 +102,7 @@ add_action( 'rest_api_init', __NAMESPACE__ . '\register_rest_endpoint' );
  * @since 0.1.0
  */
 if ( is_admin() ) {
-  require plugin_base_path(). '/database.php';
+  require plugin_base_path() . '/database.php';
   add_action( 'admin_init', __NAMESPACE__ . '\maybe_init_database' );
 }
 

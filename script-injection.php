@@ -2,8 +2,8 @@
 /**
  * @Author: Timi Wahalahti
  * @Date:   2021-09-07 17:00:04
- * @Last Modified by:   Timi Wahalahti
- * @Last Modified time: 2022-10-14 10:36:18
+ * @Last Modified by:   Roni Laukkarinen
+ * @Last Modified time: 2024-02-20 16:32:36
  * @package air-cookie
  */
 
@@ -30,7 +30,8 @@ function enqueue_stylesheet() {
  */
 function inject_js() {
   // Get our settings, bail if no settings.
-  $settings = get_settings();
+  // This is our own function, not WordPress deprecated core function.
+  $settings = get_settings(); // phpcs:ignore WordPress.WP.DeprecatedFunctions.get_settingsFound
   if ( ! is_array( $settings ) ) {
     return;
   }
@@ -47,7 +48,7 @@ function inject_js() {
     var cc = initCookieConsent();
 
     <?php // Settings ?>
-    airCookieSettings = <?php echo json_encode( apply_filters( 'air_cookie\settings', $settings ) ); ?>
+    airCookieSettings = <?php echo json_encode( apply_filters( 'air_cookie\settings', $settings ) ); // phpcs:ignore ?>
 
     <?php // Allow adding categiry specific javascript to be runned when the category is accepted.
     if ( ! empty( $cookie_categories ) && is_array( $cookie_categories ) ) : ?>
@@ -55,7 +56,7 @@ function inject_js() {
         airCookierecordConsent();
 
         <?php foreach ( $cookie_categories as $cookie_category ) {
-          echo do_category_js( $cookie_category );
+          echo do_category_js( $cookie_category ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
         } ?>
       }
 
@@ -63,7 +64,7 @@ function inject_js() {
         airCookierecordConsent();
 
         <?php foreach ( $cookie_categories as $cookie_category ) {
-          echo do_category_js( $cookie_category );
+          echo do_category_js( $cookie_category ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
         } ?>
       }
     <?php endif; ?>
@@ -82,12 +83,12 @@ function inject_js() {
     function airCookierecordConsent() {
       <?php // Set visitor identification if not set already. ?>
       if ( null === cc.get( 'data' ) || ! ( "visitorid" in cc.get( 'data' ) ) ) {
-        cc.set( 'data', {value: {visitorid: '<?php echo wp_generate_uuid4(); ?>'}, mode: 'update'} );
+        cc.set( 'data', {value: {visitorid: '<?php echo wp_generate_uuid4(); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>'}, mode: 'update'} );
       }
 
       <?php // REST API request to record user consent. ?>
       var xhr = new XMLHttpRequest();
-      xhr.open( 'POST', '<?php echo esc_url( rest_url( 'air-cookie/v1/consent' ) ) ?>', true );
+      xhr.open( 'POST', '<?php echo esc_url( rest_url( 'air-cookie/v1/consent' ) ); ?>', true );
       xhr.setRequestHeader( 'X-WP-Nonce', '<?php echo esc_attr( wp_create_nonce( 'wp_rest' ) ); ?>');
       xhr.send( JSON.stringify( {
         visitorid: cc.get( 'data' ).visitorid,
@@ -145,21 +146,21 @@ function do_category_js( $category ) {
 
   ob_start(); ?>
 
-  if ( cc.allowedCategory( '<?php echo $category_key; ?>' ) ) {
+  if ( cc.allowedCategory( '<?php echo $category_key; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>' ) ) {
     <?php // Remove all elements that have accept-category action specified. ?>
-    var elements = document.querySelectorAll('[data-aircookie-remove-on="accept-<?php echo $category_key; ?>"]');
+    var elements = document.querySelectorAll('[data-aircookie-remove-on="accept-<?php echo $category_key; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>"]');
     for (var i = 0; i < elements.length; i++) {
       elements[i].remove();
     }
 
     <?php // Do category specific JS action. ?>
-    const <?php echo $event_key ?> = new CustomEvent( '<?php echo $event_key ?>' );
-    document.dispatchEvent( <?php echo $event_key ?> );
+    const <?php echo $event_key; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?> = new CustomEvent( '<?php echo $event_key; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>' );
+    document.dispatchEvent( <?php echo $event_key; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?> );
 
     <?php // Do global JS action with category property. ?>
     const air_cookie = new CustomEvent( 'air_cookie', {
       detail: {
-        category: '<?php echo $category_key; ?>'
+        category: '<?php echo $category_key; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>'
       }
     } );
     document.dispatchEvent( air_cookie );

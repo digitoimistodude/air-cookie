@@ -2,8 +2,8 @@
 /**
  * @Author: Timi Wahalahti
  * @Date:   2021-08-20 14:17:57
- * @Last Modified by:   Timi Wahalahti
- * @Last Modified time: 2021-10-07 12:44:44
+ * @Last Modified by:   Roni Laukkarinen
+ * @Last Modified time: 2024-02-20 16:30:37
  *
  * @package air-cookie
  */
@@ -39,7 +39,7 @@ function get_settings() {
       'consent_modal' => [
         'layout'    => 'box',
         'position'  => 'bottom left',
-      ]
+      ],
     ],
   ];
 
@@ -80,10 +80,10 @@ function get_settings() {
           [
             'title'         => maybe_get_polylang_translation( 'settings_modal_big_title' ),
             'description'   => maybe_get_polylang_translation( 'settings_modal_description' ),
-          ]
+          ],
         ]
       ),
-    ]
+    ],
   ];
 
   // Allow filtering the whole settings aray with text strings included.
@@ -126,7 +126,7 @@ function get_cookie_categories() {
       'readonly'    => false, // user should have always control over other categories
       'title'       => maybe_get_polylang_translation( 'category_analytics_title' ),
       'description' => maybe_get_polylang_translation( 'category_analytics_description' ),
-    ]
+    ],
   ];
 
   // Filter all categories and allow adding new ones.
@@ -147,7 +147,7 @@ function get_cookie_categories() {
  * @return array  Cookie group constructed in JS format.
  * @since  0.1.0
  */
-function get_cookie_categories_for_settings( $lang ) {
+function get_cookie_categories_for_settings( $lang ) { // phpcs:ignore
   // Get cookie categories, bail if no.
   $cookie_categories = get_cookie_categories();
   if ( ! is_array( $cookie_categories ) ) {

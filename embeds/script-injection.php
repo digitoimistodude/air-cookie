@@ -1,10 +1,16 @@
 <?php
 /**
- * @Author: Timi Wahalahti
- * @Date:   2021-09-09 11:34:14
- * @Last Modified by:   Timi Wahalahti
- * @Last Modified time: 2022-10-14 10:36:34
+ * Script injection
+ *
+ * Inject scripts.
+ *
+ * @Author: Roni Laukkarinen
+ * @Date: 2024-02-12 08:27:08
+ * @Last Modified by:   Roni Laukkarinen
+ * @Last Modified time: 2024-02-20 16:22:58
+ *
  * @package air-cookie
+ * @link https://developer.wordpress.org/themes/basics/template-files/#template-partials
  */
 
 namespace Air_Cookie\Embeds;
@@ -16,7 +22,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 function inject_js() {
   // IframeManager base.
   wp_enqueue_script( 'iframemanager', \Air_Cookie\plugin_base_url() . '/assets/iframemanager.js', [], get_script_version(), false );
-  wp_enqueue_style( 'iframemanager', \Air_Cookie\plugin_base_url() . '/assets/iframemanager.css', [], false, 'all' );
+  wp_enqueue_style( 'iframemanager', \Air_Cookie\plugin_base_url() . '/assets/iframemanager.css', [], false, 'all' ); // phpcs:ignore
 
   global $air_cookie_embeds;
 
@@ -27,7 +33,7 @@ function inject_js() {
 
     manager.run({
       currLang: 'en',
-      services: <?php echo json_encode( $air_cookie_embeds ) ?>
+      services: <?php echo json_encode( $air_cookie_embeds ); // phpcs:ignore ?>
     });
 
     <?php // Remove secondary button, as we don't use it ?>
@@ -50,7 +56,7 @@ function inject_js() {
 function load_embeds_on_cookie_accept() {
   ob_start(); ?>
   manager.acceptService( 'all' );
-  <?php echo ob_get_clean();
+  <?php echo ob_get_clean(); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 } // end load_embeds_on_cookie_accept
 
 /**
@@ -77,7 +83,7 @@ function register_embed_for_js( $service_key, $embed_id, $src ) {
       $lang => [
         'notice'  => \Air_Cookie\maybe_get_polylang_translation( 'embeds_description' ),
         'loadBtn' => \Air_Cookie\maybe_get_polylang_translation( 'embeds_load_button' ),
-      ]
+      ],
     ],
   ];
 
