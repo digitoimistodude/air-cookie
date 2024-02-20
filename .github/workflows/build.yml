@@ -1,8 +1,8 @@
 # @Author: Roni Laukkarinen
 # @Date:   2023-02-15 17:39:37
 # @Last Modified by:   Roni Laukkarinen
-# @Last Modified time: 2024-02-20 16:30:01
-name: PHP
+# @Last Modified time: 2024-02-20 17:19:50
+name: Build
 
 on: [push, pull_request]
 
