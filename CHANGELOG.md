@@ -1,3 +1,8 @@
+### 1.2.6rc: 2023-02-20
+
+* Unit test fixes
+* Bump tested WordPress version up to 6.4.3
+
 ### 1.2.5: 2023-02-20
 
 * Add unit tests
