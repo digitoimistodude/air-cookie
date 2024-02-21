@@ -2,6 +2,7 @@
 
 * Unit test fixes
 * Bump tested WordPress version up to 6.4.3
+* More fixes for db query in record_consent
 
 ### 1.2.5: 2023-02-20
 
