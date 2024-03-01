@@ -72,15 +72,20 @@ function inject_js() {
       }
     <?php endif; ?>
 
+      <?php // Add functions to handle changes ?>
       const ccOnChanges = {
         onFirstConsent: () => {
           ccOnAccept();
         },
         onChange: () => {
           ccOnChange();
+
+          <?php // Fixes: Embeds were allowed even when you removed embeds from consent.  ?>
+          if ( ! CookieConsent.getCookie( 'categories' ).includes('embeds') ) {
+            manager.rejectService('all');
+          }
         }
       }
-      <?php // Run the Cookie Consent at last. ?>
       airCookieSettings = Object.assign(airCookieSettings, ccOnChanges);
 
       <?php // Run the Cookie Consent at last. ?>
@@ -99,8 +104,8 @@ function inject_js() {
       <?php // Set visitor identification if not set already. ?>
       if ( null === CookieConsent.getCookie( 'data' ) || ! ( "visitorid" in CookieConsent.getCookie( 'data' ) ) ) {
         CookieConsent.setCookieData({ value: {
-          data: {visitorid: '<?php echo wp_generate_uuid4(); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>', mode: 'update'}
-        } });
+          visitorid: '<?php echo wp_generate_uuid4(); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>', mode: 'update'}
+        });
       }
 
       <?php // REST API request to record user consent. ?>
@@ -110,7 +115,7 @@ function inject_js() {
       xhr.send( JSON.stringify( {
         visitorid: CookieConsent.getCookie( 'data' ).visitorid,
         revision: CookieConsent.getCookie( 'revision' ),
-        level: preferences,
+        level: CookieConsent.getCookie( 'categories' ),
       } ) );
     }
 
@@ -123,17 +128,17 @@ function inject_js() {
         var accepted = e.target.getAttribute('data-aircookie-accept');
 
         if ( 'all' === accepted ) {
-          cc.accept('all');
+          CookieConsent.acceptCategory('all')
         } else {
           <?php // Get previously accepted categories and fallback to necessary if not accepted previously. ?>
-          var accepted_prev = cc.get('level');
+          var accepted_prev = CookieConsent.getCookie('level');
           if ( 'undefined' === typeof accepted_prev ) {
             accepted_prev = [ 'necessary' ];
-            cc.hide();
+            CookieConsent.hide();
           }
 
           accepted_prev.push( accepted );
-          cc.accept( accepted_prev );
+          CookieConsent.acceptCategory( accepted_prev );
         }
 
         <?php // Remove all elements that have accept-category action specified. ?>
@@ -162,7 +167,7 @@ function do_category_js( $category ) {
   $event_key = "air_cookie_{$category_key}";
 
   ob_start(); ?>
-  if ( preferences.acceptedCategories.includes( '<?php echo $category_key; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>' ) ) {
+  if ( CookieConsent.getCookie( 'categories' ).includes( '<?php echo $category_key; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>' ) ) {
     <?php // Remove all elements that have accept-category action specified. ?>
     var elements = document.querySelectorAll('[data-aircookie-remove-on="accept-<?php echo $category_key; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>"]');
     for (var i = 0; i < elements.length; i++) {
