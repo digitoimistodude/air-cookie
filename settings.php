@@ -2,8 +2,8 @@
 /**
  * @Author: Timi Wahalahti
  * @Date:   2021-08-20 14:17:57
- * @Last Modified by:   Roni Laukkarinen
- * @Last Modified time: 2024-02-20 16:30:37
+ * @Last Modified by:   Jesse Raitapuro (Digiaargh)
+ * @Last Modified time: 2024-03-01 17:26:00
  *
  * @package air-cookie
  */
@@ -26,20 +26,43 @@ function get_settings() {
 
   // Default settings.
   $settings = [
-    'cookie_name'       => 'air_cookie',
     'revision'          => $categories_version, // use version number to invalidate if categories change
     // 'theme_css'         => plugin_base_url() . '/assets/cookieconsent.css',
-    'cookie_expiration' => 182, // in days, 182 days = 6 months
-    'auto_language'     => false,
-    'current_lang'      => $lang,
-    'autorun'           => true,
-    'page_scripts'      => true,
-    'delay'             => '0',
-    'gui_options'       => [
-      'consent_modal' => [
-        'layout'    => 'box',
-        'position'  => 'bottom left',
+
+    'cookie'                => [
+      'name' => 'air_cookie',
+      'expiresAfterDays' => 182,// in days, 182 days = 6 months
+    ],
+
+    'guiOptions'       => [
+      'consentModal' => [
+        'layout'    => 'cloud inline',
+        'position'  => 'bottom center',
+        'equalWeightButtons' => true,
+        'flipButtons'        => false,
       ],
+
+      'preferencesModal' => [
+        'layout'    => 'box',
+        'equalWeightButtons' => true,
+        'flipButtons'        => false,
+      ],
+    ],
+    //KESKEN JÄIN TÄHÄN
+    'language' => [
+      'default' => $lang,
+       'translations'   => [
+        $lang   => [
+          
+        ]
+       ]
+        ],
+
+    'categories' => [
+      'necessary' => [
+        'enabled' => true,
+        'readOnly' => true
+      ]
     ],
   ];
 
@@ -58,24 +81,20 @@ function get_settings() {
   }
 
   // Add text strings for the modals.
-  $settings['languages'][ $lang ] = [
-    'consent_modal'       => [
+  $settings['language']['translations'][ $lang ] = [
+    'consentModal'       => [
       'title'             => maybe_get_polylang_translation( 'consent_modal_title' ),
       'description'       => maybe_get_polylang_translation( 'consent_modal_description' ),
-      'primary_btn'       => [
-        'text'            => maybe_get_polylang_translation( 'consent_modal_primary_btn_text' ),
-        'role'            => 'accept_all',
-      ],
-      'secondary_btn'     => [
-        'text'            => maybe_get_polylang_translation( 'consent_modal_secondary_btn_text' ),
-        'role'            => 'accept_necessary',
-      ],
-    ],
-    'settings_modal'      => [
+      'acceptAllBtn'      => maybe_get_polylang_translation( 'consent_modal_primary_btn_text' ),
+      'acceptNecessaryBtn'  => maybe_get_polylang_translation( 'consent_modal_secondary_btn_text' ),
+      'showPreferencesBtn'  => maybe_get_polylang_translation( 'settings_modal_title' ),
+      'footer' => 'test',
+],
+    'preferencesModal'      => [
       'title'             => maybe_get_polylang_translation( 'settings_modal_title' ),
-      'save_settings_btn' => maybe_get_polylang_translation( 'settings_modal_save_settings_btn' ),
-      'accept_all_btn'    => maybe_get_polylang_translation( 'settings_modal_accept_all_btn' ),
-      'blocks'            => wp_parse_args( get_cookie_categories_for_settings( $lang ),
+      'savePreferencesBtn' => maybe_get_polylang_translation( 'settings_modal_save_settings_btn' ),
+      'acceptAllBtn'    => maybe_get_polylang_translation( 'settings_modal_accept_all_btn' ),
+      'sections'            => wp_parse_args( get_cookie_categories_for_settings( $lang ),
         [
           [
             'title'         => maybe_get_polylang_translation( 'settings_modal_big_title' ),
@@ -85,6 +104,24 @@ function get_settings() {
       ),
     ],
   ];
+
+  $cookie_categories = get_cookie_categories();
+
+  if ( ! is_array( $cookie_categories ) ) {
+    return;
+  }
+
+  // Loop categories to transfrom the markup for categories
+  foreach ( $cookie_categories as $group ) {
+    $key = $group['key'];
+    $enabled = $group['enabled'];
+    $readOnly = $group['readonly'];
+     // Add text strings for the modals.
+    $settings['categories'][ $key ] = [
+      'enabled' => $group['enabled'],
+      'readOnly' => $group['readonly']
+    ];
+  }
 
   // Allow filtering the whole settings aray with text strings included.
   return apply_filters( 'air_cookie\settings_all', $settings );
@@ -158,14 +195,19 @@ function get_cookie_categories_for_settings( $lang ) { // phpcs:ignore
   foreach ( $cookie_categories as $group ) {
     $key = $group['key'];
 
+    $enabled = $group['enabled'];
+    $readOnly = $group['readonly'];
+
+     // Add text strings for the modals.
+    $settings['categories'][ $key ] = [
+      'enabled' => $group['enabled'],
+      'readOnly' => $group['readonly']
+    ];
+
     $return[] = [
       'title'       => $group['title'],
       'description' => $group['description'],
-      'toggle'      => [
-        'value'       => $key,
-        'enabled'     => isset( $group['enabled'] ) ? $group['enabled'] : false,
-        'readonly'    => isset( $group['readonly'] ) ? $group['readonly'] : false,
-      ],
+      'linkedCategory'      => $key,
     ];
   }
 
