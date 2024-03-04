@@ -33,17 +33,16 @@ function inject_js() {
   // This is our own function, not WordPress deprecated core function.
   $settings = get_settings(); // phpcs:ignore WordPress.WP.DeprecatedFunctions.get_settingsFound
   if ( ! is_array( $settings ) ) {
-    return;
+		return;
   }
 
   // Cookie Consent javascript base.
-  wp_enqueue_script( 'cookieconsent', plugin_base_url() . '/assets/cookieconsent.js', [], get_script_version(), 
+  wp_enqueue_script( 'cookieconsent', plugin_base_url() . '/assets/cookieconsent.js', [], get_script_version(),
   array(
     'in_footer' => true,
     'strategy'  => 'defer',
-  ) 
+  )
 );
-
 
   // Get cookie categories
   $cookie_categories = get_cookie_categories();
@@ -70,6 +69,25 @@ function inject_js() {
           echo do_category_js( $cookie_category ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
         } ?>
       }
+
+      <?php // Function to detect and change regex cookies ?>
+      function checkRegexCookies(categories) {
+          for (let categoryName in categories) {
+              let category = categories[categoryName];
+              <?php // Check if the category has cookies specified ?>
+              if (category.autoClear) {
+                  category.autoClear.cookies.forEach(function(cookie) {
+                      <?php // Regex pattern for ^(*) ?>
+                      let cookie_regex_check = /\^\(.*\)/;
+                      if (cookie_regex_check.test(cookie.name) === true ) {
+                          <?php // Replace regular string with regex object (https://cookieconsent.orestbida.com/reference/configuration-reference.html#category-autoclear) ?>
+                          cookie.name = new RegExp(cookie.name);
+                      }
+                  });
+              }
+          }
+      }
+
     <?php endif; ?>
 
       <?php // Add functions to handle changes ?>
@@ -80,13 +98,20 @@ function inject_js() {
         onChange: () => {
           ccOnChange();
 
-          <?php // Fixes: Embeds were allowed even when you removed embeds from consent.  ?>
+          <?php // Fixes: Embeds were allowed even when you removed embeds from consent. ?>
           if ( ! CookieConsent.getCookie( 'categories' ).includes('embeds') ) {
-            manager.rejectService('all');
+            if ( 'undefined' !== typeof manager ) {
+              manager.rejectService('all');
+            }
           }
         }
       }
       airCookieSettings = Object.assign(airCookieSettings, ccOnChanges);
+      <?php // end add functions to handle changes ?>
+
+      <?php // Check categories for regex cookies ?>
+      checkRegexCookies(airCookieSettings['categories']);
+          
 
       <?php // Run the Cookie Consent at last. ?>
       CookieConsent.run( airCookieSettings );
