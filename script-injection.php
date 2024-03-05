@@ -3,7 +3,7 @@
  * @Author: Timi Wahalahti
  * @Date:   2021-09-07 17:00:04
  * @Last Modified by:   Jesse Raitapuro (Digiaargh)
- * @Last Modified time: 2024-03-05 19:30:00
+ * @Last Modified time: 2024-03-05 22:45:00
  * @package air-cookie
  */
 
@@ -68,48 +68,8 @@ function inject_js() {
         <?php foreach ( $cookie_categories as $cookie_category ) {
           echo do_category_js( $cookie_category ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
         } ?>
-
-        <?php // Required for google consent mode if _ga or _gid cookies detected ?>
-        if (CookieConsent.getCookie( 'categories' ).includes('analytics') && googleAnalytics === true) {
-            window.dataLayer = window.dataLayer || [];
-            function gtag() { dataLayer.push(arguments); }
-            gtag('consent', 'update', { 
-              'ad_storage': 'denied',
-              'analytics_storage': 'granted',
-              'ad_user_data': 'denied',
-              'ad_personalization': 'denied'
-            });
-          }
-        <?php // Required for google consent mode if _ga or _gid cookies detected ?>
-        else if ( ! CookieConsent.getCookie( 'categories' ).includes('analytics') && googleAnalytics === true) {
-            window.dataLayer = window.dataLayer || [];
-            function gtag() { dataLayer.push(arguments); }
-            gtag('consent', 'update', { 
-              'ad_storage': 'denied',
-              'analytics_storage': 'denied',
-              'ad_user_data': 'denied',
-              'ad_personalization': 'denied'
-            }); 
-        }
       }
 
-      <?php // This event is triggered the very first time the user expresses their choice of consent — just like onFirstConsent — but also on every subsequent page load. https://cookieconsent.orestbida.com/advanced/callbacks-events.html ?>
-      function ccOnConsent() {
-        <?php // Required for google consent mode if _ga or _gid cookies detected ?>
-        if (CookieConsent.getCookie( 'categories' ).includes('analytics') && googleAnalytics === true) {
-          window.dataLayer = window.dataLayer || [];
-          function gtag() { dataLayer.push(arguments); }
-          gtag('consent', 'default', { 
-            'ad_storage': 'denied',
-            'analytics_storage': 'granted',
-            'ad_user_data': 'denied',
-            'ad_personalization': 'denied'
-          });
-        }
-      }
-
-      <?php // Variable for detecting if Google Analytics cookies are enabled ?>
-      var googleAnalytics = false;
       <?php // Function to detect and change regex cookies ?>
       function checkRegexCookies(categories) {
           for (let categoryName in categories) {
@@ -117,9 +77,6 @@ function inject_js() {
               <?php // Check if the category has cookies specified ?>
               if (category.autoClear) {
                   category.autoClear.cookies.forEach(function(cookie) {
-                      if (cookie.name && cookie.name.includes("_gid") || cookie.name.includes("_ga") ) {
-                              googleAnalytics = true;
-                      }
                       <?php // Regex pattern for ^(*) ?>
                       let cookie_regex_check = /\^\(.*\)/;
                       if (cookie_regex_check.test(cookie.name) === true ) {
@@ -137,10 +94,6 @@ function inject_js() {
       const ccOnChanges = {
         onFirstConsent: () => {
           ccOnAccept();
-        },
-
-        onConsent: () => {
-          ccOnConsent();
         },
 
         onChange: () => {
