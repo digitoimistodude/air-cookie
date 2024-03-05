@@ -3,7 +3,7 @@
  * @Author: Timi Wahalahti
  * @Date:   2021-09-07 17:00:04
  * @Last Modified by:   Jesse Raitapuro (Digiaargh)
- * @Last Modified time: 2024-03-01 17:26:00
+ * @Last Modified time: 2024-03-05 19:30:00
  * @package air-cookie
  */
 
@@ -33,17 +33,16 @@ function inject_js() {
   // This is our own function, not WordPress deprecated core function.
   $settings = get_settings(); // phpcs:ignore WordPress.WP.DeprecatedFunctions.get_settingsFound
   if ( ! is_array( $settings ) ) {
-    return;
+		return;
   }
 
   // Cookie Consent javascript base.
-  wp_enqueue_script( 'cookieconsent', plugin_base_url() . '/assets/cookieconsent.js', [], get_script_version(), 
+  wp_enqueue_script( 'cookieconsent', plugin_base_url() . '/assets/cookieconsent.js', [], get_script_version(),
   array(
     'in_footer' => true,
     'strategy'  => 'defer',
-  ) 
+  )
 );
-
 
   // Get cookie categories
   $cookie_categories = get_cookie_categories();
@@ -69,7 +68,69 @@ function inject_js() {
         <?php foreach ( $cookie_categories as $cookie_category ) {
           echo do_category_js( $cookie_category ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
         } ?>
+
+        <?php // Required for google consent mode if _ga or _gid cookies detected ?>
+        if (CookieConsent.getCookie( 'categories' ).includes('analytics') && googleAnalytics === true) {
+            window.dataLayer = window.dataLayer || [];
+            function gtag() { dataLayer.push(arguments); }
+            gtag('consent', 'update', { 
+              'ad_storage': 'denied',
+              'analytics_storage': 'granted',
+              'ad_user_data': 'denied',
+              'ad_personalization': 'denied'
+            });
+          }
+        <?php // Required for google consent mode if _ga or _gid cookies detected ?>
+        else if ( ! CookieConsent.getCookie( 'categories' ).includes('analytics') && googleAnalytics === true) {
+            window.dataLayer = window.dataLayer || [];
+            function gtag() { dataLayer.push(arguments); }
+            gtag('consent', 'update', { 
+              'ad_storage': 'denied',
+              'analytics_storage': 'denied',
+              'ad_user_data': 'denied',
+              'ad_personalization': 'denied'
+            }); 
+        }
       }
+
+      <?php // This event is triggered the very first time the user expresses their choice of consent — just like onFirstConsent — but also on every subsequent page load. https://cookieconsent.orestbida.com/advanced/callbacks-events.html ?>
+      function ccOnConsent() {
+        <?php // Required for google consent mode if _ga or _gid cookies detected ?>
+        if (CookieConsent.getCookie( 'categories' ).includes('analytics') && googleAnalytics === true) {
+          window.dataLayer = window.dataLayer || [];
+          function gtag() { dataLayer.push(arguments); }
+          gtag('consent', 'default', { 
+            'ad_storage': 'denied',
+            'analytics_storage': 'granted',
+            'ad_user_data': 'denied',
+            'ad_personalization': 'denied'
+          });
+        }
+      }
+
+      <?php // Variable for detecting if Google Analytics cookies are enabled ?>
+      var googleAnalytics = false;
+      <?php // Function to detect and change regex cookies ?>
+      function checkRegexCookies(categories) {
+          for (let categoryName in categories) {
+              let category = categories[categoryName];
+              <?php // Check if the category has cookies specified ?>
+              if (category.autoClear) {
+                  category.autoClear.cookies.forEach(function(cookie) {
+                      if (cookie.name && cookie.name.includes("_gid") || cookie.name.includes("_ga") ) {
+                              googleAnalytics = true;
+                      }
+                      <?php // Regex pattern for ^(*) ?>
+                      let cookie_regex_check = /\^\(.*\)/;
+                      if (cookie_regex_check.test(cookie.name) === true ) {
+                          <?php // Replace regular string with regex object (https://cookieconsent.orestbida.com/reference/configuration-reference.html#category-autoclear) ?>
+                          cookie.name = new RegExp(cookie.name);
+                      }
+                  });
+              }
+          }
+      }
+
     <?php endif; ?>
 
       <?php // Add functions to handle changes ?>
@@ -77,18 +138,29 @@ function inject_js() {
         onFirstConsent: () => {
           ccOnAccept();
         },
+
+        onConsent: () => {
+          ccOnConsent();
+        },
+
         onChange: () => {
           ccOnChange();
 
-          <?php // Fixes: Embeds were allowed even when you removed embeds from consent.  ?>
+          <?php // Fixes: Embeds were allowed even when you removed embeds from consent. ?>
           if ( ! CookieConsent.getCookie( 'categories' ).includes('embeds') ) {
-            if ( 'undefined' !== typeof manager ) {
+            if ( typeof manager !== 'undefined' ) {
               manager.rejectService('all');
+              document.cookie = 'air_cookie_embeds' + '=; Max-Age=0; path=/';
             }
           }
         }
       }
       airCookieSettings = Object.assign(airCookieSettings, ccOnChanges);
+      <?php // end add functions to handle changes ?>
+
+      <?php // Check categories for regex cookies and convert them before running consent ?>
+      checkRegexCookies(airCookieSettings['categories']);
+          
 
       <?php // Run the Cookie Consent at last. ?>
       CookieConsent.run( airCookieSettings );
@@ -131,7 +203,15 @@ function inject_js() {
 
         if ( 'all' === accepted ) {
           CookieConsent.acceptCategory('all')
-        } else {
+
+          if ( CookieConsent.getCookie( 'categories' ).includes('embeds') ) {
+            if ( typeof manager !== 'undefined' ) {
+              manager.acceptService('all');
+            }
+          }
+        } 
+        
+        else {
           <?php // Get previously accepted categories and fallback to necessary if not accepted previously. ?>
           var accepted_prev = CookieConsent.getCookie('level');
           if ( 'undefined' === typeof accepted_prev ) {
@@ -141,6 +221,12 @@ function inject_js() {
 
           accepted_prev.push( accepted );
           CookieConsent.acceptCategory( accepted_prev );
+
+          if ( CookieConsent.getCookie( 'categories' ).includes('embeds') ) {
+            if ( typeof manager !== 'undefined' ) {
+              manager.acceptService('all');
+            }
+          }
         }
 
         <?php // Remove all elements that have accept-category action specified. ?>

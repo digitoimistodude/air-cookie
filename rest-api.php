@@ -46,13 +46,13 @@ function record_consent( $request ) {
   ] );
 
   // Check if cookie_revision and cookie_value has content
-  if ( empty( $table_name ) || empty( $data->data->visitorid ) || empty( $data->revision ) ) {
+  if ( empty( $table_name ) || empty( $data->visitorid ) || empty( $data->revision ) ) {
     return;
   }
 
   // Try if the user consent for this revision and levels has been already recorded
   // Test query: SELECT id FROM wp_air_cookie WHERE visitor_id = 'f284009a-ace9-42e7-a5ef-42b065a9184c' AND cookie_revision = '2412150750' AND cookie_value = 'a:4:{i:0;s:9:"necessary";i:1;s:10:"functional";i:2;s:9:"analytics";i:3;s:6:"embeds";}'
-  $exists = $wpdb->get_row( $wpdb->prepare( "SELECT id FROM {$table_name} WHERE visitor_id = %s AND cookie_revision = %s AND cookie_value = %s", $data->data->visitorid, $data->revision, $cookie_value ) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQLPlaceholders.QuotedSimplePlaceholder, WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+  $exists = $wpdb->get_row( $wpdb->prepare( "SELECT id FROM {$table_name} WHERE visitor_id = %s AND cookie_revision = %s AND cookie_value = %s", $data->visitorid, $data->revision, $cookie_value ) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQLPlaceholders.QuotedSimplePlaceholder, WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 
   // Bail if the consent has been already recorded
   if ( null !== $exists ) {
@@ -63,7 +63,7 @@ function record_consent( $request ) {
   $inserted = $wpdb->insert( // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
     $table_name,
     [
-      'visitor_id'      => $data->data->visitorid,
+      'visitor_id'      => $data->visitorid,
       'cookie_revision' => $data->revision,
       'cookie_value'    => $cookie_value,
       'timestamp'       => wp_date( 'Y-m-d H:i:s' ),
