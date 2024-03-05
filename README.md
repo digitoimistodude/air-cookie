@@ -267,7 +267,7 @@ Setting | Value
 --- | ---
 cookie/name | air_cookie
 `revision` | _automatically calculated from cookie categories_
-`current_lang` | _value from polylang or locale option_
+settings/language/default | _value from polylang or locale option_
 guiOptions/consentModal/layout | cloud inline
 guiOptions/consentModal/position | bottom center
 
@@ -282,6 +282,7 @@ function my_modify_cc_settings( $settings ) {
 ```
 
 ```php
+// page_scripts not used in CC 3.0.0
 add_filter( 'air_cookie\settings\page_scripts', 'my_modify_cc_setting_page_scripts' );
 function my_modify_cc_setting_page_scripts( $setting ) {
   return false;
