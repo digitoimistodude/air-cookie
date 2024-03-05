@@ -44,7 +44,7 @@ function get_settings() {
       'preferencesModal' => [
         'layout'    => 'box',
         'equalWeightButtons' => true,
-        'flipButtons'        => true,
+        'flipButtons'        => false,
       ],
     ],
 
