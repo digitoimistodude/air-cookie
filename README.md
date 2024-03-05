@@ -8,12 +8,13 @@
 
 Air cookie provides simple cookie banner and management.
 
-Uses the [CookieConsent](https://orestbida.com/demo-projects/cookieconsent/) javascript plugin as a base, making its usage with WordPress easier.
+Uses the [CookieConsent V3.0.0](https://playground.cookieconsent.orestbida.com/) javascript plugin as a base, making its usage with WordPress easier.
 
 # Features
 
 - Simple and lightweight cookie banner
 - Third party embeds blocking until cookies accepted
+- Allows to remove cookies after changing consent
 - Easy to load scripts and execute custom javascript when cookies are accepted
 - Support for multiple different cookie categories
 - Polylang support for multilingual websites
@@ -50,7 +51,7 @@ function my_add_cookie_category( $categories ) {
     'enabled'     => false, // it is advised to have categories disabled by default
     'readonly'    => false, // user should have always control over categories
     'title'       => 'Ads',
-    'description' => 'This site uses external services to display ads, and they might set some cookies.',
+    'description' => 'This site uses external services to display ads, and they might set some cookies.', // Check how to remove cookies from example below.
   ];
 
   return $categories;
@@ -60,13 +61,39 @@ function my_add_cookie_category( $categories ) {
 When adding new categories, the function itself is responsile for handling the translations for title and description.
 
 There is also `air_cookie\categories\{category-key}` filter available to change the settings of indivual category.
+```php
+add_filter( 'air_cookie\categories\{analytics}', 'my_change_category_analytics' );
+function my_change_category_analytics( $edited_categoy ) {
+  $edited_category = [
+    'key'         => 'analytics',
+    'enabled'     => false,
+    'readonly'    => false,
+    'title'       => 'Analytics',
+    'description' => 'This site uses Google Analytics and it set some cookies. Read more about those from privacy policy.',
+    'autoClear'   => [ // Optional: autoclear allows you to define cookies, which will be removed after changing consent. Possible to use string or regex format (format is a bit different than official docs points out! https://cookieconsent.orestbida.com/reference/configuration-reference.html#category-autoclear).
+      'cookies'     => [
+          [
+            'name'  => '^(_ga)', // Match all cookies starting with '_ga',
+          ],
+          [
+            'name'  => '_gid',
+          ],
+        ],
+    ],
+  ];
+
+  return $edited_category;
+}
+```
+
+ℹ If you add Google Analytic Cookies (example above), Google consent mode: https://developers.google.com/tag-platform/security/guides/consent?consentmode=advanced#upgrade-consent-v2 is also active with analytics_storage granted, other options denied.
 
 ## Loading scripts after cookies have been accepted
 
 The easiest way to load external script is by altering the `script` tag to be:
 
 ```html
-<script type="text/plain" data-src="<uri-to-script>" data-cookiecategory="analytics" defer>
+<script type="text/plain" data-src="<uri-to-script>" data-category="analytics">
 ```
 
 The example above works only, if the script does not require any extra javascript to be executed after the script has been loaded. If you need to execute extra javascript, use the example below.
@@ -234,23 +261,22 @@ document.addEventListener( 'air_cookie', (event) => {
 
 ## Changing settings
 
-Setting names do follow the [CookieConsents option](https://github.com/orestbida/cookieconsent#apis--configuration-parameters) names. Some settings defaults are set to be different than the CookieConsent defaults:
+Setting names do follow the [CookieConsents option](https://cookieconsent.orestbida.com/reference/configuration-reference.html#configuration-reference) names. Some settings defaults are set to be different than the CookieConsent defaults:
 
 Setting | Value
 --- | ---
-`cookie_name` | air_cookie
-`current_lang` | _value from polylang or locale option_
+cookie/name | air_cookie
 `revision` | _automatically calculated from cookie categories_
-`page_scripts` | true
-gui_options/consent_modal/layout | box
-gui_options/consent_modal/position | bottom left
+`current_lang` | _value from polylang or locale option_
+guiOptions/consentModal/layout | cloud inline
+guiOptions/consentModal/position | bottom center
 
 You may change the settings with `air_cookie\settings` filter which contains all settings or `air_cookie\settings\{setting-name}` filter for indivual setting.
 
 ```php
 add_filter( 'air_cookie\settings', 'my_modify_cc_settings' );
 function my_modify_cc_settings( $settings ) {
-  $settings['page_scripts'] = false;
+  $settings['guiOptions']['consentModal']['position'] = "top right";
   return $settings;
 }
 ```
