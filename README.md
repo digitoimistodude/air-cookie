@@ -70,7 +70,7 @@ function my_change_category_analytics( $edited_categoy ) {
     'readonly'    => false,
     'title'       => 'Analytics',
     'description' => 'This site uses Google Analytics and it set some cookies. Read more about those from privacy policy.',
-    'autoClear'   => [ // Optional: autoclear allows you to define cookies, which will be removed after changing consent. Possible to use string or regex format (format is a bit different than official docs points out! https://cookieconsent.orestbida.com/reference/configuration-reference.html#category-autoclear).
+    'autoClear'   => [ // Optional: autoclear allows you to define cookies, which will be removed after changing consent. List all cookies to correct categories. Possible to use string or regex format (format is a bit different than official docs points out! https://cookieconsent.orestbida.com/reference/configuration-reference.html#category-autoclear).
       'cookies'     => [
           [
             'name'  => '^(_ga)', // Match all cookies starting with '_ga',
@@ -86,8 +86,37 @@ function my_change_category_analytics( $edited_categoy ) {
 }
 ```
 
-ℹ If you add Google Analytic Cookies (example above), Google consent mode: https://developers.google.com/tag-platform/security/guides/consent?consentmode=advanced#upgrade-consent-v2 is also active with analytics_storage granted, other options denied.
+ℹ If you add Google Analytics, remember [Google consent mode](https://developers.google.com/tag-platform/security/guides/consent?consentmode=advanced#upgrade-consent-v2) scripts.
 
+```javascript
+<script
+    type="text/plain"
+    data-category="analytics">
+    // Executed when the "analytics" category is enabled. Use this snippet after defining GA.
+    window.dataLayer = window.dataLayer || [];
+    function gtag() { dataLayer.push(arguments); }
+    gtag('consent', 'default', { 
+      'ad_storage': 'denied',
+      'analytics_storage': 'granted',
+      'ad_user_data': 'denied',
+      'ad_personalization': 'denied'
+    }); 
+</script>
+
+<script
+    type="text/plain"
+    data-category="!analytics">
+    // Executed when the "analytics" category is disabled. Use this snippet after defining GA.
+    window.dataLayer = window.dataLayer || [];
+    function gtag() { dataLayer.push(arguments); }
+    gtag('consent', 'update', { 
+      'ad_storage': 'denied',
+      'analytics_storage': 'denied',
+      'ad_user_data': 'denied',
+      'ad_personalization': 'denied'
+    }); 
+</script>
+```
 ## Loading scripts after cookies have been accepted
 
 The easiest way to load external script is by altering the `script` tag to be:

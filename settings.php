@@ -38,13 +38,13 @@ function get_settings() {
         'layout'    => 'box wide',
         'position'  => 'bottom left',
         'equalWeightButtons' => true,
-        'flipButtons'        => false,
+        'flipButtons'        => true,
       ],
 
       'preferencesModal' => [
         'layout'    => 'box',
-        'equalWeightButtons' => false,
-        'flipButtons'        => false,
+        'equalWeightButtons' => true,
+        'flipButtons'        => true,
       ],
     ],
 
