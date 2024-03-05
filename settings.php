@@ -3,7 +3,7 @@
  * @Author: Timi Wahalahti
  * @Date:   2021-08-20 14:17:57
  * @Last Modified by:   Jesse Raitapuro (Digiaargh)
- * @Last Modified time: 2024-03-05 19:30:00
+ * @Last Modified time: 2024-03-05 22:45:00
  *
  * @package air-cookie
  */
@@ -35,8 +35,8 @@ function get_settings() {
 
     'guiOptions'       => [
       'consentModal' => [
-        'layout'    => 'cloud inline',
-        'position'  => 'bottom center',
+        'layout'    => 'box wide',
+        'position'  => 'bottom left',
         'equalWeightButtons' => true,
         'flipButtons'        => false,
       ],
@@ -50,10 +50,10 @@ function get_settings() {
 
     'language' => [
       'default' => $lang,
-       'translations'   => [
+      'translations'   => [
         $lang   => []
-       ]
-        ],
+      ]
+    ],
 
     'categories' => [],
   ];
