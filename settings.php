@@ -62,42 +62,41 @@ function get_settings() {
 
   // Allow filtering individual settings.
   foreach ( $settings as $key => $setting ) {
-		$settings[ $key ] = apply_filters( "air_cookie\strings\{$key}", $setting );
+    $settings[ $key ] = apply_filters( "air_cookie\strings\{$key}", $setting );
   }
 
   // Get text strings, bail of none.
   $strings = get_strings();
   if ( ! is_array( $strings ) ) {
-		return false;
+    return false;
   }
 
-    // Loop categories to transfrom markup. For: settings->categories
-    $cookie_categories = get_cookie_categories();
-    if ( is_array( $cookie_categories ) ) {
+  // Loop categories to transfrom markup. For: settings->categories
+  $cookie_categories = get_cookie_categories();
+  if ( is_array( $cookie_categories ) ) {
+    foreach ( $cookie_categories as $group ) {
+    $key = $group['key'];
+    $enabled = $group['enabled'];
+    $readonly = $group['readonly'];
+    $autoclear = $group['autoClear'];
 
-      foreach ( $cookie_categories as $group ) {
-			$key = $group['key'];
-			$enabled = $group['enabled'];
-			$readonly = $group['readonly'];
-      $autoclear = $group['autoClear'];
-
-			// autoClear key is for detecting cookie table
-			if ( array_key_exists( 'autoClear', $group ) ) {
-				// Add text strings for the modals.
-				$settings['categories'][ $key ] = [
-          'enabled' => $enabled,
-          'readOnly' => $readonly,
-          'autoClear' => $autoclear,
-				];
-			}
-			else {
-			  $settings['categories'][ $key ] = [
-          'enabled' => $enabled,
-          'readOnly' => $readonly,
-			  ];
-			}
-}
+    // autoClear key is for detecting cookie table
+    if ( array_key_exists( 'autoClear', $group ) ) {
+      // Add text strings for the modals.
+      $settings['categories'][ $key ] = [
+        'enabled' => $enabled,
+        'readOnly' => $readonly,
+        'autoClear' => $autoclear,
+      ];
     }
+    else {
+      $settings['categories'][ $key ] = [
+        'enabled' => $enabled,
+        'readOnly' => $readonly,
+      ];
+      }
+    }
+  }
 
   // Add text strings for the modals.
   $settings['language']['translations'][ $lang ] = [
@@ -173,8 +172,8 @@ function get_cookie_categories() {
 
   // Loop individual categories to allow filtering those.
   foreach ($categories as $key => $category ) {
-		$category_key = $category['key'];
-		$categories[ $key ] = apply_filters( "air_cookie\categories\{$category_key}", $category );
+    $category_key = $category['key'];
+    $categories[ $key ] = apply_filters( "air_cookie\categories\{$category_key}", $category );
 }
   return $categories;
 } // end get_cookie_categories
@@ -189,18 +188,18 @@ function get_cookie_categories_for_sections( $lang ) { // phpcs:ignore
   // Get cookie categories, bail if no.
   $cookie_categories = get_cookie_categories();
   if ( ! is_array( $cookie_categories ) ) {
-		return;
+    return;
   }
 
   // Loop categories to transfrom the markup. For: preferencesModal->sections
   foreach ( $cookie_categories as $group ) {
-		$key = $group['key'];
-		 // Add text strings for the modals.
-		$return[] = [
-		'title'       => $group['title'],
-		'description' => $group['description'],
-		'linkedCategory'      => $key,
-		];
+    $key = $group['key'];
+     // Add text strings for the modals.
+    $return[] = [
+    'title'       => $group['title'],
+    'description' => $group['description'],
+    'linkedCategory'      => $key,
+    ];
   }
 
   return $return;
@@ -217,8 +216,8 @@ function get_cookie_categories_revision() {
   $categories = get_cookie_categories();
 
   foreach ( $categories as $key => $cat ) {
-		unset( $categories[ $key ]['title'] );
-		unset( $categories[ $key ]['description'] );
+    unset( $categories[ $key ]['title'] );
+    unset( $categories[ $key ]['description'] );
   }
 
   $hash = crc32( maybe_serialize( $categories ) );
