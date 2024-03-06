@@ -26,7 +26,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 function get_strings() {
   $strings = [
     'consent_modal_title'                 => 'Käytämme verkkosivuillamme evästeitä',
-    'consent_modal_description'           => 'Käytämme evästeitä käyttökokemuksesi parantamiseksi ja sivuston kehittämiseksi. Osaa evästeistä käytetään analytiikkaan, markkinointiin ja sen kohdentamiseen.<br/><br/><button type="button" data-cc="show-preferencesModal" class="cc-link">Lisätietoa ja asetukset</button>. Voit muuttaa asetuksia koska tahansa sivuston alaosassa olevasta linkistä.',
+    'consent_modal_description'           => 'Käytämme evästeitä käyttökokemuksesi parantamiseksi ja sivuston kehittämiseksi. Osaa evästeistä käytetään analytiikkaan, markkinointiin ja sen kohdentamiseen.<br/><br/>Voit muuttaa asetuksia koska tahansa sivuston alaosassa olevasta linkistä.',
     'consent_modal_primary_btn_text'      => 'Salli evästeet',
     'consent_modal_secondary_btn_text'    => 'Vain välttämättömät',
     'settings_modal_title'                => 'Lisätietoa ja evästeasetukset',
