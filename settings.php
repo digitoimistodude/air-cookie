@@ -26,19 +26,18 @@ function get_settings() {
 
   // Default settings.
   $settings = [
-    'revision'          => $categories_version, // use version number to invalidate if categories change
-
+    'revision'              => $categories_version, // use version number to invalidate if categories change
     'cookie'                => [
       'name' => 'air_cookie',
       'expiresAfterDays' => 182, // in days, 182 days = 6 months
     ],
 
-    'guiOptions'       => [
+    'guiOptions'     => [
       'consentModal' => [
-        'layout'    => 'box wide',
-        'position'  => 'bottom left',
-        'equalWeightButtons' => true,
-        'flipButtons'        => true,
+        'layout'     => 'box wide',
+        'position'   => 'bottom left',
+        'equalWeightButtons' => false,
+        'flipButtons'        => false,
       ],
 
       'preferencesModal' => [

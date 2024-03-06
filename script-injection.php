@@ -96,6 +96,15 @@ function inject_js() {
           ccOnAccept();
         },
 
+        onModalShow: () => {
+          <?php if ( apply_filters( 'air_cookie\styles\set_max_width', true ) ) : ?>
+            var cookieconsent_element = document.querySelector('div#cc-main div.cm');
+            if( typeof( cookieconsent_element ) != 'undefined' && cookieconsent_element != null ) {
+              cookieconsent_element.style = 'max-width: 40em;';
+            }
+          <?php endif; ?>
+        },
+
         onChange: () => {
           ccOnChange();
 
@@ -113,18 +122,9 @@ function inject_js() {
 
       <?php // Check categories for regex cookies and convert them before running consent ?>
       checkRegexCookies(airCookieSettings['categories']);
-          
-
+        
       <?php // Run the Cookie Consent at last. ?>
       CookieConsent.run( airCookieSettings );
-
-      const preferences = CookieConsent.getUserPreferences();
-    <?php if ( apply_filters( 'air_cookie\styles\set_max_width', true ) ) : ?>
-      var cookieconsent_element = document.querySelector('div#cc_div div#cm');
-      if( typeof( cookieconsent_element ) != 'undefined' && cookieconsent_element != null ) {
-        cookieconsent_element.style = 'max-width: 30em;';
-      }
-    <?php endif; ?>
 
     <?php // Function to set the visitor id if not already and send consent record request. ?>
     function airCookierecordConsent() {
