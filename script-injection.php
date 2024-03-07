@@ -68,6 +68,7 @@ function inject_js() {
         <?php foreach ( $cookie_categories as $cookie_category ) {
           echo do_category_js( $cookie_category ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
         } ?>
+        checkIframeConsent();
       }
 
       <?php // Function to detect and change regex cookies ?>
@@ -88,12 +89,29 @@ function inject_js() {
           }
       }
 
+      <?php // Fixes: issues with embedded content when changing consent. ?>
+      function checkIframeConsent() {
+        if ( typeof manager !== 'undefined' ) {
+            if ( ! CookieConsent.getCookie( 'categories' ).includes('embeds') ) {
+              manager.rejectService('all');
+              document.cookie = 'air_cookie_embeds' + '=; Max-Age=0; path=/';
+            }
+            else {
+              manager.acceptService('all');
+            }
+          }
+      }
+
     <?php endif; ?>
 
       <?php // Add functions to handle changes ?>
       const ccOnChanges = {
         onFirstConsent: () => {
           ccOnAccept();
+        },
+
+        onConsent: () => {
+          checkIframeConsent();
         },
 
         onModalShow: () => {
@@ -107,14 +125,6 @@ function inject_js() {
 
         onChange: () => {
           ccOnChange();
-
-          <?php // Fixes: Embeds were allowed even when you removed embeds from consent. ?>
-          if ( ! CookieConsent.getCookie( 'categories' ).includes('embeds') ) {
-            if ( typeof manager !== 'undefined' ) {
-              manager.rejectService('all');
-              document.cookie = 'air_cookie_embeds' + '=; Max-Age=0; path=/';
-            }
-          }
         }
       }
       airCookieSettings = Object.assign(airCookieSettings, ccOnChanges);
@@ -156,12 +166,6 @@ function inject_js() {
 
         if ( 'all' === accepted ) {
           CookieConsent.acceptCategory('all')
-
-          if ( CookieConsent.getCookie( 'categories' ).includes('embeds') ) {
-            if ( typeof manager !== 'undefined' ) {
-              manager.acceptService('all');
-            }
-          }
         } 
         
         else {
@@ -171,15 +175,8 @@ function inject_js() {
             accepted_prev = [ 'necessary' ];
             CookieConsent.hide();
           }
-
           accepted_prev.push( accepted );
           CookieConsent.acceptCategory( accepted_prev );
-
-          if ( CookieConsent.getCookie( 'categories' ).includes('embeds') ) {
-            if ( typeof manager !== 'undefined' ) {
-              manager.acceptService('all');
-            }
-          }
         }
 
         <?php // Remove all elements that have accept-category action specified. ?>
