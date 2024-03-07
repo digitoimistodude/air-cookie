@@ -41,13 +41,13 @@ function get_settings() {
       ],
 
       'preferencesModal' => [
-        'layout'    => 'box',
+        'layout'             => 'box',
         'equalWeightButtons' => true,
         'flipButtons'        => false,
       ],
     ],
 
-    'language' => [
+    'language'  => [
       'default' => $lang,
       'translations'   => [
         $lang   => []
@@ -71,32 +71,33 @@ function get_settings() {
     return false;
   }
 
-  // Loop categories to transfrom markup. For: settings->categories
-  $cookie_categories = get_cookie_categories();
-  if ( is_array( $cookie_categories ) ) {
-    foreach ( $cookie_categories as $group ) {
-    $key = $group['key'];
-    $enabled = $group['enabled'];
-    $readonly = $group['readonly'];
-    $autoclear = $group['autoClear'];
+    // Loop categories to transfrom markup. For: settings->categories
+    $cookie_categories = get_cookie_categories();
+    if ( is_array( $cookie_categories ) ) {
 
-    // autoClear key is for detecting cookie table
-    if ( array_key_exists( 'autoClear', $group ) ) {
-      // Add text strings for the modals.
-      $settings['categories'][ $key ] = [
-        'enabled' => $enabled,
-        'readOnly' => $readonly,
-        'autoClear' => $autoclear,
-      ];
-    }
-    else {
-      $settings['categories'][ $key ] = [
-        'enabled' => $enabled,
-        'readOnly' => $readonly,
-      ];
+      foreach ( $cookie_categories as $group ) {
+      $key = $group['key'];
+      $enabled = $group['enabled'];
+      $readonly = $group['readonly'];
+
+        // autoClear key is for detecting cookie table
+        if ( array_key_exists( 'autoClear', $group ) ) {
+          $autoclear = $group['autoClear'];
+          // Add text strings for the modals.
+          $settings['categories'][ $key ] = [
+            'enabled' => $enabled,
+            'readOnly' => $readonly,
+            'autoClear' => $autoclear,
+          ];
+        }
+        else {
+          $settings['categories'][ $key ] = [
+            'enabled' => $enabled,
+            'readOnly' => $readonly,
+          ];
+        }
       }
     }
-  }
 
   // Add text strings for the modals.
   $settings['language']['translations'][ $lang ] = [
@@ -106,7 +107,7 @@ function get_settings() {
       'acceptAllBtn'        => maybe_get_polylang_translation( 'consent_modal_primary_btn_text' ),
       'acceptNecessaryBtn'  => maybe_get_polylang_translation( 'consent_modal_secondary_btn_text' ),
       'showPreferencesBtn'  => maybe_get_polylang_translation( 'settings_modal_title' ),
-],
+    ],
     'preferencesModal'      => [
       'title'               => maybe_get_polylang_translation( 'settings_modal_title' ),
       'savePreferencesBtn'  => maybe_get_polylang_translation( 'settings_modal_save_settings_btn' ),
