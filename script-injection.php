@@ -94,7 +94,6 @@ function inject_js() {
         if ( typeof manager !== 'undefined' ) {
             if ( ! CookieConsent.getCookie( 'categories' ).includes('embeds') ) {
               manager.rejectService('all');
-              document.cookie = 'air_cookie_embeds' + '=; Max-Age=0; path=/';
             }
             else {
               manager.acceptService('all');
