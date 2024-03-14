@@ -5,6 +5,8 @@
 
   <!-- Set a description for this ruleset. -->
   <description>A custom set of code standard rules to check for WordPress themes.</description>
+  <exclude-pattern>*/vendor/*</exclude-pattern>
+  <exclude-pattern>*/plugin-update-checker/*</exclude-pattern>
 
   <!-- Include the WordPress ruleset, with exclusions. -->
   <rule ref="WordPress">
@@ -80,6 +82,6 @@
     <exclude name="Universal.WhiteSpace.PrecisionAlignment.Found" />
     <exclude name="Universal.Arrays.DisallowShortArraySyntax.Found" />
     <exclude name="Modernize.FunctionCalls.Dirname.FileConstant" />
-
+    <exclude name="WordPress.NamingConventions.ValidVariableName.VariableNotSnakeCase" />
   </rule>
 </ruleset>

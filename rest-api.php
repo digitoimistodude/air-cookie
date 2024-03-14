@@ -3,7 +3,7 @@
  * @Author: Timi Wahalahti
  * @Date:   2021-09-07 16:56:00
  * @Last Modified by:   Roni Laukkarinen
- * @Last Modified time: 2024-02-20 17:17:04
+ * @Last Modified time: 2024-03-14 13:38:00
  * @package air-cookie
  */
 
@@ -48,9 +48,16 @@ function record_consent( $request ) {
     return;
   }
 
-  // Try if the user consent for this revision and levels has been already recorded
-  // Test query: SELECT id FROM wp_air_cookie WHERE visitor_id = 'f284009a-ace9-42e7-a5ef-42b065a9184c' AND cookie_revision = '2412150750' AND cookie_value = 'a:4:{i:0;s:9:"necessary";i:1;s:10:"functional";i:2;s:9:"analytics";i:3;s:6:"embeds";}'
-  $exists = $wpdb->get_row( $wpdb->prepare( "SELECT id FROM {$table_name} WHERE visitor_id = %s AND cookie_revision = %s AND cookie_value = %s", $data->visitorid, $data->revision, $cookie_value ) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQLPlaceholders.QuotedSimplePlaceholder, WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+  // Check if the index exists
+  $index_exists = $wpdb->get_row( "SHOW INDEX FROM {$table_name} WHERE Key_name = 'idx_id_revision_value'" ); // phpcs:ignore
+
+  // CREATE INDEX idx_id_revision_value ON wp_air_cookie (visitor_id, cookie_revision, cookie_value);
+  if ( null === $index_exists ) {
+    $wpdb->query( "CREATE INDEX idx_id_revision_value ON {$table_name} (visitor_id, cookie_revision, cookie_value);" ); // phpcs:ignore
+  }
+
+  // Check if the user consent for this revision and levels has been already recorded
+  $exists = $wpdb->get_row( $wpdb->prepare( "SELECT id FROM {$table_name} WHERE visitor_id = %s AND cookie_revision = %s AND cookie_value = %s", $data->visitorid, $data->revision, $cookie_value ) ); // phpcs:ignore
 
   // Bail if the consent has been already recorded
   if ( null !== $exists ) {

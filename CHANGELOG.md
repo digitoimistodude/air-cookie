@@ -1,17 +1,21 @@
-### 1.2.6: 2023-02-21
+### 1.2.7: 2024-03-14
+
+* Add index for the database if it does not exist
+
+### 1.2.6: 2024-02-21
 
 * Unit test fixes
 * Bump tested WordPress version up to 6.4.3
 * More fixes for db query in record_consent
 
-### 1.2.5: 2023-02-20
+### 1.2.5: 2024-02-20
 
 * Add unit tests
 * Support PHP 8.3
 * Fix phpcs errors
 * Fix db query in record_consent
 
-### 1.2.4: 2023-02-12
+### 1.2.4: 2024-02-12
 
 * Change changelog format
 * Fix bunch of typos
