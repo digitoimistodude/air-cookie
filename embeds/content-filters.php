@@ -30,7 +30,7 @@ function iframe_embeds( $content ) {
     $src = substr( $match, $start, $end - $start );
 
     // Skip if already has been modified
-    if ( strpos( $match, 'data-cookiecategory' ) !== false ) {
+    if ( strpos( $match, 'data-cc' ) !== false ) {
       continue;
     }
 
@@ -84,7 +84,7 @@ function script_tag_embeds( $content ) {
     $content, $matches );
 
   foreach ( $matches[0] as $x => $match ) {
-    $adjusted = str_replace( ' src=', ' data-cookiecategory="' . $cookie_category . '" data-src=', $match );
+    $adjusted = str_replace( ' src=', ' data-cc="' . $cookie_category . '" data-src=', $match );
     $content = str_replace( $match, $adjusted, $content );
   }
 

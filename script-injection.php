@@ -2,8 +2,8 @@
 /**
  * @Author: Timi Wahalahti
  * @Date:   2021-09-07 17:00:04
- * @Last Modified by:   Roni Laukkarinen
- * @Last Modified time: 2024-02-20 16:32:36
+ * @Last Modified by:   Jesse Raitapuro (Digiaargh)
+ * @Last Modified time: 2024-03-05 22:45:00
  * @package air-cookie
  */
 
@@ -33,11 +33,16 @@ function inject_js() {
   // This is our own function, not WordPress deprecated core function.
   $settings = get_settings(); // phpcs:ignore WordPress.WP.DeprecatedFunctions.get_settingsFound
   if ( ! is_array( $settings ) ) {
-    return;
+		return;
   }
 
   // Cookie Consent javascript base.
-  wp_enqueue_script( 'cookieconsent', plugin_base_url() . '/assets/cookieconsent.js', [], get_script_version(), false );
+  wp_enqueue_script( 'cookieconsent', plugin_base_url() . '/assets/cookieconsent.js', [], get_script_version(),
+  array(
+    'in_footer' => true,
+    'strategy'  => 'defer',
+  )
+);
 
   // Get cookie categories
   $cookie_categories = get_cookie_categories();
@@ -45,14 +50,12 @@ function inject_js() {
   // Build our javascript to run the Cookie Consent.
   ob_start();
   ?>
-    var cc = initCookieConsent();
-
     <?php // Settings ?>
     airCookieSettings = <?php echo json_encode( apply_filters( 'air_cookie\settings', $settings ) ); // phpcs:ignore ?>
 
-    <?php // Allow adding categiry specific javascript to be runned when the category is accepted.
+    <?php // Allow adding category specific javascript to be runned when the category is accepted.
     if ( ! empty( $cookie_categories ) && is_array( $cookie_categories ) ) : ?>
-      airCookieSettings.onAccept = function() {
+      function ccOnAccept() {
         airCookierecordConsent();
 
         <?php foreach ( $cookie_categories as $cookie_category ) {
@@ -60,30 +63,85 @@ function inject_js() {
         } ?>
       }
 
-      airCookieSettings.onChange = function() {
+      function ccOnChange() {
         airCookierecordConsent();
-
         <?php foreach ( $cookie_categories as $cookie_category ) {
           echo do_category_js( $cookie_category ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
         } ?>
+        checkIframeConsent();
       }
+
+      <?php // Function to detect and change regex cookies ?>
+      function checkRegexCookies(categories) {
+          for (let categoryName in categories) {
+              let category = categories[categoryName];
+              <?php // Check if the category has cookies specified ?>
+              if (category.autoClear) {
+                  category.autoClear.cookies.forEach(function(cookie) {
+                      <?php // Regex pattern for ^(*) ?>
+                      let cookie_regex_check = /\^\(.*\)/;
+                      if (cookie_regex_check.test(cookie.name) === true ) {
+                          <?php // Replace regular string with regex object (https://cookieconsent.orestbida.com/reference/configuration-reference.html#category-autoclear) ?>
+                          cookie.name = new RegExp(cookie.name);
+                      }
+                  });
+              }
+          }
+      }
+
+      <?php // Fixes: issues with embedded content when changing consent. ?>
+      function checkIframeConsent() {
+        if ( typeof manager !== 'undefined' ) {
+            if ( ! CookieConsent.getCookie( 'categories' ).includes('embeds') ) {
+              manager.rejectService('all');
+            }
+            else {
+              manager.acceptService('all');
+            }
+          }
+      }
+
     <?php endif; ?>
 
-    <?php // Run the Cookie Consent at last. ?>
-    cc.run( airCookieSettings );
+      <?php // Add functions to handle changes ?>
+      const ccOnChanges = {
+        onFirstConsent: () => {
+          ccOnAccept();
+        },
 
-    <?php if ( apply_filters( 'air_cookie\styles\set_max_width', true ) ) : ?>
-      var cookieconsent_element = document.querySelector('div#cc_div div#cm');
-      if( typeof( cookieconsent_element ) != 'undefined' && cookieconsent_element != null ) {
-        cookieconsent_element.style = 'max-width: 30em;';
+        onConsent: () => {
+          checkIframeConsent();
+        },
+
+        onModalShow: () => {
+          <?php if ( apply_filters( 'air_cookie\styles\set_max_width', true ) ) : ?>
+            var cookieconsent_element = document.querySelector('div#cc-main div.cm');
+            if( typeof( cookieconsent_element ) != 'undefined' && cookieconsent_element != null ) {
+              cookieconsent_element.style = 'max-width: 40em;';
+            }
+          <?php endif; ?>
+        },
+
+        onChange: () => {
+          ccOnChange();
+        }
       }
-    <?php endif; ?>
+      airCookieSettings = Object.assign(airCookieSettings, ccOnChanges);
+      <?php // end add functions to handle changes ?>
+
+      <?php // Check categories for regex cookies and convert them before running consent ?>
+      checkRegexCookies(airCookieSettings['categories']);
+        
+      <?php // Run the Cookie Consent at last. ?>
+      CookieConsent.run( airCookieSettings );
 
     <?php // Function to set the visitor id if not already and send consent record request. ?>
     function airCookierecordConsent() {
       <?php // Set visitor identification if not set already. ?>
-      if ( null === cc.get( 'data' ) || ! ( "visitorid" in cc.get( 'data' ) ) ) {
-        cc.set( 'data', {value: {visitorid: '<?php echo wp_generate_uuid4(); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>'}, mode: 'update'} );
+      if ( null === CookieConsent.getCookie( 'data' ) || ! ( "visitorid" in CookieConsent.getCookie( 'data' ) ) ) {
+        CookieConsent.setCookieData({ value: {
+          visitorid: '<?php echo wp_generate_uuid4(); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>', mode: 'update'}
+        });
       }
 
       <?php // REST API request to record user consent. ?>
@@ -91,9 +149,9 @@ function inject_js() {
       xhr.open( 'POST', '<?php echo esc_url( rest_url( 'air-cookie/v1/consent' ) ); ?>', true );
       xhr.setRequestHeader( 'X-WP-Nonce', '<?php echo esc_attr( wp_create_nonce( 'wp_rest' ) ); ?>');
       xhr.send( JSON.stringify( {
-        visitorid: cc.get( 'data' ).visitorid,
-        revision: cc.get( 'revision' ),
-        level: cc.get( 'level' ),
+        visitorid: CookieConsent.getCookie( 'data' ).visitorid,
+        revision: CookieConsent.getCookie( 'revision' ),
+        level: CookieConsent.getCookie( 'categories' ),
       } ) );
     }
 
@@ -106,17 +164,18 @@ function inject_js() {
         var accepted = e.target.getAttribute('data-aircookie-accept');
 
         if ( 'all' === accepted ) {
-          cc.accept('all');
-        } else {
+          CookieConsent.acceptCategory('all')
+        } 
+        
+        else {
           <?php // Get previously accepted categories and fallback to necessary if not accepted previously. ?>
-          var accepted_prev = cc.get('level');
+          var accepted_prev = CookieConsent.getCookie('level');
           if ( 'undefined' === typeof accepted_prev ) {
             accepted_prev = [ 'necessary' ];
-            cc.hide();
+            CookieConsent.hide();
           }
-
           accepted_prev.push( accepted );
-          cc.accept( accepted_prev );
+          CookieConsent.acceptCategory( accepted_prev );
         }
 
         <?php // Remove all elements that have accept-category action specified. ?>
@@ -145,8 +204,7 @@ function do_category_js( $category ) {
   $event_key = "air_cookie_{$category_key}";
 
   ob_start(); ?>
-
-  if ( cc.allowedCategory( '<?php echo $category_key; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>' ) ) {
+  if ( CookieConsent.getCookie( 'categories' ).includes( '<?php echo $category_key; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>' ) ) {
     <?php // Remove all elements that have accept-category action specified. ?>
     var elements = document.querySelectorAll('[data-aircookie-remove-on="accept-<?php echo $category_key; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>"]');
     for (var i = 0; i < elements.length; i++) {

@@ -28,7 +28,7 @@ $air_cookie_embeds = [];
  * @since 0.1.0
  */
 function get_script_version() {
-  return '1.0';
+  return '1.2.5';
 } // end get_script_version
 
 /**
