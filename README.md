@@ -8,12 +8,13 @@
 
 Air cookie provides simple cookie banner and management.
 
-Uses the [CookieConsent](https://orestbida.com/demo-projects/cookieconsent/) javascript plugin as a base, making its usage with WordPress easier.
+Uses the [CookieConsent V3.0.0](https://playground.cookieconsent.orestbida.com/) javascript plugin as a base, making its usage with WordPress easier.
 
 # Features
 
 - Simple and lightweight cookie banner
 - Third party embeds blocking until cookies accepted
+- Allows to remove cookies after changing consent
 - Easy to load scripts and execute custom javascript when cookies are accepted
 - Support for multiple different cookie categories
 - Polylang support for multilingual websites
@@ -27,15 +28,15 @@ Uses the [CookieConsent](https://orestbida.com/demo-projects/cookieconsent/) jav
 Remember to add a link into the footer, which allows opening the cookie settings anytime!
 
 ```html
-<a href="#" data-cc="c-settings" class="cc-link">Cookie settings</a>
+<button type="button" data-cc="show-preferencesModal">View cookie settings</button>
 ```
 
 If you have Polylang installed and active, use
 
 ```html
-<a href="#" data-cc="c-settings" class="cc-link">
+<button type="button" data-cc="show-preferencesModal">
   <?php echo pll_translate_string( 'Evästeasetukset', pll_current_language() ); ?>
-</a>
+</button>
 ```
 
 ## Cookie categories
@@ -50,7 +51,7 @@ function my_add_cookie_category( $categories ) {
     'enabled'     => false, // it is advised to have categories disabled by default
     'readonly'    => false, // user should have always control over categories
     'title'       => 'Ads',
-    'description' => 'This site uses external services to display ads, and they might set some cookies.',
+    'description' => 'This site uses external services to display ads, and they might set some cookies.', // Check how to remove cookies from example below.
   ];
 
   return $categories;
@@ -60,13 +61,68 @@ function my_add_cookie_category( $categories ) {
 When adding new categories, the function itself is responsile for handling the translations for title and description.
 
 There is also `air_cookie\categories\{category-key}` filter available to change the settings of indivual category.
+```php
+add_filter( 'air_cookie\categories\{analytics}', 'my_change_category_analytics' );
+function my_change_category_analytics( $edited_categoy ) {
+  $edited_category = [
+    'key'         => 'analytics',
+    'enabled'     => false,
+    'readonly'    => false,
+    'title'       => 'Analytics',
+    'description' => 'This site uses Google Analytics and it set some cookies. Read more about those from privacy policy.',
+    'autoClear'   => [ // Optional: autoclear allows you to define cookies, which will be removed after changing consent. List all cookies to correct categories. Possible to use string or regex format (format is a bit different than official docs points out! https://cookieconsent.orestbida.com/reference/configuration-reference.html#category-autoclear).
+      'cookies'     => [
+          [
+            'name'  => '^(_ga)', // Match all cookies starting with '_ga',
+          ],
+          [
+            'name'  => '_gid',
+          ],
+        ],
+    ],
+  ];
 
+  return $edited_category;
+}
+```
+
+ℹ If you add Google Analytics, remember [Google consent mode](https://developers.google.com/tag-platform/security/guides/consent?consentmode=advanced#upgrade-consent-v2) scripts.
+
+```javascript
+<script
+    type="text/plain"
+    data-category="analytics">
+    // Executed when the "analytics" category is enabled. Use this snippet after defining GA.
+    window.dataLayer = window.dataLayer || [];
+    function gtag() { dataLayer.push(arguments); }
+    gtag('consent', 'default', { 
+      'ad_storage': 'denied',
+      'analytics_storage': 'granted',
+      'ad_user_data': 'denied',
+      'ad_personalization': 'denied'
+    }); 
+</script>
+
+<script
+    type="text/plain"
+    data-category="!analytics">
+    // Executed when the "analytics" category is disabled. Use this snippet after defining GA.
+    window.dataLayer = window.dataLayer || [];
+    function gtag() { dataLayer.push(arguments); }
+    gtag('consent', 'update', { 
+      'ad_storage': 'denied',
+      'analytics_storage': 'denied',
+      'ad_user_data': 'denied',
+      'ad_personalization': 'denied'
+    }); 
+</script>
+```
 ## Loading scripts after cookies have been accepted
 
 The easiest way to load external script is by altering the `script` tag to be:
 
 ```html
-<script type="text/plain" data-src="<uri-to-script>" data-cookiecategory="analytics" defer>
+<script type="text/plain" data-src="<uri-to-script>" data-category="analytics">
 ```
 
 The example above works only, if the script does not require any extra javascript to be executed after the script has been loaded. If you need to execute extra javascript, use the example below.
@@ -75,7 +131,7 @@ The example above works only, if the script does not require any extra javascrip
 add_action( 'air_cookie_js_analytics', 'my_add_js_for_analytics' );
 function my_add_js_for_analytics() {
   ob_start(); ?>
-    cc.loadScript( 'https://www.google-analytics.com/analytics.js', function() {
+    CookieConsent.loadScript( 'https://www.google-analytics.com/analytics.js', function() {
       ga('create', 'UA-XXXXXXXX-Y', 'auto');  //replace UA-XXXXXXXX-Y with your tracking code
       ga('send', 'pageview');
     } );
@@ -109,7 +165,7 @@ function my_add_js_for_analytics() {
 add_action( 'air_cookie_js_analytics', 'my_add_js_for_analytics' );
 function my_add_js_for_analytics() {
   ob_start(); ?>
-    cc.loadScript( 'https://www.googletagmanager.com/gtag/js?id=UA-XXXXXXXXX-X', function() {
+    CookieConsent.loadScript( 'https://www.googletagmanager.com/gtag/js?id=UA-XXXXXXXXX-X', function() {
       window.dataLayer = window.dataLayer || [];
       function gtag(){dataLayer.push(arguments);}
       gtag('js', new Date());
@@ -125,7 +181,7 @@ function my_add_js_for_analytics() {
 add_action( 'air_cookie_js_analytics', 'my_add_js_for_analytics' );
 function my_add_js_for_analytics() {
   ob_start(); ?>
-    cc.loadScript( 'https://www.google-analytics.com/analytics.js', function() {
+    CookieConsent.loadScript( 'https://www.google-analytics.com/analytics.js', function() {
       ga('create', 'UA-XXXXXXXX-Y', 'auto');  //replace UA-XXXXXXXX-Y with your tracking code
       ga('send', 'pageview');
     } );
@@ -153,7 +209,7 @@ add_action( 'air_cookie_js_functional', function() {
   }
 
   ob_start(); ?>
-    cc.loadScript( '<?php echo esc_url( $stampedio_url ) ?>' );
+    CookieConsent.loadScript( '<?php echo esc_url( $stampedio_url ) ?>' );
   <?php echo ob_get_clean(); // phpcs:ignore
 } ); // end woocommerce_ga_integration_script_for_air_cookie
 
@@ -182,7 +238,7 @@ function woocommerce_stampedio_script_for_air_cookie() {
   }
 
   ob_start(); ?>
-    cc.loadScript( '<?php echo esc_url( $stampedio_url ) ?>' );
+    CookieConsent.loadScript( '<?php echo esc_url( $stampedio_url ) ?>' );
   <?php echo ob_get_clean(); // phpcs:ignore
 } // end woocommerce_ga_integration_script_for_air_cookie
 ```
@@ -207,7 +263,7 @@ function my_add_js_for_<category-key>() {
 If you wish to use your own `script` tag, it is possible with example below
 
 ```javascript
-<script type="text/plain" data-cookiecategory="<category-key>">
+<script type="text/plain" data-category="<category-key>">
   console.log( 'Hello world!' );
 </script>
 ```
@@ -234,28 +290,28 @@ document.addEventListener( 'air_cookie', (event) => {
 
 ## Changing settings
 
-Setting names do follow the [CookieConsents option](https://github.com/orestbida/cookieconsent#apis--configuration-parameters) names. Some settings defaults are set to be different than the CookieConsent defaults:
+Setting names do follow the [CookieConsents option](https://cookieconsent.orestbida.com/reference/configuration-reference.html#configuration-reference) names. Some settings defaults are set to be different than the CookieConsent defaults:
 
 Setting | Value
 --- | ---
-`cookie_name` | air_cookie
-`current_lang` | _value from polylang or locale option_
+cookie/name | air_cookie
 `revision` | _automatically calculated from cookie categories_
-`page_scripts` | true
-gui_options/consent_modal/layout | box
-gui_options/consent_modal/position | bottom left
+settings/language/default | _value from polylang or locale option_
+guiOptions/consentModal/layout | cloud inline
+guiOptions/consentModal/position | bottom center
 
 You may change the settings with `air_cookie\settings` filter which contains all settings or `air_cookie\settings\{setting-name}` filter for indivual setting.
 
 ```php
 add_filter( 'air_cookie\settings', 'my_modify_cc_settings' );
 function my_modify_cc_settings( $settings ) {
-  $settings['page_scripts'] = false;
+  $settings['guiOptions']['consentModal']['position'] = "top right";
   return $settings;
 }
 ```
 
 ```php
+// page_scripts not used in CC 3.0.0
 add_filter( 'air_cookie\settings\page_scripts', 'my_modify_cc_setting_page_scripts' );
 function my_modify_cc_setting_page_scripts( $setting ) {
   return false;

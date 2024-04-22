@@ -72,7 +72,7 @@ function record_consent( $request ) {
       'cookie_revision' => $data->revision,
       'cookie_value'    => $cookie_value,
       'timestamp'       => wp_date( 'Y-m-d H:i:s' ),
-      'expiry'          => wp_date( 'Y-m-d H:i:s', strtotime( "+{$settings['cookie_expiration']} days" ) ),
+      'expiry'          => wp_date( 'Y-m-d H:i:s', strtotime( "+{$settings['cookie']['expiresAfterDays']} days" ) ),
     ],
     [
       '%s',
