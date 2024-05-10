@@ -1,3 +1,7 @@
+### 1.2.9: 2024-05-10
+
+* Run all cookie JS scripts on page load
+
 ### 1.2.8: 2024-05-10
 
 * Don't send consent POST request with every request (issue #2)

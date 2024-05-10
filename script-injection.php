@@ -3,7 +3,7 @@
  * @Author: Timi Wahalahti
  * @Date:   2021-09-07 17:00:04
  * @Last Modified by:   Roni Äikäs
- * @Last Modified time: 2024-05-10 16:52:56
+ * @Last Modified time: 2024-05-10 17:52:37
  * @package air-cookie
  */
 
@@ -52,12 +52,14 @@ function inject_js() {
 
     <?php // Allow adding category specific javascript to be runned when the category is accepted.
     if ( ! empty( $cookie_categories ) && is_array( $cookie_categories ) ) : ?>
-      airCookieSettings.onFirstAction = function() {
-        airCookierecordConsent();
-
+      airCookieSettings.onAccept = function() {
         <?php foreach ( $cookie_categories as $cookie_category ) {
           echo do_category_js( $cookie_category ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
         } ?>
+      }
+
+      airCookieSettings.onFirstAction = function() {
+        airCookierecordConsent();
       }
 
       airCookieSettings.onChange = function() {
