@@ -50,7 +50,7 @@ function inject_js() {
     <?php // Settings ?>
     airCookieSettings = <?php echo json_encode( apply_filters( 'air_cookie\settings', $settings ) ); // phpcs:ignore ?>
 
-    <?php // Allow adding categiry specific javascript to be runned when the category is accepted.
+    <?php // Allow adding category specific javascript to be runned when the category is accepted.
     if ( ! empty( $cookie_categories ) && is_array( $cookie_categories ) ) : ?>
       airCookieSettings.onAccept = function() {
         airCookierecordConsent();
