@@ -1,3 +1,7 @@
+### 1.2.8: 2024-05-10
+
+* Don't send consent POST request with every request (issue #2)
+
 ### 1.2.7: 2024-03-14
 
 * Add index for the database if it does not exist

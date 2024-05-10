@@ -2,8 +2,8 @@
 /**
  * @Author: Timi Wahalahti
  * @Date:   2021-09-07 17:00:04
- * @Last Modified by:   Roni Laukkarinen
- * @Last Modified time: 2024-02-20 16:32:36
+ * @Last Modified by:   Roni Äikäs
+ * @Last Modified time: 2024-05-10 16:52:56
  * @package air-cookie
  */
 
@@ -52,7 +52,7 @@ function inject_js() {
 
     <?php // Allow adding category specific javascript to be runned when the category is accepted.
     if ( ! empty( $cookie_categories ) && is_array( $cookie_categories ) ) : ?>
-      airCookieSettings.onAccept = function() {
+      airCookieSettings.onFirstAction = function() {
         airCookierecordConsent();
 
         <?php foreach ( $cookie_categories as $cookie_category ) {
