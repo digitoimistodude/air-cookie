@@ -109,6 +109,7 @@ function inject_js() {
 
         if ( 'all' === accepted ) {
           cc.accept('all');
+          cc.hide();
         } else {
           <?php // Get previously accepted categories and fallback to necessary if not accepted previously. ?>
           var accepted_prev = cc.get('level');

@@ -1,3 +1,7 @@
+### 1.2.10: 2024-06-05
+
+* Hide cookie consent box when all cookies are accepted via a button
+
 ### 1.2.9: 2024-05-10
 
 * Run all cookie JS scripts on page load
