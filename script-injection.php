@@ -50,6 +50,20 @@ function inject_js() {
     <?php // Settings ?>
     airCookieSettings = <?php echo json_encode( apply_filters( 'air_cookie\settings', $settings ) ); // phpcs:ignore ?>
 
+    // BroadcastChannel intertab messaging
+    // Try/catch to avoid crashing in older browsers.
+    var air_cookie_bc = null;
+    var air_cookie_bc_categories = null;
+    try {
+      air_cookie_bc = new BroadcastChannel('air_cookie');
+      air_cookie_bc.onmessage = function (ev) {
+        last_bc_categories = ev.data.categories; // Don't send update if the change is from an another tab
+
+        cc.hide();
+        cc.accept( ev.data );
+      };
+    } catch (e) {}
+
     <?php // Allow adding category specific javascript to be runned when the category is accepted.
     if ( ! empty( $cookie_categories ) && is_array( $cookie_categories ) ) : ?>
       airCookieSettings.onAccept = function() {
@@ -58,12 +72,23 @@ function inject_js() {
         } ?>
       }
 
-      airCookieSettings.onFirstAction = function() {
+      airCookieSettings.onFirstAction = function(preferences) {
         airCookierecordConsent();
+
+        var updateFromAnotherTab = JSON.stringify(preferences.accepted_categories) == JSON.stringify(air_cookie_bc_categories);
+        if (air_cookie_bc != null && !updateFromAnotherTab) {
+
+          air_cookie_bc.postMessage( preferences.accepted_categories );
+        }
       }
 
-      airCookieSettings.onChange = function() {
+      airCookieSettings.onChange = function(user) {
         airCookierecordConsent();
+
+        var updateFromAnotherTab = JSON.stringify(user.categories) == JSON.stringify(air_cookie_bc_categories);
+        if (air_cookie_bc != null && !updateFromAnotherTab) {
+          air_cookie_bc.postMessage( user.categories );
+        }
 
         <?php foreach ( $cookie_categories as $cookie_category ) {
           echo do_category_js( $cookie_category ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
