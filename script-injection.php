@@ -33,15 +33,15 @@ function inject_js() {
   // This is our own function, not WordPress deprecated core function.
   $settings = get_settings(); // phpcs:ignore WordPress.WP.DeprecatedFunctions.get_settingsFound
   if ( ! is_array( $settings ) ) {
-		return;
+    return;
   }
 
   // Cookie Consent javascript base.
   wp_enqueue_script( 'cookieconsent', plugin_base_url() . '/assets/cookieconsent.js', [], get_script_version(),
-  array(
+  [
     'in_footer' => true,
     'strategy'  => 'defer',
-  )
+  ]
 );
 
   // Get cookie categories
@@ -92,7 +92,7 @@ function inject_js() {
       <?php // Fixes: issues with embedded content when changing consent. ?>
       function checkIframeConsent() {
         if ( typeof manager !== 'undefined' ) {
-            if ( ! CookieConsent.getCookie( 'categories' ).includes('embeds') ) {
+            if ( ! CookieConsent.acceptedCategory('embeds') ) {
               manager.rejectService('all');
             }
             else {
@@ -105,13 +105,9 @@ function inject_js() {
 
       <?php // Add functions to handle changes ?>
       const ccOnChanges = {
-        onFirstConsent: () => {
-          ccOnAccept();
-        },
+        onFirstConsent: ccOnAccept,
 
-        onConsent: () => {
-          checkIframeConsent();
-        },
+        onConsent: checkIframeConsent,
 
         onModalShow: () => {
           <?php if ( apply_filters( 'air_cookie\styles\set_max_width', true ) ) : ?>
@@ -122,9 +118,7 @@ function inject_js() {
           <?php endif; ?>
         },
 
-        onChange: () => {
-          ccOnChange();
-        }
+        onChange: ccOnChange,
       }
       airCookieSettings = Object.assign(airCookieSettings, ccOnChanges);
       <?php // end add functions to handle changes ?>
@@ -204,7 +198,7 @@ function do_category_js( $category ) {
   $event_key = "air_cookie_{$category_key}";
 
   ob_start(); ?>
-  if ( CookieConsent.getCookie( 'categories' ).includes( '<?php echo $category_key; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>' ) ) {
+  if ( CookieConsent.acceptedCategory( '<?php echo $category_key; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>' ) ) {
     <?php // Remove all elements that have accept-category action specified. ?>
     var elements = document.querySelectorAll('[data-aircookie-remove-on="accept-<?php echo $category_key; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>"]');
     for (var i = 0; i < elements.length; i++) {

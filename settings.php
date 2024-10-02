@@ -26,43 +26,83 @@ function get_settings() {
 
   // Default settings.
   $settings = [
-    'revision'              => $categories_version, // use version number to invalidate if categories change
-    'cookie'                => [
-      'name' => 'air_cookie',
-      'expiresAfterDays' => 182, // in days, 182 days = 6 months
-    ],
-
-    'guiOptions'     => [
-      'consentModal' => [
-        'layout'     => 'box wide',
-        'position'   => 'bottom left',
-        'equalWeightButtons' => false,
-        'flipButtons'        => false,
+    'cookie_name'       => 'air_cookie',
+    'revision'          => $categories_version, // use version number to invalidate if categories change
+    // 'theme_css'         => plugin_base_url() . '/assets/cookieconsent.css',
+    'cookie_expiration' => 182, // in days, 182 days = 6 months
+    'auto_language'     => false,
+    'current_lang'      => $lang,
+    'autorun'           => true,
+    'page_scripts'      => true,
+    'delay'             => '0',
+    'gui_options'       => [
+      'consent_modal'   => [
+        'layout'    => 'box wide',
+        'position'  => 'bottom left',
+        'equal_weight_buttons' => false,
+        'flip_buttons'         => false,
       ],
-
-      'preferencesModal' => [
-        'layout'             => 'box',
-        'equalWeightButtons' => true,
-        'flipButtons'        => false,
+      'preferences_modal' => [
+        'layout'               => 'box',
+        'equal_weight_buttons' => true,
+        'flip_buttons'         => false,
       ],
     ],
-
     'language'  => [
       'default' => $lang,
-      'translations'   => [
-        $lang   => []
+      'translations' => [
+        $lang => []
       ]
     ],
-
     'categories' => [],
   ];
 
+  function convert_settings_to_new_format( $settings ) {
+    // Define a mapping of old keys to new keys
+  
+    if ( isset( $settings['cookie_name'] ) ) {
+      $new_format_settings['cookie']['name'] = $settings['cookie_name'];
+    }
+    
+    if ( isset( $settings['cookie_expiration'] ) ) {
+      $new_format_settings['cookie']['expiresAfterDays'] = $settings['cookie_expiration'];
+    }
+    
+    if ( isset( $settings['revision'] ) ) {
+      $new_format_settings['revision'] = $settings['revision'];
+    }
+    
+    if ( isset( $settings['current_lang'] ) ) {
+      $new_format_settings['language']['default'] = $settings['current_lang'];
+      $new_format_settings['language']['translations'][$settings['current_lang']] = [];
+    }
+  
+    // Handle GUI options
+    if ( isset( $settings['gui_options'] ) ) {
+      if ( isset( $settings['gui_options']['consent_modal'] ) ) {
+        $new_format_settings['guiOptions']['consentModal']['layout'] = $settings['gui_options']['consent_modal']['layout'];
+        $new_format_settings['guiOptions']['consentModal']['position'] = $settings['gui_options']['consent_modal']['position'];
+        $new_format_settings['guiOptions']['consentModal']['equalWeightButtons'] = $settings['gui_options']['consent_modal']['equal_weight_buttons'];
+        $new_format_settings['guiOptions']['consentModal']['flipButtons'] = $settings['gui_options']['consent_modal']['flip_buttons'];
+      }
+      if ( isset( $settings['gui_options']['preferences_modal'] ) ) {
+        $new_format_settings['guiOptions']['preferencesModal']['layout'] = $settings['gui_options']['preferences_modal']['layout'];
+        $new_format_settings['guiOptions']['preferencesModal']['equalWeightButtons'] = $settings['gui_options']['preferences_modal']['equal_weight_buttons'];
+        $new_format_settings['guiOptions']['preferencesModal']['flipButtons'] = $settings['gui_options']['preferences_modal']['flip_buttons'];
+      }
+    }
+  
+    // Return the new settings array
+    return $new_format_settings;
+  }
+
   // Allow filtering all the settings.
   $settings = apply_filters( 'air_cookie\settings', $settings );
+  $settings = convert_settings_to_new_format( $settings );
 
   // Allow filtering individual settings.
   foreach ( $settings as $key => $setting ) {
-    $settings[ $key ] = apply_filters( "air_cookie\strings\{$key}", $setting );
+    $settings[ $key ] = apply_filters( "air_cookie\strings\\{$key}", $setting );
   }
 
   // Get text strings, bail of none.
@@ -81,8 +121,8 @@ function get_settings() {
       $readonly = $group['readonly'];
 
         // autoClear key is for detecting cookie table
-        if ( array_key_exists( 'autoClear', $group ) ) {
-          $autoclear = $group['autoClear'];
+        if ( array_key_exists( 'auto_clear', $group ) || array_key_exists( 'autoClear', $group ) ) {
+          $autoclear = $group['auto_clear'] ?? $group['autoClear'];
           // Add text strings for the modals.
           $settings['categories'][ $key ] = [
             'enabled' => $enabled,
@@ -174,7 +214,7 @@ function get_cookie_categories() {
   // Loop individual categories to allow filtering those.
   foreach ($categories as $key => $category ) {
     $category_key = $category['key'];
-    $categories[ $key ] = apply_filters( "air_cookie\categories\{$category_key}", $category );
+    $categories[ $key ] = apply_filters( "air_cookie\categories\\{$category_key}", $category );
 }
   return $categories;
 } // end get_cookie_categories

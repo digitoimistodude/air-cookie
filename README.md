@@ -70,7 +70,7 @@ function my_change_category_analytics( $edited_categoy ) {
     'readonly'    => false,
     'title'       => 'Analytics',
     'description' => 'This site uses Google Analytics and it set some cookies. Read more about those from privacy policy.',
-    'autoClear'   => [ // Optional: autoclear allows you to define cookies, which will be removed after changing consent. List all cookies to correct categories. Possible to use string or regex format (format is a bit different than official docs points out! https://cookieconsent.orestbida.com/reference/configuration-reference.html#category-autoclear).
+    'auto_clear'   => [ // Optional: auto_clear allows you to define cookies, which will be removed after changing consent. List all cookies to correct categories. Possible to use string or regex format (format is a bit different than official docs points out! https://cookieconsent.orestbida.com/reference/configuration-reference.html#category-autoclear).
       'cookies'     => [
           [
             'name'  => '^(_ga)', // Match all cookies starting with '_ga',
@@ -305,7 +305,7 @@ You may change the settings with `air_cookie\settings` filter which contains all
 ```php
 add_filter( 'air_cookie\settings', 'my_modify_cc_settings' );
 function my_modify_cc_settings( $settings ) {
-  $settings['guiOptions']['consentModal']['position'] = "top right";
+  $settings['gui_options']['consent_modal']['position'] = "top right";
   return $settings;
 }
 ```
