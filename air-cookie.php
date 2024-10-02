@@ -48,7 +48,7 @@ function get_database_version() {
  * @since 0.1.0
  */
 function get_script_version() {
-  return '3.0.0';
+  return '3.0.1';
 } // end get_script_version
 
 /**
@@ -59,12 +59,11 @@ function get_script_version() {
 require 'plugin-helpers.php';
 
 /**
- * Github updater. Disabled by commenting out.
  *
  * @since 0.1.0
  */
-// require plugin_base_path() . '/plugin-update-checker/plugin-update-checker.php';
-// $update_checker = \Puc_v4_Factory::buildUpdateChecker( 'https://github.com/digitoimistodude/air-cookie', __FILE__, 'air-cookie' );
+require plugin_base_path() . '/plugin-update-checker/plugin-update-checker.php';
+$update_checker = \Puc_v4_Factory::buildUpdateChecker( 'https://github.com/digitoimistodude/air-cookie', __FILE__, 'air-cookie' );
 
 /**
  * Compile settings for the script.
