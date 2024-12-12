@@ -1,3 +1,7 @@
+### 1.3.0: 2024-12-12
+
+* Update PUC to v5 (T-23373)
+
 ### 1.2.10: 2024-06-05
 
 * Hide cookie consent box when all cookies are accepted via a button
