@@ -47,7 +47,7 @@ function get_database_version() {
  * @since 0.1.0
  */
 function get_script_version() {
-  return '2.9.1';
+  return '3.0.0';
 } // end get_script_version
 
 /**

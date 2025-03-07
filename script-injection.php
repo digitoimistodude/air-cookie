@@ -37,7 +37,12 @@ function inject_js() {
   }
 
   // Cookie Consent javascript base.
-  wp_enqueue_script( 'cookieconsent', plugin_base_url() . '/assets/cookieconsent.js', [], get_script_version(), false );
+  wp_enqueue_script( 'cookieconsent', plugin_base_url() . '/assets/cookieconsent.js', [], get_script_version(),
+  array(
+    'in_footer' => true,
+    'strategy'  => 'defer',
+  )
+);
 
   // Get cookie categories
   $cookie_categories = get_cookie_categories();
