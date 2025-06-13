@@ -8,7 +8,7 @@
 
 Air cookie provides simple cookie banner and management.
 
-Uses the [CookieConsent](https://orestbida.com/demo-projects/cookieconsent/) javascript plugin as a base, making its usage with WordPress easier.
+Uses the [CookieConsent](https://github.com/orestbida/cookieconsent) javascript plugin as a base, making its usage with WordPress easier.
 
 # Features
 
