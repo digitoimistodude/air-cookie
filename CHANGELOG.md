@@ -1,3 +1,11 @@
+### 1.3.1:
+
+* Update cookieconsent js and css to v3.1.0
+* Update iframemanager js and css to v1.3.0
+* Make air-cookie.php to work with consentmode v3.1.0 
+* Make script-injection.php to work with consentmode v3.1.0 
+* Make settings.php to work with consentmode v3.1.0 
+
 ### 1.3.0: 2024-12-12
 
 * Update PUC to v5 (T-23373)
