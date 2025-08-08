@@ -129,6 +129,15 @@ function inject_js() {
       <?php // Run the Cookie Consent at last. ?>
       CookieConsent.run( airCookieSettings );
 
+      <?php // Backwards compatibility for cc.loadScript API ?>
+      if ( typeof window.cc === 'undefined' ) {
+        window.cc = {
+          loadScript: function( src, callback ) {
+            return CookieConsent.loadScript( src, callback );
+          }
+        };
+      }
+
     <?php // Function to set the visitor id if not already and send consent record request. ?>
     function airCookierecordConsent() {
       <?php // Set visitor identification if not set already. ?>
