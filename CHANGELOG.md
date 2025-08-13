@@ -5,6 +5,7 @@
 * Make air-cookie.php to work with consentmode v3.1.0 
 * Make script-injection.php to work with consentmode v3.1.0 
 * Make settings.php to work with consentmode v3.1.0 
+* Add backwards compatibility for cc.loadScript API (ref DEV-96)
 
 ### 1.3.0: 2024-12-12
 

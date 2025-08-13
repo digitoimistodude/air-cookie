@@ -134,6 +134,9 @@ function inject_js() {
         window.cc = {
           loadScript: function( src, callback ) {
             return CookieConsent.loadScript( src, callback );
+          },
+          getCookie: function( name ) {
+            return CookieConsent.getCookie( name );
           }
         };
       }
