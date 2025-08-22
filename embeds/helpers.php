@@ -40,8 +40,13 @@ function get_embed_placeholder( $service, $embed_id, $src ) {
   $autoscale = apply_filters( 'air_cookie\embeds\placeholder\autoscale', true, $service, $embed_id, $src );
   $autoscale = $autoscale ? ' data-autoscale' : '';
 
-  return '<div data-service="' . $service . '" data-id="' . $embed_id . '" data-title="' . $title . '"' . $autoscale . '></div>';
+  $inner_div = '<div data-service="' . $service . '" data-id="' . $embed_id . '" data-title="' . $title . '"' . $autoscale . '></div>';
+
+  $placeholder = '<div class="air-cookie-embed-wrapper">' . $inner_div . '</div>';
+
+  return $placeholder;
 } // end get_embed_placeholder
+
 
 /**
  * Test if URI is Youtube video and return video ID if is.
