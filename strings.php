@@ -29,7 +29,7 @@ function get_strings() {
     'consent_modal_description'           => 'Käytämme evästeitä käyttökokemuksesi parantamiseksi ja sivuston kehittämiseksi. Osaa evästeistä käytetään analytiikkaan, markkinointiin ja sen kohdentamiseen.<br/><br/>Voit muuttaa asetuksia koska tahansa sivuston alaosassa olevasta linkistä.',
     'consent_modal_primary_btn_text'      => 'Salli evästeet',
     'consent_modal_secondary_btn_text'    => 'Vain välttämättömät',
-    'settings_modal_title'                => 'Lisätietoa ja evästeasetukset',
+    'settings_modal_title'                => 'Evästeasetukset',
     'settings_modal_big_title'            => 'Evästeiden käyttö',
     'settings_modal_description'          => 'Käytämme sivustolla yhteistyökumppaneidemme kanssa evästeitä mm. toiminnallisuuteen, mainonnan ja sosiaalisen median liitännäisten toteuttamiseen sekä sivuston käytön analysointiin. Kävijätietoja voidaan jakaa sosiaalisen median palveluja, verkkomainontaa tai analytiikkapalveluja tarjoavien kumppaneiden kanssa. Evästeiden tallennusaika vaihtelee sen tyypistä riippuen. Poistoajankohdan ylittäneet evästeet poistuvat automaattisesti.',
     'settings_modal_save_settings_btn'    => 'Tallenna asetukset',
