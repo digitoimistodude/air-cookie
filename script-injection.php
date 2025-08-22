@@ -129,6 +129,13 @@ function inject_js() {
       <?php // Run the Cookie Consent at last. ?>
       CookieConsent.run( airCookieSettings );
 
+
+      <?php // Backwards compatibility for old data-cc="c-settings" to new data-cc="show-preferencesModal" ?>
+      var oldSettingsLinks = document.querySelectorAll('[data-cc="c-settings"]');
+      for (var i = 0; i < oldSettingsLinks.length; i++) {
+        oldSettingsLinks[i].setAttribute('data-cc', 'show-preferencesModal');
+      }
+
       <?php // Backwards compatibility for cc.loadScript API ?>
       if ( typeof window.cc === 'undefined' ) {
         window.cc = {
