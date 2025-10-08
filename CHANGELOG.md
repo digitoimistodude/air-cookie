@@ -1,3 +1,7 @@
+### 1.3.1: 2025-10-08
+* Add GitHub Actions workflow for automated releases
+* Add .distignore file
+
 ### 1.3.0: 2024-12-12
 
 * Update PUC to v5 (T-23373)
